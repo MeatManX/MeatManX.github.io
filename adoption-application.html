@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meat Man Xbox Adoption Application</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0b0b0b;
+      color: #d8d8d8;
+      font-family: Tahoma, Verdana, Arial, sans-serif;
+      font-size: 14px;
+      background-image: radial-gradient(circle at top left, #1c2d1c 0, #0b0b0b 45%);
+    }
+    a { color: #8df58d; }
+    .page {
+      max-width: 980px;
+      margin: 18px auto;
+      border: 3px solid #5da85d;
+      background: #131313;
+      box-shadow: 0 0 0 3px #263926;
+    }
+    .topbar {
+      background: linear-gradient(#2d5a2d, #173217);
+      border-bottom: 2px solid #8df58d;
+      padding: 10px 14px;
+      color: #eaffea;
+      text-shadow: 1px 1px 0 #000;
+    }
+    .topbar h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #c7ffc7;
+    }
+    .marquee {
+      background: #000;
+      border-top: 1px solid #477047;
+      border-bottom: 1px solid #477047;
+      padding: 6px 10px;
+      color: #9cff9c;
+      font-size: 12px;
+    }
+    .content { padding: 16px; }
+    .window {
+      border: 2px solid #5c5c5c;
+      margin-bottom: 16px;
+      background: #1b1b1b;
+    }
+    .window-title {
+      background: linear-gradient(#3b3b3b, #232323);
+      color: #fff;
+      padding: 7px 10px;
+      font-weight: bold;
+      border-bottom: 1px solid #666;
+    }
+    .window-body {
+      padding: 12px;
+      line-height: 1.45;
+    }
+    .warning {
+      border: 1px dashed #b5d9b5;
+      background: #101810;
+      padding: 10px;
+      color: #dff5df;
+    }
+    table.form-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table.form-table td {
+      padding: 8px;
+      border-bottom: 1px solid #2f2f2f;
+      vertical-align: top;
+    }
+    table.form-table td.label {
+      width: 230px;
+      color: #b8ddb8;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea,
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      background: #0c0c0c;
+      color: #d6ffd6;
+      border: 1px solid #5b7f5b;
+      padding: 8px;
+      font-family: Tahoma, Verdana, Arial, sans-serif;
+      font-size: 14px;
+    }
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+    }
+    .choice-group label,
+    .checklist label {
+      display: inline-block;
+      margin-right: 14px;
+      margin-bottom: 6px;
+    }
+    .small-note {
+      color: #b0b0b0;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .button-row {
+      text-align: center;
+      padding-top: 8px;
+      padding-bottom: 10px;
+    }
+    button {
+      background: linear-gradient(#58a958, #265826);
+      color: #fff;
+      border: 2px outset #78c978;
+      padding: 10px 18px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+    button:hover { filter: brightness(1.08); }
+    .footer {
+      text-align: center;
+      color: #9e9e9e;
+      font-size: 11px;
+      padding: 14px;
+      border-top: 1px solid #2f2f2f;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .hidden-honeypot {
+      position: absolute !important;
+      left: -5000px !important;
+      width: 1px !important;
+      height: 1px !important;
+      overflow: hidden !important;
+    }
+    #form-status {
+      text-align: center;
+      padding: 0 18px 18px;
+      min-height: 20px;
+    }
+    @media (max-width: 760px) {
+      .two-col { grid-template-columns: 1fr; }
+      table.form-table td,
+      table.form-table td.label {
+        display: block;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <h1>MEAT MAN XBOX ADOPTION APPLICATION</h1>
+      <div class="subtitle">Original Xbox Rehoming Division // Applicant Review Form v1.1</div>
+    </div>
+
+    <div class="marquee">
+      <marquee behavior="scroll" direction="left" scrollamount="4">
+        WARNING: Completion of this form does not guarantee approval. Xboxes are placed according to readiness, compatibility, and my personal tolerance for nonsense.
+      </marquee>
+    </div>
+
+    <div class="content">
+      <div class="window">
+        <div class="window-title">Before You Begin</div>
+        <div class="window-body">
+          <p>This is an adoption application, not a checkout page. Filling this out gives me the information I need to figure out whether you are a good fit for one of my restored and modified original Xbox systems.</p>
+          <div class="warning">
+            Please answer honestly. This is not a test you can pass by pretending to know what FTP is. In fact, lying just increases the odds that you will later break something and send me a message that raises my blood pressure.
+          </div>
+        </div>
+      </div>
+
+      <form id="adoptionForm" action="https://formspree.io/f/xdaykrwd" method="POST">
+        <input type="hidden" name="_subject" value="New Meat Man Xbox Adoption Application">
+        <input type="hidden" name="_format" value="plain">
+
+        <label class="hidden-honeypot" aria-hidden="true">
+          Leave this field empty
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+        </label>
+
+        <div class="window">
+          <div class="window-title">Applicant Information</div>
+          <div class="window-body">
+            <table class="form-table">
+              <tr><td class="label">Full Name</td><td><input type="text" name="full_name" required></td></tr>
+              <tr><td class="label">Email Address</td><td><input type="email" name="email" required><div class="small-note">This is where I will reply if your application does not make me question reality.</div></td></tr>
+              <tr><td class="label">Phone Number</td><td><input type="tel" name="phone"></td></tr>
+              <tr><td class="label">Shipping Address</td><td><textarea name="address" required></textarea></td></tr>
+              <tr><td class="label">Gamertag (as displayed)</td><td><input type="text" name="gamertag"></td></tr>
+              <tr><td class="label">Who sent you to me?</td><td><input type="text" name="referral_source"></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="window">
+          <div class="window-title">Adoption Goals</div>
+          <div class="window-body">
+            <table class="form-table">
+              <tr>
+                <td class="label">What are you trying to do?</td>
+                <td>
+                  <div class="checklist">
+                    <label><input type="checkbox" name="goals" value="Play online with Insignia"> Play online with Insignia</label>
+                    <label><input type="checkbox" name="goals" value="Play offline games"> Play offline games</label>
+                    <label><input type="checkbox" name="goals" value="Use emulators"> Use emulators</label>
+                    <label><input type="checkbox" name="goals" value="Rip discs to hard drive"> Rip discs to hard drive</label>
+                    <label><input type="checkbox" name="goals" value="Use modern controllers"> Use modern controllers</label>
+                    <label><input type="checkbox" name="goals" value="General collection / nostalgia"> General collection / nostalgia</label>
+                  </div>
+                </td>
+              </tr>
+              <tr><td class="label">How often will you dedicate time each week to playing with your child?</td><td><textarea name="weekly_time_commitment" placeholder="Example: 2 or 3 nights a week, mostly weekends, mostly Halo, etc."></textarea></td></tr>
+              <tr><td class="label">Why do you want to adopt an original Xbox?</td><td><textarea name="why_adopt" required></textarea></td></tr>
+              <tr><td class="label">What kind of setup are you hoping for?</td><td><textarea name="desired_setup" placeholder="Example: simple plug-and-play online setup, HDMI to modern TV, OEM controller, 1TB drive, etc."></textarea></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="window">
+          <div class="window-title">Tech Literacy Check</div>
+          <div class="window-body">
+            <table class="form-table">
+              <tr>
+                <td class="label">How would you describe your tech experience?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="tech_level" value="Beginner" required> Beginner</label>
+                    <label><input type="radio" name="tech_level" value="Intermediate"> Intermediate</label>
+                    <label><input type="radio" name="tech_level" value="Advanced"> Advanced</label>
+                    <label><input type="radio" name="tech_level" value="Dangerously confident"> Dangerously confident</label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="label">Do you know what FTP means?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="knows_ftp" value="Yes"> Yes</label>
+                    <label><input type="radio" name="knows_ftp" value="Sort of"> Sort of</label>
+                    <label><input type="radio" name="knows_ftp" value="No"> No</label>
+                    <label><input type="radio" name="knows_ftp" value="I have heard the letters before"> I have heard the letters before</label>
+                  </div>
+                </td>
+              </tr>
+              <tr><td class="label">If your Xbox suddenly stops displaying a picture after changing video settings, what would you try first?</td><td><textarea name="video_troubleshooting"></textarea></td></tr>
+              <tr>
+                <td class="label">Have you ever used an Ethernet cable on purpose?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="ethernet_experience" value="Yes"> Yes</label>
+                    <label><input type="radio" name="ethernet_experience" value="No"> No</label>
+                    <label><input type="radio" name="ethernet_experience" value="Only under supervision"> Only under supervision</label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="label">Do you understand that random setting changes can break things?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="understands_settings_risk" value="Yes" required> Yes</label>
+                    <label><input type="radio" name="understands_settings_risk" value="I do now"> I do now</label>
+                    <label><input type="radio" name="understands_settings_risk" value="No but I am eager to learn"> No but I am eager to learn</label>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="window">
+          <div class="window-title">Current Equipment</div>
+          <div class="window-body">
+            <div class="two-col">
+              <div>
+                <label for="tv_type">Display Type</label>
+                <select name="tv_type" id="tv_type">
+                  <option value="">Select one</option>
+                  <option>CRT</option>
+                  <option>Flat panel TV</option>
+                  <option>Computer monitor</option>
+                  <option>I do not know</option>
+                </select>
+              </div>
+              <div>
+                <label for="video_connection">Preferred Video Connection</label>
+                <select name="video_connection" id="video_connection">
+                  <option value="">Select one</option>
+                  <option>Composite</option>
+                  <option>Component</option>
+                  <option>HDMI adapter</option>
+                  <option>I do not know</option>
+                </select>
+              </div>
+              <div>
+                <label for="network_type">Internet Setup</label>
+                <select name="network_type" id="network_type">
+                  <option value="">Select one</option>
+                  <option>Direct Ethernet to router</option>
+                  <option>Router is far away</option>
+                  <option>Laptop bridging / workaround</option>
+                  <option>I have no idea yet</option>
+                </select>
+              </div>
+              <div>
+                <label for="controller_pref">Controller Preference</label>
+                <select name="controller_pref" id="controller_pref">
+                  <option value="">Select one</option>
+                  <option>OEM original controller</option>
+                  <option>Modern controller with adapter</option>
+                  <option>No preference</option>
+                </select>
+              </div>
+            </div>
+            <div class="small-note">This helps me figure out whether your future problems are likely to be Xbox problems or self-inflicted setup crimes.</div>
+          </div>
+        </div>
+
+        <div class="window">
+          <div class="window-title">Build Interest</div>
+          <div class="window-body">
+            <table class="form-table">
+              <tr>
+                <td class="label">Storage size you are considering</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="drive_size" value="I only need something basic"> I only need something basic</label>
+                    <label><input type="radio" name="drive_size" value="500GB"> 500GB</label>
+                    <label><input type="radio" name="drive_size" value="1TB"> 1TB</label>
+                    <label><input type="radio" name="drive_size" value="2TB"> 2TB</label>
+                    <label><input type="radio" name="drive_size" value="I need guidance"> I need guidance</label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="label">Interested in any of these?</td>
+                <td>
+                  <div class="checklist">
+                    <label><input type="checkbox" name="interests" value="Electron Shepherd XOUT"> Electron Shepherd XOUT</label>
+                    <label><input type="checkbox" name="interests" value="OGX Mini / Bluetooth controller support"> OGX Mini / Bluetooth controller support</label>
+                    <label><input type="checkbox" name="interests" value="Modchip install"> Modchip install</label>
+                    <label><input type="checkbox" name="interests" value="Repair / rescue work"> Repair / rescue work</label>
+                    <label><input type="checkbox" name="interests" value="Mail-in service"> Mail-in service</label>
+                  </div>
+                </td>
+              </tr>
+              <tr><td class="label">Anything else I should know before considering your application?</td><td><textarea name="notes"></textarea></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="window">
+          <div class="window-title">Final Disclaimer and Submission</div>
+          <div class="window-body">
+            <p>By submitting this form, you acknowledge that original Xbox hardware is old, modified hardware requires a basic level of user responsibility, and your personal TV, router, ISP, adapters, and random decisions are outside my control.</p>
+            <p>You also acknowledge that completing this form does not guarantee approval, pricing, or immediate availability.</p>
+            <label>
+              <input type="checkbox" name="accept_disclaimer" required>
+              I understand and accept the above disclaimer.
+            </label>
+            <div class="small-note">Submitting this form sends the application to Meat Man for review.</div>
+          </div>
+        </div>
+
+        <input type="hidden" name="submitted_at" id="submitted_at">
+        <input type="hidden" name="browser_user_agent" id="browser_user_agent">
+        <input type="hidden" name="screen_resolution" id="screen_resolution">
+        <input type="hidden" name="timezone" id="timezone">
+        <input type="hidden" name="page_url" id="page_url">
+
+        <div class="button-row">
+          <button type="submit">SUBMIT ADOPTION APPLICATION</button>
+        </div>
+        <div id="form-status" class="small-note"></div>
+      </form>
+    </div>
+
+    <div class="footer">
+      Meat Man Xbox Adoption Program // This page intentionally looks like it was built in 2003.
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('submitted_at').value = new Date().toISOString();
+    document.getElementById('browser_user_agent').value = navigator.userAgent;
+    document.getElementById('screen_resolution').value = window.screen.width + 'x' + window.screen.height;
+    document.getElementById('timezone').value = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
+    document.getElementById('page_url').value = window.location.href;
+
+    const form = document.getElementById('adoptionForm');
+    const status = document.getElementById('form-status');
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      status.textContent = 'Submitting application...';
+
+      const data = new FormData(form);
+
+      try {
+        const response = await fetch(form.action, {
+          method: form.method,
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          status.textContent = 'Application submitted successfully. If approved, Meat Man will contact you.';
+          form.reset();
+        } else {
+          status.textContent = 'Something went wrong. Please try again or contact Meat Man directly.';
+        }
+      } catch (error) {
+        status.textContent = 'Network error. Please try again in a minute.';
+      }
+    });
+  </script>
+</body>
+</html>

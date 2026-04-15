@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    ==========================================================
+    MEATMAN MODS - LANDING PAGE
+    ==========================================================
+    WHAT THIS FILE IS:
+    - This is a single-file homepage for your GitHub Pages site.
+    - Save this as: index.html
+
+    WHAT TO EDIT BEFORE GOING LIVE:
+    - Search for: REPLACE_ME
+    - Search for: [INSERT IMAGE ...]
+    - Search for: Add guide link
+    - Search for: adoption-application.html
+
+    HOW THIS PAGE WORKS:
+    - The top navigation links jump to sections on the same page.
+    - The "Open the adoption application" button links to a second HTML page.
+    - All styling is built into this file in the <style> section below.
+
+    SAFE TO CHANGE:
+    - Any visible text in the body
+    - Colors in :root
+    - Button labels
+    - Section titles
+    - Footer info
+
+    BE CAREFUL CHANGING:
+    - id values like id="guides" or id="apply" because nav links depend on them
+    - class names if you do not also update the CSS
+  -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MeatMan Mods</title>
+  <meta name="description" content="Restored and modified original Xbox systems, accessories, repair work, and setup guidance from MeatMan Mods." />
+
+  <style>
+    /*
+      ==========================================================
+      SECTION: GLOBAL THEME VARIABLES
+      ----------------------------------------------------------
+      Change these if you want to adjust the entire site's colors.
+      ==========================================================
+    */
+    :root {
+      --bg: #0b0f0b;
+      --panel: #121812;
+      --panel-2: #181f18;
+      --line: #2c3a2c;
+      --green: #8acb88;
+      --green-bright: #b7ef9d;
+      --text: #e6efe3;
+      --muted: #a7b3a3;
+      --shadow: rgba(0,0,0,0.45);
+      --max: 1100px;
+    }
+
+    /* Basic reset */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    /*
+      ==========================================================
+      SECTION: BASE PAGE STYLING
+      ----------------------------------------------------------
+      Controls the full page background, body font, and default text.
+      ==========================================================
+    */
+    body {
+      margin: 0;
+      font-family: Verdana, Tahoma, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, #173117 0%, transparent 30%),
+        linear-gradient(180deg, #0b0f0b 0%, #0f140f 100%);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--green-bright);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Shared width container used throughout page */
+    .wrap {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+    }
+
+    /*
+      ==========================================================
+      SECTION: TOP STRIP
+      ----------------------------------------------------------
+      Thin bar above the header.
+      Good place for short status text or brand tone.
+      ==========================================================
+    */
+    .top-strip {
+      background: #000;
+      color: var(--green-bright);
+      border-bottom: 1px solid #294129;
+      font-size: 12px;
+      padding: 8px 0;
+    }
+
+    .top-strip .wrap {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /*
+      ==========================================================
+      SECTION: STICKY HEADER + NAVIGATION
+      ----------------------------------------------------------
+      This stays at the top while scrolling.
+      The nav links depend on matching section ids in the body.
+      Example: href="#guides" jumps to id="guides"
+      ==========================================================
+    */
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(9, 12, 9, 0.86);
+      backdrop-filter: blur(6px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 14px 0;
+    }
+
+    .brand {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--green-bright);
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    nav ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    /*
+      ==========================================================
+      SECTION: HERO
+      ----------------------------------------------------------
+      This is the first major section visitors see.
+      Left side = main message and buttons
+      Right side = image slot and supporting text
+      ==========================================================
+    */
+    .hero {
+      padding: 72px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      gap: 26px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(18,24,18,0.96), rgba(14,18,14,0.96));
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 32px var(--shadow);
+    }
+
+    .hero-main {
+      padding: 34px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 4px 8px;
+      border: 1px solid #436343;
+      background: #101610;
+      color: var(--green-bright);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.15;
+      margin: 0 0 14px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 6vw, 58px);
+      letter-spacing: 0.3px;
+    }
+
+    h2 {
+      font-size: clamp(26px, 4vw, 34px);
+    }
+
+    h3 {
+      font-size: 20px;
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--text);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .hero-copy {
+      font-size: 17px;
+      max-width: 62ch;
+    }
+
+    /* Buttons used throughout page */
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border: 1px solid #658f65;
+      background: linear-gradient(180deg, #294729, #1c311c);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .btn.secondary {
+      background: #131913;
+      color: var(--green-bright);
+      border-color: #415741;
+    }
+
+    .hero-side {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    /*
+      ==========================================================
+      SECTION: IMAGE SLOT PLACEHOLDER
+      ----------------------------------------------------------
+      Replace this entire block later with a real image if you want.
+      Easiest method:
+      1. Put an image file in your repo, like images/hero-xbox.jpg
+      2. Replace the placeholder div with:
+         <img src="images/hero-xbox.jpg" alt="Restored original Xbox" style="width:100%; display:block;" />
+      ==========================================================
+    */
+    .image-slot {
+      min-height: 240px;
+      border: 1px dashed #547054;
+      background:
+        linear-gradient(135deg, rgba(138,203,136,0.08), rgba(138,203,136,0.02)),
+        #0f140f;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 18px;
+      font-size: 13px;
+    }
+
+    /* Hero stat blocks */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      padding: 14px;
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--green-bright);
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    section {
+      padding: 28px 0;
+    }
+
+    .section-head {
+      margin-bottom: 18px;
+      max-width: 72ch;
+    }
+
+    /* Reusable grid layouts */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 22px;
+      box-shadow: 0 10px 24px var(--shadow);
+    }
+
+    .panel ul {
+      margin: 12px 0 0 18px;
+      padding: 0;
+    }
+
+    .panel li { margin-bottom: 8px; }
+
+    /* Adoption section specific layout */
+    .adoption {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 18px;
+    }
+
+    .quote {
+      border-left: 4px solid #5f8d5f;
+      padding-left: 14px;
+      color: var(--green-bright);
+      margin-top: 16px;
+    }
+
+    /* Numbered steps in process section */
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+      background: var(--panel-2);
+      position: relative;
+      padding-left: 58px;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      width: 28px;
+      height: 28px;
+      border: 1px solid #688f68;
+      display: grid;
+      place-items: center;
+      color: var(--green-bright);
+      font-weight: bold;
+      background: #101610;
+    }
+
+    /* FAQ accordion */
+    .faq details {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
+    .faq summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--green-bright);
+    }
+
+    .faq p {
+      margin-top: 10px;
+      color: var(--text);
+    }
+
+    /* Final call-to-action box */
+    .cta {
+      padding: 28px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(28,49,28,0.95), rgba(15,22,15,0.95));
+      border: 1px solid #466246;
+      box-shadow: 0 16px 36px var(--shadow);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--line);
+      margin-top: 20px;
+      padding: 24px 0 40px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    .tiny {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /*
+      ==========================================================
+      SECTION: MOBILE RESPONSIVE RULES
+      ----------------------------------------------------------
+      When the screen gets narrow, this stacks the columns.
+      ==========================================================
+    */
+    @media (max-width: 900px) {
+      .hero-grid,
+      .adoption,
+      .grid-3,
+      .grid-2,
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav ul {
+        justify-content: flex-start;
+      }
+
+      .hero {
+        padding-top: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-strip">
+    <div class="wrap">
+      <div>Restored original Xbox systems, repairs, upgrades, and accessories.</div>
+      <div>Read first. Then message me.</div>
+    </div>
+  </div>
+
+  <header>
+    <div class="wrap nav">
+      <div class="brand">
+        MeatMan Mods
+        <small>Original Xbox restoration and rehoming</small>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#what-i-do">What I Do</a></li>
+          <li><a href="#adoption">Adoption Process</a></li>
+          <li><a href="#hardware">Hardware</a></li>
+          <li><a href="#guides">Guides</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#apply">Apply</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="card hero-main">
+          <div class="eyebrow">Restored. Modified. Rehomed.</div>
+          <h1>Original Xbox systems, brought back from the dead and put back to work.</h1>
+          <p class="hero-copy">
+            I restore, modify, test, and rehome original Microsoft Xbox consoles. These are not random flip jobs and they are not mass-produced builds. Each system is inspected, cleaned, repaired where needed, and configured with long-term use in mind.
+          </p>
+          <p class="hero-copy muted">
+            If you want a brand new plug-and-play appliance, this is not that. If you want an original Xbox that has been brought back properly and set up by someone who actually uses this stuff, you are in the right place.
+          </p>
+          <div class="button-row">
+            <a class="btn" href="#apply">Would you like to know more?</a>
+            <a class="btn secondary" href="#guides">Read the guides first</a>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <strong>20+ years old</strong>
+              These systems are aging hardware, not disposable toys.
+            </div>
+            <div class="stat">
+              <strong>Built case by case</strong>
+              No flat pricing. No copy-paste builds.
+            </div>
+            <div class="stat">
+              <strong>Support starts with reading</strong>
+              I help where I can, but I am not your router’s therapist.
+            </div>
+          </div>
+        </div>
+
+        <div class="card hero-side">
+          <div class="image-slot">[INSERT IMAGE: restored Xbox, packaging shot, or Xbox in a crib if you want to commit to the bit]</div>
+          <div>
+            <h3>What you can expect</h3>
+            <p class="muted">Cleaned systems, known failure points addressed, dashboard configured, networking tested, and direct answers about what makes sense and what is a waste of money.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="what-i-do">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>What I do</h2>
+          <p class="muted">I work on original Xbox hardware, not vague nostalgia. Here is what that actually means.</p>
+        </div>
+        <div class="grid-3">
+          <div class="panel">
+            <h3>Restoration</h3>
+            <ul>
+              <li>Full cleaning and inspection</li>
+              <li>Clock capacitor removal or replacement</li>
+              <li>Capacitor checks and repair where needed</li>
+              <li>Fresh thermal paste</li>
+              <li>General health check before release</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>Modification</h3>
+            <ul>
+              <li>Softmod installs and dashboard setup</li>
+              <li>Hard drive upgrades and file structure setup</li>
+              <li>XBMC4Gamers configured as main dash</li>
+              <li>Apps, artwork, and supporting files installed</li>
+              <li>Modchip installs when appropriate</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>Rescue work</h3>
+            <ul>
+              <li>Mail-in repair and recovery work</li>
+              <li>Reviving unstable or dead systems</li>
+              <li>Helping owners understand what they actually need</li>
+              <li>Separating real problems from self-inflicted ones</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="adoption">
+      <div class="wrap adoption">
+        <div class="panel">
+          <div class="section-head">
+            <h2>The adoption philosophy</h2>
+          </div>
+          <p>
+            I do not think of these consoles as generic used electronics. Most of them arrive neglected, dirty, damaged, or one bad capacitor away from the grave. I restore them properly and place them carefully.
+          </p>
+          <p>
+            So yes, I almost do think of these Xboxes like little gremlin babies that need homes. Which also means I am not handing one off to the first random guy who slides into my messages with “how much.”
+          </p>
+          <p class="quote">
+            You are not buying a brand new console. You are adopting a 20+ year old modified machine. That means more capability, but also more responsibility.
+          </p>
+          <p class="muted">
+            If you change settings randomly, use bad adapters, ignore your network setup, or decide to freestyle your way through technical stuff you do not understand, that is not on me.
+          </p>
+        </div>
+
+        <div class="panel">
+          <h3>How this works</h3>
+          <div class="steps">
+            <div class="step">
+              Read the site first so you understand what these systems are, what they are not, and why there is no one-size-fits-all price.
+            </div>
+            <div class="step">
+              Fill out the adoption application so I know who you are, what you want, and whether your setup makes sense.
+            </div>
+            <div class="step">
+              If it looks like a fit, I will follow up directly and we can talk through hardware, accessories, upgrades, and timing.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hardware">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Hardware and accessories</h2>
+          <p class="muted">Some people need a working console. Some need the right supporting hardware. Some need both.</p>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <h3>Systems and upgrades</h3>
+            <p>Storage size, parts quality, repair needs, and configuration all affect pricing. The original Xbox shipped with an 8GB hard drive. If you want a useful modern setup, that means a hard drive upgrade, SATA to IDE adapter, and 80-wire cable at minimum.</p>
+            <p class="muted">No, it does not become cheap just because you only want two games.</p>
+          </div>
+          <div class="panel">
+            <h3>Recommended accessories</h3>
+            <p>Not all HDMI adapters are equal. Not all controller solutions are equal. I am selective about what I recommend and what I am willing to put my name next to.</p>
+            <ul>
+              <li>Electron Shepherd XOUT</li>
+              <li>OGX Mini / Bluetooth controller options</li>
+              <li>OEM controller setups</li>
+              <li>Repair and rescue work</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="guides">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Guides and support</h2>
+          <p class="muted">The goal is to answer the common questions before they become support messages.</p>
+        </div>
+        <div class="grid-3">
+          <div class="panel">
+            <h3>Quick Start Guide</h3>
+            <p>What to expect when your Xbox arrives, how to hook it up, and how to actually play it without immediately breaking something.</p>
+            <p><a href="#">REPLACE_ME: Add guide link</a></p>
+          </div>
+          <div class="panel">
+            <h3>Networking and online play</h3>
+            <p>Ethernet basics, Insignia expectations, and why your ISP and router choices are not magically the Xbox’s fault.</p>
+            <p><a href="#">REPLACE_ME: Add guide link</a></p>
+          </div>
+          <div class="panel">
+            <h3>Video output and HDMI</h3>
+            <p>Composite, component, HDMI conversion, tradeoffs, and why cheap adapters usually look exactly like what they cost.</p>
+            <p><a href="#">REPLACE_ME: Add guide link</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq">
+      <div class="wrap faq">
+        <div class="section-head">
+          <h2>Frequently asked questions</h2>
+        </div>
+        <details>
+          <summary>How much is an Xbox?</summary>
+          <p>There is no universal flat price. Each build depends on the system itself, the parts it needs, the storage size, the labor involved, and what you actually want it to do.</p>
+        </details>
+        <details>
+          <summary>Do these have Wi-Fi?</summary>
+          <p>No. The original Xbox uses Ethernet. Wired is best. Weird laptop bridging and improvised workarounds are your choice, but not something I guarantee or support as if I built your home network.</p>
+        </details>
+        <details>
+          <summary>Can I just use any HDMI adapter?</summary>
+          <p>You can. You can also buy gas station sushi. The question is whether that was a good idea. The Xbox outputs analog video, so any HDMI solution is doing signal conversion. Quality varies a lot.</p>
+        </details>
+        <details>
+          <summary>Do you offer ongoing support?</summary>
+          <p>I help where it makes sense, but I am not unlimited remote tech support for TVs, routers, XLink Kai edge cases, or settings someone changed without understanding them.</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="apply">
+      <div class="wrap">
+        <div class="cta">
+          <h2>Would you like to know more?</h2>
+          <p>
+            Start with the application. Tell me what kind of setup you want, what your current equipment is, and how much hand-holding you are likely to need.
+          </p>
+          <div class="button-row" style="justify-content:center;">
+            <a class="btn" href="adoption-application.html">Open the adoption application</a>
+            <a class="btn secondary" href="#guides">Read the guides first</a>
+          </div>
+          <p class="tiny" style="margin-top:14px;">REPLACE_ME if needed: this button currently points to <strong>adoption-application.html</strong></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div>
+        <div class="brand" style="font-size:22px;">MeatMan Mods</div>
+        <p class="tiny">Restored original Xbox systems, modifications, repair work, curated accessories, and guides for people who actually want to use the hardware.</p>
+      </div>
+      <div>
+        <p class="tiny">REPLACE_ME: add your preferred email or Discord contact here</p>
+        <p class="tiny">Domain: meatmanmods.com</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
