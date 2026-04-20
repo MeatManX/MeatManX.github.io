@@ -2,48 +2,65 @@
 <html lang="en">
 <head>
   <!--
-    ==========================================================
-    MEATMAN MODS - LANDING PAGE
-    ==========================================================
-    WHAT THIS FILE IS:
-    - This is a single-file homepage for your GitHub Pages site.
-    - Save this as: index.html
+    ============================================================
+    MEATMAN MODS — MAIN SITE (index.html)
+    ============================================================
 
-    WHAT TO EDIT BEFORE GOING LIVE:
-    - Search for: REPLACE_ME
-    - Search for: [INSERT IMAGE ...]
-    - Search for: Add guide link
-    - Search for: adoption-application.html
+    HOW COMMENTS WORK IN THIS FILE:
+    Anything between  <!-- and -->  is a comment.
+    Comments are invisible to visitors. They only show when
+    you open the file in a text editor. Never appear on the page.
 
-    HOW THIS PAGE WORKS:
-    - The top navigation links jump to sections on the same page.
-    - The "Open the adoption application" button links to a second HTML page.
-    - All styling is built into this file in the <style> section below.
+    WHAT IS SAFE TO EDIT:
+    - Any visible text in the body (headings, paragraphs, list items,
+      button labels, nav links, footer text, FAQ answers, stat blocks)
 
-    SAFE TO CHANGE:
-    - Any visible text in the body
-    - Colors in :root
-    - Button labels
-    - Section titles
-    - Footer info
+    WHAT TO LEAVE ALONE UNLESS YOU KNOW WHAT YOU ARE DOING:
+    - Anything inside  <style> ... </style>  (controls appearance)
+    - The  id="..."  values on sections — the nav links depend on them
+      (e.g. id="guides" is what  href="#guides"  in the nav points to)
+    - class="..." values unless you also update the CSS to match
 
-    BE CAREFUL CHANGING:
-    - id values like id="guides" or id="apply" because nav links depend on them
-    - class names if you do not also update the CSS
+    QUICK REFERENCE — WHERE THINGS ARE IN THIS FILE:
+    1. Top strip (thin bar above the header)
+    2. Header / navigation bar
+    3. Hero section (first big section visitors see)
+    4. What I Do section
+    5. Adoption Philosophy section
+    6. Hardware and Accessories section
+    7. Networking section
+    8. Guides section
+    9. FAQ section
+    10. Apply / Call to Action section
+    11. Footer
+    ============================================================
   -->
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- PAGE TITLE — shows in the browser tab and in search results -->
   <title>MeatMan Mods</title>
+
+  <!--
+    META DESCRIPTION — the text that appears under your site name
+    in Google search results. Edit the content="..." value.
+  -->
   <meta name="description" content="Restored and modified original Xbox systems, accessories, repair work, and setup guidance from MeatMan Mods." />
 
   <style>
     /*
-      ==========================================================
-      SECTION: GLOBAL THEME VARIABLES
-      ----------------------------------------------------------
-      Change these if you want to adjust the entire site's colors.
-      ==========================================================
+      ============================================================
+      GLOBAL THEME VARIABLES
+      ------------------------------------------------------------
+      These are the site-wide color values.
+      Change a value here and it updates everywhere that color is used.
+      --bg         = main page background
+      --green      = standard green accent
+      --green-bright = bright green used for headings and highlights
+      --text       = main body text color
+      --muted      = dimmer secondary text color
+      ============================================================
     */
     :root {
       --bg: #0b0f0b;
@@ -58,16 +75,14 @@
       --max: 1100px;
     }
 
-    /* Basic reset */
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
     /*
-      ==========================================================
-      SECTION: BASE PAGE STYLING
-      ----------------------------------------------------------
+      ============================================================
+      BASE PAGE STYLING
       Controls the full page background, body font, and default text.
-      ==========================================================
+      ============================================================
     */
     body {
       margin: 0;
@@ -88,19 +103,16 @@
       text-decoration: underline;
     }
 
-    /* Shared width container used throughout page */
     .wrap {
       width: min(calc(100% - 32px), var(--max));
       margin: 0 auto;
     }
 
     /*
-      ==========================================================
-      SECTION: TOP STRIP
-      ----------------------------------------------------------
-      Thin bar above the header.
-      Good place for short status text or brand tone.
-      ==========================================================
+      ============================================================
+      TOP STRIP
+      Thin bar above the main header.
+      ============================================================
     */
     .top-strip {
       background: #000;
@@ -118,13 +130,11 @@
     }
 
     /*
-      ==========================================================
-      SECTION: STICKY HEADER + NAVIGATION
-      ----------------------------------------------------------
-      This stays at the top while scrolling.
-      The nav links depend on matching section ids in the body.
-      Example: href="#guides" jumps to id="guides"
-      ==========================================================
+      ============================================================
+      STICKY HEADER + NAVIGATION
+      Stays at the top while scrolling.
+      Nav links use href="#sectionid" to jump to sections below.
+      ============================================================
     */
     header {
       border-bottom: 1px solid var(--line);
@@ -177,13 +187,12 @@
     }
 
     /*
-      ==========================================================
-      SECTION: HERO
-      ----------------------------------------------------------
-      This is the first major section visitors see.
-      Left side = main message and buttons
-      Right side = image slot and supporting text
-      ==========================================================
+      ============================================================
+      HERO SECTION
+      First major section visitors see.
+      Left card = main message and buttons.
+      Right card = image slot and supporting text.
+      ============================================================
     */
     .hero {
       padding: 72px 0 56px;
@@ -250,7 +259,11 @@
       max-width: 62ch;
     }
 
-    /* Buttons used throughout page */
+    /*
+      BUTTONS
+      .btn = main green button
+      .btn.secondary = outlined/dark secondary button
+    */
     .button-row {
       display: flex;
       flex-wrap: wrap;
@@ -284,15 +297,9 @@
     }
 
     /*
-      ==========================================================
-      SECTION: IMAGE SLOT PLACEHOLDER
-      ----------------------------------------------------------
-      Replace this entire block later with a real image if you want.
-      Easiest method:
-      1. Put an image file in your repo, like images/hero-xbox.jpg
-      2. Replace the placeholder div with:
-         <img src="images/hero-xbox.jpg" alt="Restored original Xbox" style="width:100%; display:block;" />
-      ==========================================================
+      IMAGE SLOT PLACEHOLDER
+      Replace with a real <img> tag when you have a photo.
+      See the comment in the body HTML below for instructions.
     */
     .image-slot {
       min-height: 240px;
@@ -308,7 +315,7 @@
       font-size: 13px;
     }
 
-    /* Hero stat blocks */
+    /* Stat blocks in the hero section */
     .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -338,7 +345,7 @@
       max-width: 72ch;
     }
 
-    /* Reusable grid layouts */
+    /* Grid layouts used throughout the page */
     .grid-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -351,6 +358,7 @@
       gap: 18px;
     }
 
+    /* Panel box — dark bordered box used throughout sections */
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -365,13 +373,14 @@
 
     .panel li { margin-bottom: 8px; }
 
-    /* Adoption section specific layout */
+    /* Adoption section uses a two-column panel layout */
     .adoption {
       display: grid;
       grid-template-columns: 1.05fr 0.95fr;
       gap: 18px;
     }
 
+    /* Pull quote with left green border */
     .quote {
       border-left: 4px solid #5f8d5f;
       padding-left: 14px;
@@ -379,7 +388,7 @@
       margin-top: 16px;
     }
 
-    /* Numbered steps in process section */
+    /* Numbered step boxes — numbers are auto-generated by CSS counter */
     .steps {
       counter-reset: step;
       display: grid;
@@ -410,7 +419,7 @@
       background: #101610;
     }
 
-    /* FAQ accordion */
+    /* FAQ accordion — uses native HTML <details> and <summary> elements */
     .faq details {
       border: 1px solid var(--line);
       background: var(--panel);
@@ -429,7 +438,7 @@
       color: var(--text);
     }
 
-    /* Final call-to-action box */
+    /* Call to action box at the bottom of the page */
     .cta {
       padding: 28px;
       text-align: center;
@@ -459,11 +468,10 @@
     }
 
     /*
-      ==========================================================
-      SECTION: MOBILE RESPONSIVE RULES
-      ----------------------------------------------------------
-      When the screen gets narrow, this stacks the columns.
-      ==========================================================
+      ============================================================
+      MOBILE RESPONSIVE RULES
+      When the screen is narrow, columns stack vertically.
+      ============================================================
     */
     @media (max-width: 900px) {
       .hero-grid,
@@ -494,13 +502,36 @@
   </style>
 </head>
 <body>
+
+  <!--
+    ============================================================
+    1. TOP STRIP
+    The thin black bar at the very top of the page.
+    Two pieces of text — left side and right side.
+    Edit either piece of text freely.
+    ============================================================
+  -->
   <div class="top-strip">
     <div class="wrap">
-      <div>Restored original Xbox systems, repairs, upgrades, and accessories.</div>
-      <div>Read first. Then message me.</div>
+      <div>Restored original Xbox systems. Not for everyone. Probably not for you.</div>
+      <div>Read the whole damn page first.</div>
     </div>
   </div>
 
+  <!--
+    ============================================================
+    2. HEADER / NAVIGATION BAR
+    Stays fixed at the top while scrolling.
+
+    BRAND NAME: edit the text inside <div class="brand"> — the big
+    name — and the <small> tag beneath it for the tagline.
+
+    NAV LINKS: each <li><a href="#sectionid">Label</a></li> is one
+    nav link. The href="#..." must match the id="..." on the section
+    it points to below. Do not change the href values unless you
+    also change the matching id on the section.
+    ============================================================
+  -->
   <header>
     <div class="wrap nav">
       <div class="brand">
@@ -521,228 +552,492 @@
   </header>
 
   <main>
+
+    <!--
+      ============================================================
+      3. HERO SECTION — first thing visitors see
+      ============================================================
+      LEFT CARD (hero-main):
+      - eyebrow: the small all-caps label above the headline
+      - h1: the main headline
+      - hero-copy paragraphs: the body text beneath the headline
+      - button-row: the two buttons (primary and secondary)
+      - stats: three stat blocks at the bottom of the left card
+
+      RIGHT CARD (hero-side):
+      - image-slot: placeholder for a photo — see instructions below
+      - h3 + paragraph: the supporting text beneath the image
+
+      ADDING A REAL IMAGE:
+      When you have a photo, replace this entire div:
+        <div class="image-slot">...</div>
+      with this:
+        <img src="images/your-photo.jpg" alt="Description" style="width:100%; display:block;" />
+      Put the image file in an  images/  folder in your repo.
+      ============================================================
+    -->
     <section class="hero">
       <div class="wrap hero-grid">
+
+        <!-- Left card: main message -->
         <div class="card hero-main">
-          <div class="eyebrow">Restored. Modified. Rehomed.</div>
-          <h1>Original Xbox systems, brought back from the dead and put back to work.</h1>
+
+          <!-- Small label above the headline — all caps, edit freely -->
+          <div class="eyebrow">Rescued. Rebuilt. Rehomed. Reluctantly.</div>
+
+          <!-- Main headline -->
+          <h1>Original Xbox systems dragged back from the dead. You had better deserve one.</h1>
+
+          <!-- First body paragraph beneath the headline -->
           <p class="hero-copy">
-            I restore, modify, test, and rehome original Microsoft Xbox consoles. These are not random flip jobs and they are not mass-produced builds. Each system is inspected, cleaned, repaired where needed, and configured with long-term use in mind.
+            I find the worst ones on purpose. Broken, filthy, neglected, capacitor-bombed, abandoned. The kind of Xbox that was on its way to a landfill or a garage sale bin. I bring them back. Then I make you prove you are worth handing one to.
           </p>
+
+          <!-- Second body paragraph — uses .muted for slightly dimmer colour -->
           <p class="hero-copy muted">
-            If you want a brand new plug-and-play appliance, this is not that. If you want an original Xbox that has been brought back properly and set up by someone who actually uses this stuff, you are in the right place.
+            If you want a brand new plug-and-play appliance, get out. If you want a machine that has been through something, that has a history, that was broken and is now better than it was the day it left the factory — and if you are willing to put in the minimum effort required to not immediately destroy it — keep reading.
           </p>
+
+          <!--
+            BUTTONS
+            The first button is the primary action (solid green).
+            The second has class="btn secondary" for the outlined style.
+            Edit the text between <a ...> and </a> to change button labels.
+            Edit href="#apply" or href="#guides" to change where they go.
+          -->
           <div class="button-row">
-            <a class="btn" href="#apply">Would you like to know more?</a>
-            <a class="btn secondary" href="#guides">Read the guides first</a>
+            <a class="btn" href="#apply">Think you qualify? Prove it.</a>
+            <a class="btn secondary" href="#guides">Read the guides first (you won't)</a>
           </div>
+
+          <!--
+            STAT BLOCKS — three small boxes at the bottom of the left card.
+            Each .stat has a <strong> for the bold headline and then body text.
+            Edit the <strong> text and the paragraph text freely.
+          -->
           <div class="stats">
             <div class="stat">
               <strong>20+ years old</strong>
-              These systems are aging hardware, not disposable toys.
+              These machines have already survived more than you. Show some respect.
             </div>
             <div class="stat">
-              <strong>Built case by case</strong>
-              No flat pricing. No copy-paste builds.
+              <strong>No flat pricing</strong>
+              Every build is different. "How much for a quick Xbox" is not a real question.
             </div>
             <div class="stat">
-              <strong>Support starts with reading</strong>
-              I help where I can, but I am not your router’s therapist.
+              <strong>Support has limits</strong>
+              I will help where I can. I am not responsible for your router, your TV, or your decisions.
             </div>
           </div>
         </div>
 
+        <!-- Right card: image + supporting text -->
         <div class="card hero-side">
+
+          <!--
+            IMAGE PLACEHOLDER — replace this div with an <img> tag when ready.
+            To replace: delete the entire <div class="image-slot">...</div>
+            and paste:  <img src="images/yourphoto.jpg" alt="Restored Xbox" style="width:100%; display:block;" />
+          -->
           <div class="image-slot">[INSERT IMAGE: restored Xbox, packaging shot, or Xbox in a crib if you want to commit to the bit]</div>
+
+          <!-- Supporting text beneath the image -->
           <div>
-            <h3>What you can expect</h3>
-            <p class="muted">Cleaned systems, known failure points addressed, dashboard configured, networking tested, and direct answers about what makes sense and what is a waste of money.</p>
+            <h3>What these machines actually are</h3>
+            <p class="muted">Beat up on the outside. Rebuilt on the inside. Cleaned, repaired, recapped where needed, configured properly, and tested before they go anywhere. They are not pretty. They have scars. That is the point.</p>
           </div>
+
         </div>
       </div>
     </section>
 
+    <!--
+      ============================================================
+      4. WHAT I DO SECTION
+      ============================================================
+      id="what-i-do" — this is what the nav link href="#what-i-do" points to.
+      Do not change the id unless you also update the nav link.
+
+      section-head: the h2 title and subtitle paragraph for this section.
+      grid-3: three panel boxes side by side.
+
+      Each panel has an h3 title and a <ul> list.
+      Edit the h3 and the <li> items freely.
+      To add a list item: copy a <li> line, paste it, change the text.
+      To remove one: delete the <li> line.
+      ============================================================
+    -->
     <section id="what-i-do">
       <div class="wrap">
+
+        <!-- Section heading and subtitle -->
         <div class="section-head">
           <h2>What I do</h2>
-          <p class="muted">I work on original Xbox hardware, not vague nostalgia. Here is what that actually means.</p>
+          <p class="muted">I work on original Xbox hardware. Here is exactly what that means, because apparently people need it spelled out.</p>
         </div>
+
+        <!-- Three panel boxes — edit h3 titles and list items freely -->
         <div class="grid-3">
+
           <div class="panel">
             <h3>Restoration</h3>
             <ul>
-              <li>Full cleaning and inspection</li>
-              <li>Clock capacitor removal or replacement</li>
-              <li>Capacitor checks and repair where needed</li>
-              <li>Fresh thermal paste</li>
-              <li>General health check before release</li>
+              <li>Full teardown, cleaning, and inspection</li>
+              <li>Clock capacitor removal — non-negotiable, it will explode otherwise</li>
+              <li>Capacitor inspection and replacement where needed</li>
+              <li>Fresh thermal paste, because the original dried up twenty years ago</li>
+              <li>General health check before the machine goes anywhere</li>
             </ul>
           </div>
+
           <div class="panel">
             <h3>Modification</h3>
             <ul>
-              <li>Softmod installs and dashboard setup</li>
-              <li>Hard drive upgrades and file structure setup</li>
-              <li>XBMC4Gamers configured as main dash</li>
+              <li>Softmod installs and dashboard configuration</li>
+              <li>Hard drive upgrades with proper file structure</li>
+              <li>XBMC4Gamers set up as the main dashboard</li>
               <li>Apps, artwork, and supporting files installed</li>
-              <li>Modchip installs when appropriate</li>
+              <li>Modchip installs when the situation calls for it</li>
             </ul>
           </div>
+
           <div class="panel">
             <h3>Rescue work</h3>
             <ul>
-              <li>Mail-in repair and recovery work</li>
-              <li>Reviving unstable or dead systems</li>
-              <li>Helping owners understand what they actually need</li>
-              <li>Separating real problems from self-inflicted ones</li>
+              <li>Mail-in repair and system recovery</li>
+              <li>Reviving consoles that others gave up on</li>
+              <li>Diagnosing what is actually wrong versus what you think is wrong</li>
+              <li>Cleaning up damage from people who thought they knew what they were doing</li>
             </ul>
           </div>
+
         </div>
       </div>
     </section>
 
+    <!--
+      ============================================================
+      5. ADOPTION PHILOSOPHY SECTION
+      ============================================================
+      id="adoption" — matched by the nav link href="#adoption".
+
+      Left panel: paragraphs and a pull quote (<p class="quote">).
+      Right panel: h3 title and numbered step boxes.
+
+      The steps are inside <div class="step"> — the numbers are
+      generated automatically by CSS, so do not add them manually.
+      Just edit the text inside each .step div.
+
+      To add a step: copy a <div class="step">...</div> block and paste it.
+      To remove a step: delete the entire <div class="step">...</div> block.
+      ============================================================
+    -->
     <section id="adoption">
       <div class="wrap adoption">
+
+        <!-- Left panel: philosophy text -->
         <div class="panel">
           <div class="section-head">
             <h2>The adoption philosophy</h2>
           </div>
+
+          <!-- Body paragraphs — edit freely -->
           <p>
-            I do not think of these consoles as generic used electronics. Most of them arrive neglected, dirty, damaged, or one bad capacitor away from the grave. I restore them properly and place them carefully.
+            I seek out the worst of the worst on purpose. The ones that look like they lost a fight. The ones with melted capacitors, stripped screws, mystery stickers, and hard drives that haven't spun up since the Bush administration. I find those specifically because nobody else wants them, and I think that is a character flaw on everyone else's part.
           </p>
           <p>
-            So yes, I almost do think of these Xboxes like little gremlin babies that need homes. Which also means I am not handing one off to the first random guy who slides into my messages with “how much.”
+            So yes. These are my babies. Broken little gremlin babies that I nursed back to health. That means I am not handing one off to the first random person who sends me "yo how much" with zero context. You will fill out the application. You will answer the questions honestly. I will decide if you are ready.
           </p>
+
+          <!-- Pull quote — the green left-bordered highlighted line -->
           <p class="quote">
-            You are not buying a brand new console. You are adopting a 20+ year old modified machine. That means more capability, but also more responsibility.
+            You are not buying a new console. You are adopting a 20-year-old modified machine with a history. More capable than stock. More responsibility than a retail box. If that scares you, the door is behind you.
           </p>
+
+          <!-- Muted paragraph — slightly dimmer colour -->
           <p class="muted">
-            If you change settings randomly, use bad adapters, ignore your network setup, or decide to freestyle your way through technical stuff you do not understand, that is not on me.
+            If you randomly change settings you do not understand, use a garbage HDMI adapter because it was cheaper, ignore the networking guide, or freestyle your way through the file structure and corrupt something — that is entirely on you. These machines can take abuse. What they cannot take is careless owners who assume it will all just work itself out.
           </p>
         </div>
 
+        <!-- Right panel: process steps -->
         <div class="panel">
           <h3>How this works</h3>
           <div class="steps">
+            <!-- Each .step div gets an auto-numbered circle from CSS -->
             <div class="step">
-              Read the site first so you understand what these systems are, what they are not, and why there is no one-size-fits-all price.
+              Read this entire site. Not skim it. Read it. The guides exist because these questions have been answered already. If you message me something covered here, that is not a good start.
             </div>
             <div class="step">
-              Fill out the adoption application so I know who you are, what you want, and whether your setup makes sense.
+              Fill out the adoption application. Tell me about your setup, your expectations, your technical ability, and why you actually want one of these. "I think it would be cool" is not an answer.
             </div>
             <div class="step">
-              If it looks like a fit, I will follow up directly and we can talk through hardware, accessories, upgrades, and timing.
+              If your application does not immediately disqualify you, I will follow up. We will talk hardware, accessories, storage, timing, and whether your router situation is going to be a problem before it becomes my problem.
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
+    <!--
+      ============================================================
+      6. HARDWARE AND ACCESSORIES SECTION
+      ============================================================
+      id="hardware" — matched by the nav link href="#hardware".
+
+      Two panel boxes side by side (grid-2).
+      Edit h3 titles, paragraphs, and list items freely.
+      ============================================================
+    -->
     <section id="hardware">
       <div class="wrap">
+
         <div class="section-head">
           <h2>Hardware and accessories</h2>
-          <p class="muted">Some people need a working console. Some need the right supporting hardware. Some need both.</p>
+          <p class="muted">There is no cheap version of doing this correctly. If that is a dealbreaker, that is also information.</p>
         </div>
+
         <div class="grid-2">
+
           <div class="panel">
             <h3>Systems and upgrades</h3>
-            <p>Storage size, parts quality, repair needs, and configuration all affect pricing. The original Xbox shipped with an 8GB hard drive. If you want a useful modern setup, that means a hard drive upgrade, SATA to IDE adapter, and 80-wire cable at minimum.</p>
-            <p class="muted">No, it does not become cheap just because you only want two games.</p>
+            <p>The original Xbox shipped with an 8GB hard drive. That is not enough to do anything interesting with. A proper modern setup means a hard drive upgrade, a SATA to IDE adapter, and an 80-wire cable at minimum. Storage size, parts quality, revision of the board, and the amount of work the machine needed all factor into what something costs.</p>
+            <p class="muted">No, it does not get cheaper because you only want two games. The labor is the same either way.</p>
           </div>
+
           <div class="panel">
-            <h3>Recommended accessories</h3>
-            <p>Not all HDMI adapters are equal. Not all controller solutions are equal. I am selective about what I recommend and what I am willing to put my name next to.</p>
+            <h3>Accessories I will actually recommend</h3>
+            <p>Not all HDMI adapters are equal. Some are acceptable. Some are an insult to the hardware. I am selective about what I put my name next to, because I will be the one hearing about it when your cheap adapter introduces input lag and you decide that is somehow the Xbox's fault.</p>
             <ul>
-              <li>Electron Shepherd XOUT</li>
-              <li>OGX Mini / Bluetooth controller options</li>
-              <li>OEM controller setups</li>
-              <li>Repair and rescue work</li>
+              <li>Electron Shepherd XOUT — the HDMI solution I recommend</li>
+              <li>OGX Mini / Bluetooth controller options for modern controller support</li>
+              <li>OEM original controllers when you want to do it right</li>
+              <li>Component cables for CRT setups — still the correct answer in that situation</li>
             </ul>
           </div>
+
         </div>
       </div>
     </section>
 
+    <!--
+      ============================================================
+      7. NETWORKING SECTION
+      ============================================================
+      id="networking" — not currently in the nav, but could be added.
+      To add it to nav: add  <li><a href="#networking">Networking</a></li>
+      inside the nav <ul>.
+
+      Two panel boxes side by side (grid-2).
+      Edit paragraphs freely.
+      ============================================================
+    -->
+    <section id="networking">
+      <div class="wrap">
+
+        <div class="section-head">
+          <h2>The networking situation</h2>
+          <p class="muted">This is where most people embarrass themselves. Read it.</p>
+        </div>
+
+        <div class="grid-2">
+
+          <div class="panel">
+            <h3>The original Xbox does not have Wi-Fi</h3>
+            <p>It never did. It uses Ethernet. That means a physical cable from the Xbox to your router or switch. If your router is on a different floor of your house, that is your problem to solve before you contact me, not after the Xbox arrives.</p>
+            <p class="muted">Powerline adapters, MoCA adapters, and a long Ethernet cable are all valid options. Laptop bridging through a shared Windows connection is not something I will guarantee or support.</p>
+          </div>
+
+          <div class="panel">
+            <h3>Modern router and modem combos are a known problem</h3>
+            <p>A lot of current all-in-one ISP-provided modem/router combos do not play nicely with the original Xbox — particularly for Insignia online play. This is not the Xbox being difficult. This is 2003 networking meeting 2024 equipment that was not designed with it in mind.</p>
+            <p class="muted">You may need to access your router's admin settings, adjust NAT behavior, or put the Xbox in a DMZ. If you do not know what any of that means, say so on the application. That is not disqualifying. Pretending you know and then asking me why Insignia does not work is.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!--
+      ============================================================
+      8. GUIDES SECTION
+      ============================================================
+      id="guides" — matched by the nav link href="#guides".
+
+      Three panel boxes (grid-3). Each has an h3 title, a paragraph,
+      and a link. Replace the href="#" with actual guide URLs when ready.
+      The REPLACE_ME text next to the link is a reminder — delete it
+      once you have added a real link.
+      ============================================================
+    -->
     <section id="guides">
       <div class="wrap">
+
         <div class="section-head">
           <h2>Guides and support</h2>
-          <p class="muted">The goal is to answer the common questions before they become support messages.</p>
+          <p class="muted">These exist so you do not have to ask me things that are already written down. Use them.</p>
         </div>
+
         <div class="grid-3">
+
           <div class="panel">
             <h3>Quick Start Guide</h3>
-            <p>What to expect when your Xbox arrives, how to hook it up, and how to actually play it without immediately breaking something.</p>
+            <p>What to do when your Xbox arrives, how to connect it without making a mess of it, and how to actually use the dashboard without wandering into something you should not touch.</p>
+            <!-- Replace the # with your actual guide URL when you have one -->
             <p><a href="#">REPLACE_ME: Add guide link</a></p>
           </div>
+
           <div class="panel">
-            <h3>Networking and online play</h3>
-            <p>Ethernet basics, Insignia expectations, and why your ISP and router choices are not magically the Xbox’s fault.</p>
+            <h3>Networking and Insignia</h3>
+            <p>Ethernet setup, Insignia expectations, what your router might be doing to cause problems, and why "it won't connect" is not enough information for me to help you.</p>
             <p><a href="#">REPLACE_ME: Add guide link</a></p>
           </div>
+
           <div class="panel">
             <h3>Video output and HDMI</h3>
-            <p>Composite, component, HDMI conversion, tradeoffs, and why cheap adapters usually look exactly like what they cost.</p>
+            <p>Composite versus component versus HDMI conversion, what each option actually looks like, what the tradeoffs are, and why the ten-dollar adapter you found is not a real solution.</p>
             <p><a href="#">REPLACE_ME: Add guide link</a></p>
           </div>
+
         </div>
       </div>
     </section>
 
+    <!--
+      ============================================================
+      9. FAQ SECTION
+      ============================================================
+      id="faq" — matched by the nav link href="#faq".
+
+      Each FAQ entry uses a <details> and <summary> tag pair.
+      <summary> = the clickable question line (click to expand)
+      <p> inside = the answer text that appears when expanded
+
+      To add a new FAQ entry: copy an entire <details>...</details>
+      block, paste it, and change the summary text and the <p> text.
+      To remove an entry: delete the entire <details>...</details> block.
+      ============================================================
+    -->
     <section id="faq">
       <div class="wrap faq">
+
         <div class="section-head">
           <h2>Frequently asked questions</h2>
         </div>
+
+        <!-- Each <details> block is one FAQ entry -->
+
         <details>
+          <!-- summary = the clickable question -->
           <summary>How much is an Xbox?</summary>
-          <p>There is no universal flat price. Each build depends on the system itself, the parts it needs, the storage size, the labor involved, and what you actually want it to do.</p>
+          <!-- The answer text inside -->
+          <p>There is no number I can give you right now. What it costs depends on the condition of the system I start with, what work it needs, what parts go into it, how much storage you want, and what configuration makes sense for your setup. Anyone selling modded original Xboxes at a flat rate is either cutting corners or lying to you. Possibly both.</p>
         </details>
+
         <details>
-          <summary>Do these have Wi-Fi?</summary>
-          <p>No. The original Xbox uses Ethernet. Wired is best. Weird laptop bridging and improvised workarounds are your choice, but not something I guarantee or support as if I built your home network.</p>
+          <summary>Does it have Wi-Fi?</summary>
+          <p>No. It is a 2001 console. It has an Ethernet port. Run a cable. If you absolutely cannot run a cable, read the networking guide and come to the application prepared to explain your situation honestly.</p>
         </details>
+
         <details>
-          <summary>Can I just use any HDMI adapter?</summary>
-          <p>You can. You can also buy gas station sushi. The question is whether that was a good idea. The Xbox outputs analog video, so any HDMI solution is doing signal conversion. Quality varies a lot.</p>
+          <summary>Can I use any HDMI adapter?</summary>
+          <p>Technically yes. You can also put regular gas in a diesel engine and see what happens. The original Xbox outputs analog video. Every HDMI solution is doing signal conversion. The quality of that conversion varies dramatically. I recommend the Electron Shepherd XOUT. What you do with that information is your business.</p>
         </details>
+
         <details>
-          <summary>Do you offer ongoing support?</summary>
-          <p>I help where it makes sense, but I am not unlimited remote tech support for TVs, routers, XLink Kai edge cases, or settings someone changed without understanding them.</p>
+          <summary>Will you help me if something goes wrong?</summary>
+          <p>Within reason. I will help with issues that are actually the Xbox's fault. I will not troubleshoot your ISP, diagnose your router firmware, or figure out why you changed a video setting you did not understand and now have no picture. Read the guides. If the problem is still clearly the hardware, reach out.</p>
         </details>
+
+        <details>
+          <summary>These look beat up. Is that a problem?</summary>
+          <p>That is the whole point. I specifically look for the worst ones. The ones nobody else wanted. The shells have scratches, scuffs, missing stickers, mystery marks, and whatever else twenty-plus years of existence leaves behind. The insides are rebuilt. The outside tells a story. If you want something that looks factory fresh, buy something factory fresh. That is not what this is.</p>
+        </details>
+
+        <details>
+          <summary>Can I just message you instead of filling out the application?</summary>
+          <p>You can message me. I will send you the link to the application. Fill it out.</p>
+        </details>
+
       </div>
     </section>
 
+    <!--
+      ============================================================
+      10. APPLY / CALL TO ACTION SECTION
+      ============================================================
+      id="apply" — matched by the nav link href="#apply" and by
+      the buttons throughout the page that say href="#apply".
+
+      Edit the h2, the two <p> paragraphs, and the button text freely.
+
+      The first button links to adoption-application.html.
+      If you rename the application file, update that href too.
+      ============================================================
+    -->
     <section id="apply">
       <div class="wrap">
         <div class="cta">
-          <h2>Would you like to know more?</h2>
+
+          <!-- CTA headline -->
+          <h2>Think you are ready?</h2>
+
+          <!-- CTA body paragraphs -->
           <p>
-            Start with the application. Tell me what kind of setup you want, what your current equipment is, and how much hand-holding you are likely to need.
+            Fill out the adoption application. Tell me about your setup, your expectations, and your actual technical ability. Be honest. I would rather know you need help up front than find out after something breaks.
           </p>
+          <p class="muted">
+            Completing this form does not guarantee anything. It means I will look at your answers and decide whether to follow up.
+          </p>
+
+          <!--
+            CTA BUTTONS
+            First button links to the application form file.
+            Second is a secondary link back to the guides section.
+            Edit button label text freely.
+          -->
           <div class="button-row" style="justify-content:center;">
             <a class="btn" href="adoption-application.html">Open the adoption application</a>
             <a class="btn secondary" href="#guides">Read the guides first</a>
           </div>
-          <p class="tiny" style="margin-top:14px;">REPLACE_ME if needed: this button currently points to <strong>adoption-application.html</strong></p>
+
         </div>
       </div>
     </section>
+
   </main>
 
+  <!--
+    ============================================================
+    11. FOOTER
+    ============================================================
+    Two columns: left side has brand name + description,
+    right side has contact info and domain.
+
+    REPLACE_ME lines: fill in your actual email or Discord and
+    delete the REPLACE_ME text when done.
+
+    Edit all text in the footer freely.
+    ============================================================
+  -->
   <footer>
     <div class="wrap footer-grid">
+
+      <!-- Left column: brand name and description -->
       <div>
         <div class="brand" style="font-size:22px;">MeatMan Mods</div>
-        <p class="tiny">Restored original Xbox systems, modifications, repair work, curated accessories, and guides for people who actually want to use the hardware.</p>
+        <p class="tiny">Restored original Xbox systems. Modified, tested, and placed with people who actually know what they are getting into. Or at least had the decency to read the application.</p>
       </div>
+
+      <!-- Right column: contact info — replace the REPLACE_ME text -->
       <div>
         <p class="tiny">REPLACE_ME: add your preferred email or Discord contact here</p>
         <p class="tiny">Domain: meatmanmods.com</p>
       </div>
+
     </div>
   </footer>
+
 </body>
 </html>
