@@ -61,38 +61,38 @@
       <p class="muted">Answer all five. Miss one or more and you go back to the start.</p>
       <form id="quiz-form">
         <fieldset class="question">
-          <legend>1. Which statement best matches the MeatMan approach?</legend>
-          <label><input type="radio" name="q1" value="a"> Sell the flashiest, most overbuilt setup possible to every buyer</label>
-          <label><input type="radio" name="q1" value="b"> Be honest about what people actually need, even if it means a smaller sale</label>
-          <label><input type="radio" name="q1" value="c"> Focus only on shell cosmetics and ignore the rest</label>
+          <legend>1. The original Xbox Ethernet port is rated at 10/100BASE-TX. What does that actually mean for your setup?</legend>
+          <label><input type="radio" name="q1" value="a"> It means the Xbox can use your full gigabit connection once plugged in</label>
+          <label><input type="radio" name="q1" value="b"> It means the Xbox tops out at 100mbps regardless of your router or internet plan, and real-world FTP speeds will be significantly lower than that</label>
+          <label><input type="radio" name="q1" value="c"> It means you need a special gigabit-compatible Ethernet cable</label>
         </fieldset>
 
         <fieldset class="question">
-          <legend>2. Why can a single Xbox build take 5–10 hours of real time?</legend>
-          <label><input type="radio" name="q2" value="a"> Because every build includes custom painting and laser engraving</label>
-          <label><input type="radio" name="q2" value="b"> Because restoration, setup, transfer speeds, scripts, testing, and retesting all take time</label>
-          <label><input type="radio" name="q2" value="c"> Because the console legally has to sit in quarantine for a week</label>
+          <legend>2. You get your Xbox and the picture looks soft and washed out on your flat panel TV. What is the most likely cause?</legend>
+          <label><input type="radio" name="q2" value="a"> The Xbox resolution is set too high for your TV</label>
+          <label><input type="radio" name="q2" value="b"> You are running composite video into either the TV directly or a cheap HDMI adapter that pulls composite instead of component</label>
+          <label><input type="radio" name="q2" value="c"> The HDMI cable between the adapter and TV is defective</label>
         </fieldset>
 
         <fieldset class="question">
-          <legend>3. Even if a DVD drive works, what is the recommended use?</legend>
-          <label><input type="radio" name="q3" value="a"> Use it as the main long-term way to play everything every day</label>
-          <label><input type="radio" name="q3" value="b"> Use it mostly to rip games to the hard drive, then play digitally</label>
-          <label><input type="radio" name="q3" value="c"> Never let the drive open under any circumstance</label>
+          <legend>3. Why is a direct Ethernet connection to your router the only networking setup MeatMan will help troubleshoot?</legend>
+          <label><input type="radio" name="q3" value="a"> Because powerline and MoCA adapters do not actually work with the original Xbox</label>
+          <label><input type="radio" name="q3" value="b"> Because alternatives like powerline or MoCA can work but introduce variables outside his control, and troubleshooting someone else's network workaround is not part of the deal</label>
+          <label><input type="radio" name="q3" value="c"> Because wired Ethernet is faster than any other option available</label>
         </fieldset>
 
         <fieldset class="question">
-          <legend>4. Why is there no truly cheap hard drive upgrade?</legend>
-          <label><input type="radio" name="q4" value="a"> Because the upgrade also needs parts like an 80-wire IDE cable and IDE-to-SATA adapter before the drive cost</label>
-          <label><input type="radio" name="q4" value="b"> Because every upgrade must use a rare gold-plated SSD</label>
-          <label><input type="radio" name="q4" value="c"> Because original Xboxes can only use brand-new enterprise drives</label>
+          <legend>4. A $3 USB cable that physically fits the original Xbox controller port will let you use a modern controller. True or false, and why?</legend>
+          <label><input type="radio" name="q4" value="a"> True — if the plug fits, the signal works</label>
+          <label><input type="radio" name="q4" value="b"> False — the Xbox uses a proprietary protocol, not USB, so a cable that fits the shape does nothing without an actual protocol translator between the two devices</label>
+          <label><input type="radio" name="q4" value="c"> True — the Xbox and modern controllers both use HID, so they are compatible natively</label>
         </fieldset>
 
         <fieldset class="question">
-          <legend>5. Which statement is actually true about using an original Xbox in a modern setup?</legend>
-          <label><input type="radio" name="q5" value="a"> It has native HDMI and Wi-Fi, so adapters are mostly optional</label>
-          <label><input type="radio" name="q5" value="b"> Modern TVs, networking, and controllers often need adapters or protocol translators</label>
-          <label><input type="radio" name="q5" value="c"> Any cable that physically fits the controller port will work fine</label>
+          <legend>5. Even if the DVD drive on your Xbox works fine, what is the recommended way to play your games?</legend>
+          <label><input type="radio" name="q5" value="a"> Always use the disc directly — it is the most authentic experience</label>
+          <label><input type="radio" name="q5" value="b"> Rip games to the hard drive and play digitally — use the DVD drive sparingly because 20-year-old optical drives are not getting younger</label>
+          <label><input type="radio" name="q5" value="c"> Stream games over FTP directly from a PC on the same network</label>
         </fieldset>
 
         <div class="button-row">
@@ -126,7 +126,7 @@
       }
       if (allCorrect) {
         result.className = 'pass';
-        result.innerHTML = '<strong>Accepted by the gate.</strong><p>You paid attention. You paid attention. You may proceed.</p><p><a href="adoption-application.html">Open the adoption application</a></p>';
+        result.innerHTML = '<strong>Accepted by the gate.</strong><p>You actually read it. You may proceed.</p><p><a href="adoption-application.html">Open the adoption application</a></p>';
       } else {
         result.className = 'fail';
         result.innerHTML = '<strong>Incorrect.</strong><p>You missed one or more questions. Go back to the start, read the tour again, and try again.</p><p><a href="index.html">Return to the homepage and start over</a></p>';
