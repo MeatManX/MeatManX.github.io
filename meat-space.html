@@ -12,7 +12,8 @@
     .main-container { width:800px; margin:20px auto; background-color:white; border:1px solid #6699cc; padding:15px; display:flex; justify-content:space-between; }
     .left-col { width:300px; }
     .profile-name { font-size:18px; font-weight:bold; margin-bottom:10px; }
-    .profile-pic { width:250px; height:300px; border:1px solid #000; background-color:#ccc; display:flex; align-items:center; justify-content:center; text-align:center; font-weight:bold; color:#444; margin-bottom:15px; }
+    .profile-pic { width:250px; height:300px; border:1px solid #000; background-color:#ccc; display:flex; align-items:center; justify-content:center; text-align:center; font-weight:bold; color:#444; margin-bottom:15px; overflow:hidden; }
+    .profile-pic img { width:100%; height:100%; object-fit:cover; display:block; }
     .mood-box { margin-bottom:20px; line-height:1.4; }
     .contact-box { border:2px solid #6699cc; margin-bottom:20px; }
     .box-header { background-color:#6699cc; color:white; padding:4px; font-weight:bold; font-size:12px; }
@@ -27,7 +28,8 @@
     .friends-count { margin:10px 0; font-weight:bold; }
     .friends-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; text-align:center; }
     .friend-box { width:100px; }
-    .friend-pic { width:80px; height:80px; background-color:#eee; border:1px solid #ccc; margin:0 auto 5px; }
+    .friend-pic { width:80px; height:80px; background-color:#eee; border:1px solid #ccc; margin:0 auto 5px; overflow:hidden; }
+    .friend-pic img { width:100%; height:100%; object-fit:cover; display:block; }
     .friend-name { color:#003399; font-weight:bold; text-decoration:none; }
     .comment-container { border:1px solid #ff9933; margin-top:10px; padding:5px; }
     .comment-header { background-color:#ffcc99; padding:3px; font-weight:bold; }
@@ -41,13 +43,7 @@
   <div class="main-container">
     <div class="left-col">
       <div class="profile-name">Meat Man</div>
-      <!--
-  PROFILE PHOTO PLACEHOLDER
-  Replace the text inside this box with an <img> tag when ready.
-  Example:
-  <img src="images/meatman-profile.jpg" alt="Meat Man holding an OG Xbox" style="width:100%; height:100%; object-fit:cover;">
--->
-      <div class="profile-pic">[ PHOTO OF MEAT MAN <br> HOLDING A SOLDER IRON <br> & AN OG XBOX ]</div>
+      <div class="profile-pic"><img src="Meatman.jpg" alt="Meat Man profile photo"></div>
       <div class="mood-box">
         "Mod it 'til it bleeds."<br>
         <strong>View My:</strong> <a href="#">Pics</a> | <a href="#">Videos</a><br>
@@ -67,24 +63,16 @@
         </div>
       </div>
       <div class="section-header">Meat Man's Interests</div>
-      <!--
-  INTERESTS BOX
-  Safe to edit the text in each paragraph below.
--->
       <div class="box-content" style="font-size: 10px;">
         <p><strong>General:</strong> Original Xbox restoration, softmods, dashboard setup, rescuing broken donor consoles, soldering, weird adapters, and giving ugly hardware a second life.</p>
-        <p><strong>Music:</strong> Mid-West Emo, Techno, industrial, Linkin Park.</p>
-        <p><strong>Movies:</strong> Hackers, Blade Runner, Jurassic Park, and anything with Bruce Campbell.</p>
-        <p><strong>Television:</strong> TechTV, GameTrailers.com, and Junkyard Wars.</p>
+        <p><strong>Music:</strong> Early 2000s chaos, metal, industrial, and whatever sounds like a montage with sparks in it.</p>
+        <p><strong>Movies:</strong> Hackers, Blade Runner, Jurassic Park, and anything with the energy of an unsafe training video.</p>
+        <p><strong>Television:</strong> TechTV, old gaming commercials, and documentaries about obsolete hardware that deserved better.</p>
       </div>
     </div>
     <div class="right-col">
       <div class="headline">"I don't sell pretty Xboxes. I rehabilitate delinquents."</div>
       <div class="section-header">Meat Man's Blurb</div>
-      <!--
-  MAIN BLURB
-  Safe to edit all text below.
--->
       <div class="blurb-text">
         <p class="bling">$$$WELCOME TO THE MEAT LOCKER$$$</p>
         <p>Yo, I'm <span class="orange-text">Meat Man</span>. I drag original Xbox consoles back from the dead, clean up the internals, pull bad caps when needed, swap storage, set up dashboards, and rehome the survivors to people who can handle them.</p>
@@ -94,27 +82,18 @@
       <p><strong>Who I'd like to meet:</strong><br>Gamers who actually use the hardware, modders with standards, and anybody who respects a machine with scars.</p>
       <div class="section-header">Meat Man's Friend Space</div>
       <div class="friends-count">Meat Man has <span class="orange-text">1337</span> Friends.</div>
-      <!--
-  FRIEND SPACE
-  Each friend box can be edited.
-  To add an image later, replace each .friend-pic div with an <img> tag.
--->
       <div class="friends-grid">
-        <div class="friend-box"><a href="#" class="friend-name">Hamuel</a><img src="rocky5.png"></div>
-        <div class="friend-box"><a href="#" class="friend-name">Master Chief</a><div class="friend-pic"></div></div>
-        <div class="friend-box"><a href="#" class="friend-name">Cortana</a><div class="friend-pic"></div></div>
-        <div class="friend-box"><a href="#" class="friend-name">SolderingIron</a><div class="friend-pic"></div></div>
-        <div class="friend-box"><a href="#" class="friend-name">ClockCap</a><div class="friend-pic"></div></div>
-        <div class="friend-box"><a href="#" class="friend-name">XBMC4Gamers</a><div class="friend-pic"></div></div>
-        <div class="friend-box"><a href="#" class="friend-name">XOUT</a><div class="friend-pic"></div></div>
-        <div class="friend-box"><a href="#" class="friend-name">Mystery Donor</a><div class="friend-pic"></div></div>
+        <div class="friend-box"><a href="#" class="friend-name">Tom</a><div class="friend-pic"><img src="tom.webp" alt="Tom from MySpace"></div></div>
+        <div class="friend-box"><a href="#" class="friend-name">Master Chief</a><div class="friend-pic"><img src="Halo2-cover.png" alt="Halo 2 cover art"></div></div>
+        <div class="friend-box"><a href="#" class="friend-name">Cortana</a><div class="friend-pic"><img src="portrait.cortana.png" alt="Cortana portrait"></div></div>
+        <div class="friend-box"><a href="#" class="friend-name">Hamuel</a><div class="friend-pic"><img src="hamuel.jpg" alt="Hamuel"></div></div>
+        <div class="friend-box"><a href="#" class="friend-name">ClockCap</a><div class="friend-pic"><img src="Clockcap.jpg" alt="Clock capacitor"></div></div>
+        <div class="friend-box"><a href="#" class="friend-name">rocky5</a><div class="friend-pic"><img src="rocky5.png" alt="rocky5"></div></div>
+        <div class="friend-box"><a href="#" class="friend-name">XOUT</a><div class="friend-pic"><img src="Xout.jpg" alt="Electron Shepherd XOUT"></div></div>
+        <div class="friend-box"><a href="#" class="friend-name">Meat Man</a><div class="friend-pic"><img src="Meatman.jpg" alt="Meat Man"></div></div>
       </div>
       <p style="text-align:right; margin-top:10px;"><a href="#" style="color:#003399; font-weight:bold; text-decoration:none;">View All Friends</a></p>
       <div class="section-header">Meat Man's Comments</div>
-      <!--
-  COMMENTS SECTION
-  Safe to edit names, dates, and comment text.
--->
       <div class="comment-container"><div class="comment-header">Hamuel (May 20, 2006)</div><p>He said this Xbox had “personality.” I think that means it was covered in nicotine and needed therapy, but it works great now.</p></div>
       <div class="comment-container"><div class="comment-header">Modded_X (May 18, 2006)</div><p>Best place on the East Coast to get told your modchip idea is unnecessary. Respect.</p></div>
       <p style="margin-top:10px;"><a href="#" style="color:#003399; font-weight:bold; text-decoration:none;">Add Comment</a> | <a href="#" style="color:#003399; font-weight:bold; text-decoration:none;">View All Comments</a></p>
