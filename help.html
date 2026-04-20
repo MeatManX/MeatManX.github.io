@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MeatMan Mods | Help</title>
+  <meta name="description" content="Support, setup guidance, networking notes, HDMI reality checks, and common questions for MeatMan Mods original Xbox customers." />
+  <style>
+    :root {
+      --bg: #0b0f0b; --panel: #121812; --panel-2: #181f18; --line: #2c3a2c;
+      --green: #8acb88; --green-bright: #b7ef9d; --text: #e6efe3; --muted: #a7b3a3;
+      --warn: #c8a84b; --shadow: rgba(0,0,0,0.45); --max: 1000px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; font-family: Verdana, Tahoma, Arial, sans-serif;
+      background: radial-gradient(circle at top left, #173117 0%, transparent 30%), linear-gradient(180deg, #0b0f0b 0%, #0f140f 100%);
+      color: var(--text); line-height: 1.65;
+    }
+    a { color: var(--green-bright); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { width: min(calc(100% - 32px), var(--max)); margin: 0 auto; }
+    .top-strip { background: #000; color: var(--green-bright); border-bottom: 1px solid #294129; font-size: 12px; padding: 8px 0; }
+    .top-strip .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    header { border-bottom: 1px solid var(--line); background: rgba(9,12,9,0.9); backdrop-filter: blur(6px); position: sticky; top: 0; z-index: 50; }
+    .nav { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:14px 0; flex-wrap:wrap; }
+    .brand { font-size:24px; font-weight:700; color: var(--green-bright); text-shadow: 1px 1px 0 #000; }
+    .brand small { display:block; font-size:11px; color: var(--muted); font-weight:400; letter-spacing:1.2px; text-transform:uppercase; margin-top:2px; }
+    nav a { color: var(--text); font-size:13px; }
+    .page-hero { padding: 56px 0 36px; border-bottom: 1px solid var(--line); }
+    .eyebrow { display:inline-block; padding:4px 8px; border:1px solid #436343; background:#101610; color:var(--green-bright); font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; }
+    h1 { font-size: clamp(28px, 5vw, 46px); line-height: 1.15; margin: 0 0 16px; max-width: 20ch; }
+    h2 { font-size: clamp(20px, 3vw, 26px); color: var(--green-bright); margin: 0 0 8px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+    h3 { font-size: 16px; color: var(--green-bright); margin: 0 0 10px; }
+    p { margin: 0 0 14px; }
+    .hero-sub { font-size: 16px; color: var(--muted); max-width: 60ch; margin: 0 0 24px; }
+    .jump-nav { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:8px; }
+    .jump-nav a { font-size:12px; padding:5px 10px; border:1px solid #3a4f3a; background:#0f150f; color:var(--green-bright); text-transform:uppercase; letter-spacing:0.5px; }
+    main { padding: 36px 0 60px; }
+    .guide-section { margin-bottom: 48px; scroll-margin-top: 80px; }
+    .section-sub { color: var(--muted); font-size:13px; margin: 0 0 18px; }
+    .panel { background: var(--panel); border: 1px solid var(--line); padding: 20px 22px; box-shadow: 0 8px 20px var(--shadow); margin-bottom: 16px; }
+    .panel-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+    .callout { border-left:4px solid var(--green); background:#0d150d; padding:14px 16px; margin:18px 0; font-size:14px; }
+    .warning { border-left:4px solid var(--warn); background:#1a1608; padding:14px 16px; margin:18px 0; font-size:14px; color:#d9c87a; }
+    .dongle-rule { display:flex; align-items:center; gap:12px; background:#0a120a; border:1px solid #3a5a3a; padding:12px 16px; margin:20px 0; font-size:13px; color:var(--muted); }
+    .dongle-badge { flex-shrink:0; background:var(--green-bright); color:#000; font-weight:bold; font-size:11px; padding:4px 8px; text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap; }
+    .faq details { border: 1px solid var(--line); background: var(--panel); padding: 14px 16px; margin-bottom: 12px; }
+    .faq summary { cursor: pointer; font-weight: 700; color: var(--green-bright); }
+    footer { border-top:1px solid var(--line); padding:24px 0 40px; color:var(--muted); font-size:12px; }
+    @media (max-width: 700px) { .panel-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="top-strip"><div class="wrap"><div>MeatMan Mods // Customer help and reality adjustment</div><div>Read this before asking me something cursed.</div></div></div>
+  <header>
+    <div class="wrap nav">
+      <a href="index.html" style="text-decoration:none;"><div class="brand">MeatMan Mods<small>Help / Guides / FAQ</small></div></a>
+      <nav><a href="index.html">← Back to start</a></nav>
+    </div>
+  </header>
+  <main>
+    <div class="wrap">
+      <div class="page-hero">
+        <div class="eyebrow">Customer Help Zone</div>
+        <h1>Setup, troubleshooting, and the things I am tired of re-explaining</h1>
+        <p class="hero-sub">This page is the customer-facing support bunker. The homepage is the guided tour. This page is where you go once you either own one of these or are serious enough to need the real setup notes.</p>
+        <div class="jump-nav">
+          <a href="#analog">Analog Reality</a>
+          <a href="#video">Video and HDMI</a>
+          <a href="#networking">Networking</a>
+          <a href="#controllers">Controllers</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </div>
+
+      <section class="guide-section" id="analog">
+        <h2>The Analog Reality</h2>
+        <p class="section-sub">Why nearly everything about using an original Xbox in a modern setup involves a translator, adapter, or dongle.</p>
+        <p>The original Xbox came out in 2001 and was built for an analog world. Your TV, router, controller ecosystem, and expectations are from a different era. Every place those two worlds meet, something has to translate. That is not drama. That is physics.</p>
+        <div class="dongle-rule"><span class="dongle-badge">There's a dongle for that</span><span>Video, audio, networking, and modern controller support all require some form of translation layer in a present-day setup.</span></div>
+      </section>
+
+      <section class="guide-section" id="video">
+        <h2>Video and HDMI</h2>
+        <p class="section-sub">The Xbox does not output HDMI natively. Please stop pretending it might if you believe hard enough.</p>
+        <div class="panel-grid">
+          <div class="panel"><h3>Composite</h3><p>Worst quality. Fine for old CRT nostalgia. Bad for modern flat panels. Composite-to-HDMI boxes usually look exactly as bad as their price tag suggests.</p></div>
+          <div class="panel"><h3>Component</h3><p>The best analog output path the Xbox offers. If you care about image quality on a modern display, component is what any worthwhile HDMI adapter should be pulling from.</p></div>
+        </div>
+        <div class="callout"><strong>Recommendation:</strong> Use an adapter that pulls from component, not composite. The Electron Shepherd XOUT is the one I am comfortable recommending because it solves the right problems in the least stupid way.</div>
+        <div class="warning"><strong>Surround sound note:</strong> Not every cheap adapter passes Dolby Digital properly. Some give you sound but quietly murder the good audio path on the way out.</div>
+      </section>
+
+      <section class="guide-section" id="networking">
+        <h2>Networking</h2>
+        <p class="section-sub">No Wi-Fi. Ethernet only. Your shiny modern ISP combo box may already be the problem.</p>
+        <div class="panel-grid">
+          <div class="panel"><h3>What the Xbox wants</h3><p>A wired Ethernet connection. That is the answer. Long cable runs, switches, powerline adapters, or MoCA can all be workable.</p></div>
+          <div class="panel"><h3>What causes trouble</h3><p>ISP modem/router combo units, strange NAT behavior, and people who do not know how their own network is set up but still insist the Xbox is at fault.</p></div>
+        </div>
+        <div class="warning"><strong>Important:</strong> If online play through Insignia matters to you, be prepared to log into your router settings or admit that you cannot. Honest ignorance is fixable. Confident nonsense is not.</div>
+      </section>
+
+      <section class="guide-section" id="controllers">
+        <h2>Controllers</h2>
+        <p class="section-sub">The ports look kind of like USB because the universe enjoys confusion.</p>
+        <p>Original Xbox controllers are the cleanest option. Modern controllers need an actual protocol translator, not just a dumb cable. That is where adapters like the OGX Mini come in.</p>
+        <div class="callout"><strong>Simple version:</strong> OEM controller if you want least drama. Modern controller plus proper adapter if you want convenience.</div>
+      </section>
+
+      <section class="guide-section faq" id="faq">
+        <h2>FAQ</h2>
+        <p class="section-sub">Questions I expect to keep hearing anyway.</p>
+        <details><summary>Does it have Wi-Fi?</summary><p>No. It has Ethernet. Run a cable or solve the problem with proper Ethernet alternatives.</p></details>
+        <details><summary>Can I use any HDMI adapter?</summary><p>You can. You can also regret it later. Cheap adapters often pull the wrong signal path and make the Xbox look worse than it should.</p></details>
+        <details><summary>Why is a refurbished modded Xbox more than some random stock one online?</summary><p>Because a random stock one online usually has not been cleaned, repaired, recapped, re-pasted, upgraded, configured, tested, or dragged back from the edge of electronic death.</p></details>
+        <details><summary>Can I just message you instead of reading all this?</summary><p>You can message me. I can also reply with this link. Nature heals.</p></details>
+      </section>
+    </div>
+  </main>
+  <footer><div class="wrap">MeatMan Mods // Help page // Built for actual customers and the tragically curious.</div></footer>
+</body>
+</html>
