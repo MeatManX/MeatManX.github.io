@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MeatMan Mods | Readiness Check</title>
+  <meta name="description" content="A short readiness check before the MeatMan Mods adoption application." />
+  <style>
+    :root {
+      --bg:#0b0f0b; --panel:#121812; --line:#2c3a2c; --green:#8acb88; --green-bright:#b7ef9d;
+      --text:#e6efe3; --muted:#a7b3a3; --danger:#d97979; --shadow:rgba(0,0,0,0.45); --max:900px;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0; font-family: Verdana, Tahoma, Arial, sans-serif;
+      background: radial-gradient(circle at top left, #173117 0%, transparent 30%), linear-gradient(180deg, #0b0f0b 0%, #0f140f 100%);
+      color:var(--text); line-height:1.6;
+    }
+    .wrap { width:min(calc(100% - 32px), var(--max)); margin:0 auto; }
+    .top-strip { background:#000; color:var(--green-bright); border-bottom:1px solid #294129; font-size:12px; padding:8px 0; }
+    .top-strip .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+    header { border-bottom:1px solid var(--line); background:rgba(9,12,9,0.9); backdrop-filter:blur(6px); }
+    .nav { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:14px 0; flex-wrap:wrap; }
+    .brand { font-size:24px; font-weight:700; color:var(--green-bright); text-shadow:1px 1px 0 #000; }
+    .brand small { display:block; font-size:11px; color:var(--muted); font-weight:400; letter-spacing:1.2px; text-transform:uppercase; margin-top:2px; }
+    a { color:var(--green-bright); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    main { padding: 42px 0 56px; }
+    .card { background:var(--panel); border:1px solid var(--line); box-shadow:0 14px 32px var(--shadow); padding:26px; }
+    h1,h2 { line-height:1.15; margin:0 0 14px; }
+    h1 { font-size: clamp(30px, 5vw, 46px); }
+    h2 { font-size: 22px; color:var(--green-bright); }
+    p { margin:0 0 14px; }
+    .muted { color:var(--muted); }
+    .question { border:1px solid var(--line); background:#181f18; padding:16px; margin:16px 0; }
+    .question legend { color:var(--green-bright); font-weight:bold; padding:0 8px; }
+    label { display:block; margin-bottom:10px; }
+    .button-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
+    .btn {
+      display:inline-block; padding:12px 18px; border:1px solid #658f65; background:linear-gradient(180deg,#294729,#1c311c);
+      color:#fff; font-weight:700; font-size:14px; cursor:pointer;
+    }
+    .btn.secondary { background:#131913; color:var(--green-bright); border-color:#415741; }
+    #result { margin-top: 22px; padding: 18px; border:1px solid var(--line); background:#101610; display:none; }
+    .pass { border-left:4px solid var(--green); }
+    .fail { border-left:4px solid var(--danger); color:#f0c3c3; background:#180d0d; }
+  
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+    .modal.open { display: flex; }
+    .modal-card {
+      width: min(92vw, 560px);
+      background: #121812;
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 32px var(--shadow);
+      color: var(--text);
+    }
+    .modal-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #101610;
+      color: var(--green-bright);
+      font-weight: 700;
+    }
+    .modal-body { padding: 16px; }
+    .modal-actions { padding: 0 16px 16px; display:flex; gap:12px; flex-wrap:wrap; }
+
+  </style>
+</head>
+<body>
+  <div class="top-strip"><div class="wrap"><div>MeatMan Mods // Readiness Check</div><div>This is not hard. Read better.</div></div></div>
+  <header>
+    <div class="wrap nav">
+      <div class="brand">MeatMan Mods<small>Application gatekeeping division</small></div>
+      <a href="index.html">← Back to the tour</a>
+    </div>
+  </header>
+  <main>
+    <div class="wrap card">
+      <h1>Readiness Check</h1>
+      <p>This is not meant to be difficult. It is meant to confirm that you paid attention to the actual customer-facing information instead of speedrunning your way toward the application like an impatient idiot.</p>
+      <p class="muted">Answer all five. Miss one or more and you go back to the start.</p>
+      <form id="quiz-form">
+        <fieldset class="question">
+          <legend>1. The original Xbox has a built-in Ethernet port. What does it NOT have?</legend>
+          <label><input type="radio" name="q1" value="a"> A hard drive</label>
+          <label><input type="radio" name="q1" value="b"> Built-in Wi-Fi</label>
+          <label><input type="radio" name="q1" value="c"> A controller port</label>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>2. The original Xbox does not output HDMI natively. What is the best analog video signal it produces for use with an HDMI adapter?</legend>
+          <label><input type="radio" name="q2" value="a"> Composite — the yellow cable</label>
+          <label><input type="radio" name="q2" value="b"> S-Video</label>
+          <label><input type="radio" name="q2" value="c"> Component — the red, green, and blue cables</label>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>3. You want to use a modern controller on an original Xbox. A cable that physically fits the controller port is all you need. True or false?</legend>
+          <label><input type="radio" name="q3" value="a"> True — if it fits, it works</label>
+          <label><input type="radio" name="q3" value="b"> False — the Xbox uses a proprietary protocol, so you need an actual protocol translator like the OGX-Mini, not just a cable</label>
+          <label><input type="radio" name="q3" value="c"> True — all controllers use the same USB standard underneath</label>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>4. Even if the DVD drive on your Xbox works, what is the recommended way to play games day to day?</legend>
+          <label><input type="radio" name="q4" value="a"> Always use the disc — it is the most authentic experience</label>
+          <label><input type="radio" name="q4" value="b"> Rip games to the hard drive and play from there — use the DVD drive as little as possible</label>
+          <label><input type="radio" name="q4" value="c"> Stream directly from a PC over the network</label>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>5. MeatMan will not give you a flat price upfront. Why?</legend>
+          <label><input type="radio" name="q5" value="a"> He is hiding something</label>
+          <label><input type="radio" name="q5" value="b"> The cost depends on the donor console, what it needed, storage size, parts, and labor — no two builds are the same</label>
+          <label><input type="radio" name="q5" value="c"> Pricing is determined by a monthly lottery</label>
+        </fieldset>
+
+        <div class="button-row">
+          <button class="btn" type="submit">Grade me</button>
+          <a class="btn secondary" href="index.html">Restart from the homepage</a>
+        </div>
+      </form>
+
+      <div id="result"></div>
+    </div>
+    </main>
+
+  <div class="modal" id="pass-modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">Accepted by the Gate</div>
+      <div class="modal-body">
+        <p>You actually read it. Miracles happen.</p>
+        <p>You can proceed to the adoption application.</p>
+      </div>
+      <div class="modal-actions">
+        <a class="btn" href="adoption-application.html">Open the adoption application</a>
+        <button class="btn secondary" type="button" id="close-pass-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <script>
+    const answers = { q1: 'b', q2: 'c', q3: 'b', q4: 'b', q5: 'b' };
+    const form = document.getElementById('quiz-form');
+    const result = document.getElementById('result');
+    const passModal = document.getElementById('pass-modal');
+    const closePassModal = document.getElementById('close-pass-modal');
+
+    function openModal() {
+      passModal.classList.add('open');
+      passModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal() {
+      passModal.classList.remove('open');
+      passModal.setAttribute('aria-hidden', 'true');
+    }
+
+    closePassModal.addEventListener('click', closeModal);
+    passModal.addEventListener('click', function (e) {
+      if (e.target === passModal) closeModal();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const data = new FormData(form);
+      let allAnswered = true;
+      let allCorrect = true;
+      for (const [key, value] of Object.entries(answers)) {
+        const selected = data.get(key);
+        if (!selected) allAnswered = false;
+        if (selected !== value) allCorrect = false;
+      }
+      result.style.display = 'block';
+      if (!allAnswered) {
+        result.className = 'fail';
+        result.innerHTML = '<strong>Not so fast.</strong><p>You skipped at least one question. That is exactly what this page exists to catch.</p>';
+        return;
+      }
+      if (allCorrect) {
+        result.style.display = 'none';
+        openModal();
+      } else {
+        result.className = 'fail';
+        result.innerHTML = '<strong>Incorrect.</strong><p>You missed one or more questions. Go back to the start, read the tour again, and try again.</p><p><a href="index.html">Return to the homepage and start over</a></p>';
+        form.reset();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  </script>
+
+</body>
+</html>
