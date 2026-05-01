@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    ============================================================
+    MEATMAN MODS — OGX-MINI INTEREST FORM
+    ============================================================
+
+    WHAT IS SAFE TO EDIT:
+    - Any visible text (questions, labels, options, button text,
+      header text, footer text, placeholder text)
+
+    WHAT TO LEAVE ALONE:
+    - Anything inside <style>...</style>
+    - Anything inside <script>...</script>
+    - The name="..." attribute on any input
+    - The action="..." on the form tag
+
+    TO GO LIVE:
+    Replace https://formspree.io/f/mbdwjqgo with your Formspree URL.
+    ============================================================
+  -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MeatMan Mods | OGX-Mini Interest Form</title>
+
+  <style>
+    body {
+      margin: 0; padding: 0;
+      background: #0b0b0b;
+      color: #d8d8d8;
+      font-family: Tahoma, Verdana, Arial, sans-serif;
+      font-size: 14px;
+      background-image: radial-gradient(circle at top left, #1c2d1c 0, #0b0b0b 45%);
+    }
+    a { color: #8df58d; }
+    .page {
+      max-width: 980px;
+      margin: 18px auto;
+      border: 3px solid #5da85d;
+      background: #131313;
+      box-shadow: 0 0 0 3px #263926;
+    }
+    .topbar {
+      background: linear-gradient(#2d5a2d, #173217);
+      border-bottom: 2px solid #8df58d;
+      padding: 10px 14px;
+      color: #eaffea;
+      text-shadow: 1px 1px 0 #000;
+    }
+    .topbar h1 { margin: 0; font-size: 28px; letter-spacing: 1px; }
+    .subtitle { margin-top: 4px; font-size: 12px; color: #c7ffc7; }
+    .marquee {
+      background: #000;
+      border-top: 1px solid #477047;
+      border-bottom: 1px solid #477047;
+      padding: 6px 10px;
+      color: #9cff9c;
+      font-size: 12px;
+    }
+    .content { padding: 16px; }
+    .window {
+      border: 2px solid #5c5c5c;
+      margin-bottom: 16px;
+      background: #1b1b1b;
+    }
+    .window-title {
+      background: linear-gradient(#3b3b3b, #232323);
+      color: #fff;
+      padding: 7px 10px;
+      font-weight: bold;
+      border-bottom: 1px solid #666;
+    }
+    .window-body { padding: 12px; line-height: 1.45; }
+    .warning {
+      border: 1px dashed #b5d9b5;
+      background: #101810;
+      padding: 10px;
+      color: #dff5df;
+    }
+    table.form-table { width: 100%; border-collapse: collapse; }
+    table.form-table td {
+      padding: 8px;
+      border-bottom: 1px solid #2f2f2f;
+      vertical-align: top;
+    }
+    table.form-table td.label {
+      width: 230px;
+      color: #b8ddb8;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      background: #0c0c0c;
+      color: #d6ffd6;
+      border: 1px solid #5b7f5b;
+      padding: 8px;
+      font-family: Tahoma, Verdana, Arial, sans-serif;
+      font-size: 14px;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .choice-group label {
+      display: inline-block;
+      margin-right: 14px;
+      margin-bottom: 6px;
+    }
+    .small-note { color: #b0b0b0; font-size: 12px; margin-top: 4px; }
+    .button-row { text-align: center; padding-top: 8px; padding-bottom: 10px; }
+    button {
+      background: linear-gradient(#58a958, #265826);
+      color: #fff;
+      border: 2px outset #78c978;
+      padding: 10px 18px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+    button:hover { filter: brightness(1.08); }
+    .footer {
+      text-align: center;
+      color: #9e9e9e;
+      font-size: 11px;
+      padding: 14px;
+      border-top: 1px solid #2f2f2f;
+    }
+    .hidden-honeypot {
+      position: absolute !important;
+      left: -5000px !important;
+      width: 1px !important;
+      height: 1px !important;
+      overflow: hidden !important;
+    }
+    #form-status { text-align: center; padding: 0 18px 18px; min-height: 20px; }
+    .modal {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.78);
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 20px; z-index: 9999;
+    }
+    .modal.open { display: flex; }
+    .modal-card {
+      width: min(92vw, 560px);
+      background: #131313;
+      border: 3px solid #5da85d;
+      box-shadow: 0 0 0 3px #263926, 0 18px 42px rgba(0,0,0,0.6);
+      color: #d8d8d8;
+    }
+    .modal-head {
+      background: linear-gradient(#2d5a2d, #173217);
+      border-bottom: 2px solid #8df58d;
+      padding: 10px 14px; color: #eaffea;
+      text-shadow: 1px 1px 0 #000; font-weight: bold;
+    }
+    .modal-body { padding: 16px; line-height: 1.5; }
+    .modal-actions { padding: 0 16px 16px; text-align: center; }
+    @media (max-width: 760px) {
+      table.form-table td,
+      table.form-table td.label { display: block; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="topbar">
+      <h1>OGX-MINI INTEREST FORM</h1>
+      <div class="subtitle">MeatMan Mods // DVD Bluetooth Edition // Read the orientation page first.</div>
+    </div>
+
+    <div class="marquee">
+      <marquee behavior="scroll" direction="left" scrollamount="4">
+        This form is not a purchase. It is not a reservation. It means I will read your answers and decide whether to follow up. If you have not read the orientation page, go do that first: it is linked below.
+      </marquee>
+    </div>
+
+    <div class="content">
+
+      <div class="window">
+        <div class="window-title">Before You Fill This Out</div>
+        <div class="window-body">
+          <p>This form is short. I do not need your life story — I need to know your controller, your expectations, and whether you actually read the orientation.</p>
+          <p>If you have not read the <a href="ogx-mini.html">OGX-Mini buyer orientation</a>, go do that first.</p>
+          <div class="warning">
+            <strong>This adapter is original Xbox only.</strong> It plugs directly into the Xbox controller port and will not connect to any other console without a separate female Xbox port to USB adapter.
+          </div>
+        </div>
+      </div>
+
+      <form id="ogxMiniForm" action="https://formspree.io/f/mbdwjqgo" method="POST">
+        <input type="hidden" name="_subject" value="New OGX-Mini Interest Form Submission">
+        <input type="hidden" name="_format" value="plain">
+
+        <label class="hidden-honeypot" aria-hidden="true">
+          Leave this field empty
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+        </label>
+
+        <!--
+          ============================================================
+          SECTION 1: CONTACT
+          ============================================================
+        -->
+        <div class="window">
+          <div class="window-title">Contact</div>
+          <div class="window-body">
+            <table class="form-table">
+
+              <tr>
+                <td class="label">Name</td>
+                <td><input type="text" name="full_name" required></td>
+              </tr>
+
+              <tr>
+                <td class="label">Email Address</td>
+                <td>
+                  <input type="email" name="email" required>
+                  <div class="small-note">Use one you actually check.</div>
+                </td>
+              </tr>
+
+              <!-- Edit the small-note freely to change the hint text -->
+              <tr>
+                <td class="label">How did you find this page?</td>
+                <td>
+                  <input type="text" name="referral_source">
+                  <div class="small-note">A community, a video, a person, a search. Whatever it was.</div>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+        <!--
+          ============================================================
+          SECTION 2: YOUR CONTROLLER
+          ============================================================
+          Free text intentionally — forces them to be specific
+          instead of picking from a list and moving on.
+        -->
+        <div class="window">
+          <div class="window-title">Your Controller</div>
+          <div class="window-body">
+            <table class="form-table">
+
+              <tr>
+                <td class="label">What controller are you planning to use?</td>
+                <td>
+                  <input type="text" name="controller_model" required placeholder="Be specific. Make, model, generation. Example: Xbox Series X controller, PS5 DualSense, 8BitDo Pro 2.">
+                  <div class="small-note">I personally test with Xbox Series X/S and PS5 DualSense. Anything else is outside my direct experience. "A Bluetooth controller" is not an answer.</div>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="label">Do you understand that controllers outside my personal test list are not guaranteed to work?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="understands_compat" value="Yes" required> Yes</label>
+                    <label><input type="radio" name="understands_compat" value="I do now"> I do now, after reading the orientation</label>
+                  </div>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+        <!--
+          ============================================================
+          SECTION 3: EXPECTATIONS
+          ============================================================
+        -->
+        <div class="window">
+          <div class="window-title">Expectations</div>
+          <div class="window-body">
+            <table class="form-table">
+
+              <tr>
+                <td class="label">How would you describe the way you plan to play?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="play_style" value="Casual" required> Casual — I just want to play games</label>
+                    <label><input type="radio" name="play_style" value="Regular"> Regular — I care about performance but I am not timing frames</label>
+                    <label><input type="radio" name="play_style" value="Competitive"> Competitive — every millisecond matters to me</label>
+                  </div>
+                  <div class="small-note">If you answered competitive, the orientation recommends a wired OEM controller on a CRT. That recommendation stands.</div>
+                </td>
+              </tr>
+
+              <tr>
+                <td class="label">Do you accept that Bluetooth and protocol translation add some amount of latency?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="accepts_latency" value="Yes" required> Yes</label>
+                    <label><input type="radio" name="accepts_latency" value="Yes and it does not matter to me"> Yes, and it does not affect how I plan to use it</label>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Shell preference — edit option text freely, keep value consistent -->
+              <tr>
+                <td class="label">Shell preference</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="shell_pref" value="DVD donor shell"> Original Xbox DVD receiver shell</label>
+                    <label><input type="radio" name="shell_pref" value="3D printed when available"> 3D printed shell when available</label>
+                    <label><input type="radio" name="shell_pref" value="No preference"> No preference</label>
+                  </div>
+                  <div class="small-note">The DVD donor shell is the current version. 3D printed shells are in development.</div>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+        <!--
+          ============================================================
+          SECTION 4: ANYTHING ELSE
+          ============================================================
+          Optional catch-all. Edit placeholder text freely.
+        -->
+        <div class="window">
+          <div class="window-title">Anything Else</div>
+          <div class="window-body">
+            <table class="form-table">
+
+              <tr>
+                <td class="label">Anything I should know before I read this?</td>
+                <td>
+                  <textarea name="notes" placeholder="Edge case controller, unusual setup, specific questions the orientation did not answer. If it is relevant, put it here."></textarea>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+        <!--
+          ============================================================
+          ACKNOWLEDGMENT AND SUBMIT
+          ============================================================
+          Edit bullet text freely. Do not remove the required
+          attribute from the checkbox.
+        -->
+        <div class="window">
+          <div class="window-title">Acknowledgment</div>
+          <div class="window-body">
+
+            <ul style="margin: 6px 0 14px 18px; line-height: 1.8;">
+              <li>This is hand-built, small-batch hardware. It is not a retail product.</li>
+              <li>This version is original Xbox only. It is not compatible with other consoles without a separate adapter.</li>
+              <li>Controller compatibility is not universal. Controllers outside my personal test list carry no guarantee.</li>
+              <li>Submitting this form is not a purchase or a reservation. It means I will review your answers and decide whether to follow up.</li>
+            </ul>
+
+            <label>
+              <input type="checkbox" name="accept_disclaimer" required>
+              I have read the buyer orientation, I understand what this product is and what it is not, and I am submitting this form in good faith.
+            </label>
+
+            <div class="small-note" style="margin-top: 10px;">If you have not read the <a href="ogx-mini.html">orientation page</a>, do not submit this form yet.</div>
+
+          </div>
+        </div>
+
+        <!-- Hidden metadata fields — do not touch -->
+        <input type="hidden" name="submitted_at" id="submitted_at">
+        <input type="hidden" name="browser_user_agent" id="browser_user_agent">
+        <input type="hidden" name="screen_resolution" id="screen_resolution">
+        <input type="hidden" name="timezone" id="timezone">
+        <input type="hidden" name="page_url" id="page_url">
+        <input type="hidden" name="tour_total_seconds" id="tour_total_seconds">
+        <input type="hidden" name="tour_step_times" id="tour_step_times">
+        <input type="hidden" name="tour_started_at" id="tour_started_at">
+
+        <div class="button-row">
+          <button type="submit">SUBMIT INTEREST FORM</button>
+        </div>
+
+        <div id="form-status" class="small-note" style="display:none;"></div>
+
+      </form>
+    </div>
+
+    <div class="footer">
+      MeatMan Mods // OGX-Mini Interest Form // Original Xbox only. Not a purchase. Not a reservation.
+    </div>
+
+  </div>
+
+  <div class="modal" id="success-modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">Form Received</div>
+      <div class="modal-body">
+        <p>Your form was received.</p>
+        <p>This is not a purchase confirmation or a reservation. It means I will review your answers and decide whether to follow up.</p>
+        <p>If your answers were honest and your setup makes sense, you may hear back.</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="close-success-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="error-modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">Submission Failed</div>
+      <div class="modal-body">
+        <p>The form did not go through.</p>
+        <p>Try again in a minute. If it still fails, contact MeatMan directly.</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="close-error-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('submitted_at').value = new Date().toISOString();
+    document.getElementById('browser_user_agent').value = navigator.userAgent;
+    document.getElementById('screen_resolution').value = window.screen.width + 'x' + window.screen.height;
+    document.getElementById('timezone').value = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
+    document.getElementById('page_url').value = window.location.href;
+
+    // Read tour timing data from sessionStorage
+    const tourTotal = sessionStorage.getItem('ogx_tour_total_seconds');
+    const tourSteps = sessionStorage.getItem('ogx_tour_step_times');
+    const tourStartedAt = sessionStorage.getItem('ogx_tour_started_at');
+    if (tourTotal !== null) {
+      document.getElementById('tour_total_seconds').value = tourTotal + 's';
+      document.getElementById('tour_step_times').value = tourSteps || '';
+      document.getElementById('tour_started_at').value = tourStartedAt || '';
+    }
+
+    const form = document.getElementById('ogxMiniForm');
+    const status = document.getElementById('form-status');
+    const successModal = document.getElementById('success-modal');
+    const errorModal = document.getElementById('error-modal');
+    const closeSuccessModal = document.getElementById('close-success-modal');
+    const closeErrorModal = document.getElementById('close-error-modal');
+
+    function openModal(modal) { modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); }
+    function closeModal(modal) { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+
+    closeSuccessModal.addEventListener('click', () => closeModal(successModal));
+    closeErrorModal.addEventListener('click', () => closeModal(errorModal));
+    successModal.addEventListener('click', (e) => { if (e.target === successModal) closeModal(successModal); });
+    errorModal.addEventListener('click', (e) => { if (e.target === errorModal) closeModal(errorModal); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(successModal); closeModal(errorModal); } });
+
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      status.textContent = 'Submitting...';
+      status.style.display = 'block';
+
+      try {
+        const response = await fetch(form.action, {
+          method: form.method,
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+
+        status.textContent = '';
+        status.style.display = 'none';
+
+        if (response.ok) { form.reset(); openModal(successModal); }
+        else { openModal(errorModal); }
+      } catch (error) {
+        status.textContent = '';
+        status.style.display = 'none';
+        openModal(errorModal);
+      }
+    });
+  </script>
+
+</body>
+</html>

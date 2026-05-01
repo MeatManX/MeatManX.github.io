@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    ============================================================
+    MEAT MAN XBOX ADOPTION APPLICATION
+    ============================================================
+
+    HOW COMMENTS WORK IN THIS FILE:
+    Anything between  <!-- and -->  is a comment.
+    Comments are invisible to visitors. They only show up when
+    you open this file in a text editor. They will never appear
+    on the actual page.
+
+    WHAT IS SAFE TO EDIT:
+    - Any visible text (questions, labels, options, disclaimers,
+      button text, header text, footer text, placeholder text)
+
+    WHAT TO LEAVE ALONE UNLESS YOU KNOW WHAT YOU ARE DOING:
+    - Anything inside  <style> ... </style>  (controls appearance)
+    - Anything inside  <script> ... </script>  (form submit logic)
+    - The  name="..."  attribute on any input — that is the field
+      label that shows up in your email inbox. Change visible
+      question text all you want, but do not touch name="..."
+    - The  action="..."  on the form tag — your Formspree address
+
+    HOW TO ADD A NEW CHECKBOX OR RADIO OPTION:
+    Copy one existing label line, paste it below the last one in
+    that group, and change both the value and the visible text.
+    Example:
+      <label><input type="checkbox" name="goals" value="New Option"> New Option</label>
+
+    HOW TO REMOVE AN OPTION:
+    Delete the entire  <label>...</label>  line for that option.
+    ============================================================
+  -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- PAGE TITLE — shows in the browser tab -->
+  <title>Meat Man Xbox Adoption Application</title>
+
+  <style>
+    /*
+      ============================================================
+      STYLING — controls colors, fonts, layout, spacing.
+      Do not edit this section unless you are intentionally
+      changing how the page looks, not what it says.
+      ============================================================
+    */
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0b0b0b;
+      color: #d8d8d8;
+      font-family: Tahoma, Verdana, Arial, sans-serif;
+      font-size: 14px;
+      background-image: radial-gradient(circle at top left, #1c2d1c 0, #0b0b0b 45%);
+    }
+    a { color: #8df58d; }
+    .page {
+      max-width: 980px;
+      margin: 18px auto;
+      border: 3px solid #5da85d;
+      background: #131313;
+      box-shadow: 0 0 0 3px #263926;
+    }
+    .topbar {
+      background: linear-gradient(#2d5a2d, #173217);
+      border-bottom: 2px solid #8df58d;
+      padding: 10px 14px;
+      color: #eaffea;
+      text-shadow: 1px 1px 0 #000;
+    }
+    .topbar h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #c7ffc7;
+    }
+    .marquee {
+      background: #000;
+      border-top: 1px solid #477047;
+      border-bottom: 1px solid #477047;
+      padding: 6px 10px;
+      color: #9cff9c;
+      font-size: 12px;
+    }
+    .content { padding: 16px; }
+    .window {
+      border: 2px solid #5c5c5c;
+      margin-bottom: 16px;
+      background: #1b1b1b;
+    }
+    .window-title {
+      background: linear-gradient(#3b3b3b, #232323);
+      color: #fff;
+      padding: 7px 10px;
+      font-weight: bold;
+      border-bottom: 1px solid #666;
+    }
+    .window-body {
+      padding: 12px;
+      line-height: 1.45;
+    }
+    .warning {
+      border: 1px dashed #b5d9b5;
+      background: #101810;
+      padding: 10px;
+      color: #dff5df;
+    }
+    table.form-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table.form-table td {
+      padding: 8px;
+      border-bottom: 1px solid #2f2f2f;
+      vertical-align: top;
+    }
+    table.form-table td.label {
+      width: 230px;
+      color: #b8ddb8;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea,
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      background: #0c0c0c;
+      color: #d6ffd6;
+      border: 1px solid #5b7f5b;
+      padding: 8px;
+      font-family: Tahoma, Verdana, Arial, sans-serif;
+      font-size: 14px;
+    }
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+    }
+    .choice-group label,
+    .checklist label {
+      display: inline-block;
+      margin-right: 14px;
+      margin-bottom: 6px;
+    }
+    .small-note {
+      color: #b0b0b0;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .button-row {
+      text-align: center;
+      padding-top: 8px;
+      padding-bottom: 10px;
+    }
+    button {
+      background: linear-gradient(#58a958, #265826);
+      color: #fff;
+      border: 2px outset #78c978;
+      padding: 10px 18px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+    button:hover { filter: brightness(1.08); }
+    .footer {
+      text-align: center;
+      color: #9e9e9e;
+      font-size: 11px;
+      padding: 14px;
+      border-top: 1px solid #2f2f2f;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .hidden-honeypot {
+      position: absolute !important;
+      left: -5000px !important;
+      width: 1px !important;
+      height: 1px !important;
+      overflow: hidden !important;
+    }
+    #form-status {
+      text-align: center;
+      padding: 0 18px 18px;
+      min-height: 20px;
+    }
+    
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+    .modal.open { display: flex; }
+    .modal-card {
+      width: min(92vw, 560px);
+      background: #131313;
+      border: 3px solid #5da85d;
+      box-shadow: 0 0 0 3px #263926, 0 18px 42px rgba(0,0,0,0.6);
+      color: #d8d8d8;
+    }
+    .modal-head {
+      background: linear-gradient(#2d5a2d, #173217);
+      border-bottom: 2px solid #8df58d;
+      padding: 10px 14px;
+      color: #eaffea;
+      text-shadow: 1px 1px 0 #000;
+      font-weight: bold;
+    }
+    .modal-body {
+      padding: 16px;
+      line-height: 1.5;
+    }
+    .modal-actions {
+      padding: 0 16px 16px;
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .two-col { grid-template-columns: 1fr; }
+      table.form-table td,
+      table.form-table td.label {
+        display: block;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!--
+      PAGE HEADER — the big green bar at the very top.
+      Edit the h1 line to change the main page title.
+      Edit the subtitle line to change the smaller text beneath it.
+    -->
+    <div class="topbar">
+      <h1>MEAT MAN XBOX ADOPTION APPLICATION</h1>
+      <div class="subtitle">Original Xbox Rehoming Division // Applicant Screening Form v1.2</div>
+    </div>
+
+    <!--
+      SCROLLING MARQUEE BAR — the crawling warning text.
+      Edit the text between the opening and closing marquee tags.
+      scrollamount="4" controls speed. Higher number = faster scroll.
+    -->
+    <div class="marquee">
+      <marquee behavior="scroll" direction="left" scrollamount="4">
+        WARNING: Filling out this form does not mean you are getting an Xbox. It means I will read what you wrote and decide whether to respond. Lie on this form and you are only hurting yourself.
+      </marquee>
+    </div>
+
+    <div class="content">
+
+      <!--
+        INTRO BOX — the box visitors read before they touch the form.
+        The window-title is the dark bar label at the top of the box.
+        The <p> tag is the main paragraph.
+        The <div class="warning"> is the highlighted box beneath it.
+        Edit any of those three things freely.
+      -->
+      <div class="window">
+        <div class="window-title">Read This Before You Touch Anything</div>
+        <div class="window-body">
+          <p>This is a screening form. Not a shopping cart. Not a reservation system. I use the answers here to figure out whether your setup makes sense, whether your expectations are realistic, and whether you are the kind of person who will follow instructions or the kind of person who will ignore everything and then blame the hardware.</p>
+          <div class="warning">
+            Answer honestly. If you do not know something, say you do not know. That is a better answer than a confident wrong one. The people who pretend to know what they are doing are the ones who end up breaking things and sending me paragraphs about it at 11pm.
+          </div>
+        </div>
+      </div>
+
+      <!--
+        THE FORM — do not change action="..." (your Formspree address)
+        and do not change id="adoptionForm" (the script below needs it).
+      -->
+      <form id="adoptionForm" action="https://formspree.io/f/xdaykrwd" method="POST">
+        <input type="hidden" name="_subject" value="New Meat Man Xbox Adoption Application">
+        <input type="hidden" name="_format" value="plain">
+
+        <!-- Spam trap field — invisible to real users, do not touch -->
+        <label class="hidden-honeypot" aria-hidden="true">
+          Leave this field empty
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off">
+        </label>
+
+        <!--
+          ============================================================
+          SECTION 1: APPLICANT INFORMATION
+          ============================================================
+          Plain contact fields. To edit the bold question label on the
+          left, change the text inside <td class="label">...</td>.
+          To edit the small grey hint text beneath a field, change the
+          text inside <div class="small-note">...</div>.
+          Do not change any name="..." attributes.
+        -->
+        <div class="window">
+          <div class="window-title">Applicant Information</div>
+          <div class="window-body">
+            <table class="form-table">
+
+              <!-- Full name — plain text input, required -->
+              <tr>
+                <td class="label">Full Name</td>
+                <td><input type="text" name="full_name" required></td>
+              </tr>
+
+              <!-- Email — required. Edit the small-note to change the hint text -->
+              <tr>
+                <td class="label">Email Address</td>
+                <td>
+                  <input type="email" name="email" required>
+                  <div class="small-note">This is where I will reply. Make sure it is one you actually check.</div>
+                </td>
+              </tr>
+
+              <!-- Shipping address — textarea, required -->
+              <tr>
+                <td class="label">Shipping Address</td>
+                <td><textarea name="address" required></textarea></td>
+              </tr>
+
+              <!-- Referral source — optional text field -->
+              <tr>
+                <td class="label">Who sent you here?</td>
+                <td>
+                  <input type="text" name="referral_source">
+                  <div class="small-note">A community, a person, a video, a dark urge. Whatever it was.</div>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+        <!--
+          ============================================================
+          SECTION 2: WHAT THEY WANT
+          ============================================================
+          CHECKBOXES: each <label>...</label> line is one checkbox option.
+          The value="..." is what shows in your email.
+          The text after the closing > is what the visitor sees on screen.
+          Edit visible text freely. Keep value and visible text consistent.
+          To add an option: copy a label line, paste it, change both parts.
+          To remove an option: delete the entire label line.
+
+          TEXTAREAS: the placeholder="..." is the grey hint text inside
+          the box before they type. Edit it freely.
+          required on a textarea means they cannot skip it.
+        -->
+        <div class="window">
+          <div class="window-title">What You Actually Want</div>
+          <div class="window-body">
+            <table class="form-table">
+
+              <!-- Checkbox group: intended uses -->
+              <tr>
+                <td class="label">What do you plan to use it for?</td>
+                <td>
+                  <div class="checklist">
+                    <label><input type="checkbox" name="goals" value="Play online with Insignia"> Play online via Insignia</label>
+                    <label><input type="checkbox" name="goals" value="Play offline games"> Offline game library</label>
+                    <label><input type="checkbox" name="goals" value="Use emulators"> Emulators (MAME, NES, SNES, etc.)</label>
+                    <label><input type="checkbox" name="goals" value="Rip discs to hard drive"> Rip discs to the hard drive</label>
+                    <label><input type="checkbox" name="goals" value="Use modern controllers"> Use a modern controller</label>
+                    <label><input type="checkbox" name="goals" value="General collection"> Collection / nostalgia / display</label>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Free text: why they want one. required = cannot be skipped -->
+              <tr>
+                <td class="label">Why do you want an original Xbox specifically?</td>
+                <td>
+                  <textarea name="why_adopt" required placeholder="Not looking for a sales pitch. Just tell me what actually drew you to this."></textarea>
+                </td>
+              </tr>
+
+              <!-- Free text: describe their ideal setup -->
+              <tr>
+                <td class="label">What does your ideal setup look like when it is done?</td>
+                <td>
+                  <textarea name="desired_setup" placeholder="Example: plugged into a 4K TV via HDMI adapter, Bluetooth controller, 2TB drive, mostly Halo and emulators. Be specific."></textarea>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+        <!--
+          ============================================================
+          SECTION 3: VIDEO AND DISPLAY SETUP
+          ============================================================
+          DROPDOWNS (select menus): each <option> line is one item.
+          The first option (value="") is the greyed-out default prompt.
+          To add a dropdown option: copy any <option> line, paste it,
+          change the text. To remove one: delete the <option> line.
+          Do not change name="tv_type" or name="video_connection".
+
+          RADIO BUTTONS: only one can be selected at a time.
+          Same rules as checkboxes — edit visible text freely,
+          leave name="..." alone.
+
+          The <p class="small-note"> at the top is the intro paragraph
+          for this whole section.
+        -->
+        <div class="window">
+          <div class="window-title">Video and Display Setup</div>
+          <div class="window-body">
+
+            <!-- Section intro note — edit this paragraph freely -->
+            <p class="small-note" style="margin-bottom: 10px;">This matters more than most people think. The original Xbox does not output HDMI natively. Every HDMI solution involves signal conversion. What you are connecting to determines what that looks like.</p>
+
+            <!-- Two dropdown menus displayed side by side -->
+            <div class="two-col">
+
+              <!-- Dropdown: type of display they own -->
+              <div>
+                <label for="tv_type">What kind of display are you connecting to?</label>
+                <select name="tv_type" id="tv_type">
+                  <option value="">Select one</option>
+                  <option>CRT television</option>
+                  <option>Flat panel TV (1080p)</option>
+                  <option>Flat panel TV (4K)</option>
+                  <option>Computer monitor</option>
+                  <option>I do not know</option>
+                </select>
+              </div>
+
+              <!-- Dropdown: which video connection they plan to use -->
+              <div>
+                <label for="video_connection">What video connection are you planning to use?</label>
+                <select name="video_connection" id="video_connection">
+                  <option value="">Select one</option>
+                  <option>Composite (yellow/red/white cables)</option>
+                  <option>Component (red/green/blue cables)</option>
+                  <option>HDMI adapter (Electron Shepherd XOUT or similar)</option>
+                  <option>I have not figured this out yet</option>
+                  <option>I do not know the difference</option>
+                </select>
+              </div>
+
+            </div>
+
+            <!-- Radio group: does their TV have analog inputs -->
+            <table class="form-table" style="margin-top: 12px;">
+              <tr>
+                <td class="label">Does your TV have composite or component inputs?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="tv_has_analog_inputs" value="Yes, composite"> Yes, composite</label>
+                    <label><input type="radio" name="tv_has_analog_inputs" value="Yes, component"> Yes, component</label>
+                    <label><input type="radio" name="tv_has_analog_inputs" value="Yes, both"> Yes, both</label>
+                    <label><input type="radio" name="tv_has_analog_inputs" value="No, HDMI only"> No, HDMI only</label>
+                    <label><input type="radio" name="tv_has_analog_inputs" value="I have no idea"> I have no idea</label>
+                  </div>
+                  <!-- Small note beneath this radio group -->
+                  <div class="small-note">If your TV is HDMI-only, you will need an HDMI adapter. That changes the cost and the conversation.</div>
+                </td>
+              </tr>
+            </table>
+
+          </div>
+        </div>
+
+        <!--
+          ============================================================
+          SECTION 4: NETWORKING SETUP
+          ============================================================
+          All radio button groups. Same rules as Section 3 radios.
+          The <p class="small-note"> at the top is the section intro.
+          Each <div class="small-note"> beneath a question is a hint
+          that appears below that specific question's options.
+          Do not change any name="..." attributes.
+        -->
+        <div class="window">
+          <div class="window-title">Networking Setup</div>
+          <div class="window-body">
+
+            <!-- Section intro note — edit this paragraph freely -->
+            <p class="small-note" style="margin-bottom: 10px;">The original Xbox uses Ethernet only. No Wi-Fi, ever. Networking is also the most common source of problems — not because the Xbox is broken, but because modern equipment was not designed with 2001 consoles in mind. Be honest here.</p>
+
+            <table class="form-table">
+
+              <!-- Radio group: how they plan to physically connect -->
+              <tr>
+                <td class="label">How are you planning to connect the Xbox to your network?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="network_plan" value="Direct Ethernet cable to router or switch"> Direct Ethernet cable to my router or a switch</label>
+                    <label><input type="radio" name="network_plan" value="Powerline or MoCA adapter"> Powerline or MoCA adapter</label>
+                    <label><input type="radio" name="network_plan" value="Long Ethernet run through the house"> Long Ethernet run through the house</label>
+                    <label><input type="radio" name="network_plan" value="Laptop bridging or ICS"> Laptop or PC bridging / internet connection sharing</label>
+                    <label><input type="radio" name="network_plan" value="Not sure yet"> Not sure yet</label>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Radio group: what kind of router/modem setup they have -->
+              <tr>
+                <td class="label">What is your router situation?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="router_type" value="Separate modem and router"> Separate modem and separate router</label>
+                    <label><input type="radio" name="router_type" value="ISP combo unit"> All-in-one modem/router combo from my ISP</label>
+                    <label><input type="radio" name="router_type" value="ISP combo plus my own router"> ISP combo unit plus my own router behind it</label>
+                    <label><input type="radio" name="router_type" value="I do not know"> I genuinely do not know</label>
+                  </div>
+                  <!-- Hint beneath this specific question -->
+                  <div class="small-note">ISP-provided combo units are a known problem for Insignia and Xbox networking in general. Not always fatal, but I need to know up front.</div>
+                </td>
+              </tr>
+
+              <!-- Radio group: comfort level with router admin settings -->
+              <tr>
+                <td class="label">Are you comfortable logging into your router's admin settings if needed?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="router_admin_comfort" value="Yes"> Yes</label>
+                    <label><input type="radio" name="router_admin_comfort" value="I have done it before but I would need help"> Done it before but I would need a guide</label>
+                    <label><input type="radio" name="router_admin_comfort" value="No"> No</label>
+                    <label><input type="radio" name="router_admin_comfort" value="I do not know what that means"> I do not know what that means</label>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Radio group: Insignia online play interest -->
+              <tr>
+                <td class="label">Do you plan to use Insignia for online play?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="wants_insignia" value="Yes"> Yes, that is a priority</label>
+                    <label><input type="radio" name="wants_insignia" value="Maybe eventually"> Maybe eventually</label>
+                    <label><input type="radio" name="wants_insignia" value="No"> No, I am fine offline</label>
+                    <label><input type="radio" name="wants_insignia" value="What is Insignia"> What is Insignia</label>
+                  </div>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+        <!--
+          ============================================================
+          SECTION 5: TECH LITERACY
+          ============================================================
+          Mix of radio groups and a free-text textarea.
+
+          The word  required  on a radio input means the whole group is
+          required — they cannot submit without answering it.
+          You can add  required  to other radio groups or remove it.
+
+          The textarea placeholder is the grey hint text inside the box.
+        -->
+        <div class="window">
+          <div class="window-title">Technical Honesty Check</div>
+          <div class="window-body">
+            <table class="form-table">
+
+              <!--
+                Radio group: self-assessed tech level.
+                required is on the first radio — that makes the whole group required.
+              -->
+              <tr>
+                <td class="label">How would you honestly describe your tech comfort level?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="tech_level" value="Beginner" required> Beginner — I can follow instructions if they are clear</label>
+                    <label><input type="radio" name="tech_level" value="Intermediate"> Intermediate — I can troubleshoot most things with some guidance</label>
+                    <label><input type="radio" name="tech_level" value="Advanced"> Advanced — I already know what FTP and XBMC are</label>
+                    <label><input type="radio" name="tech_level" value="Dangerously confident"> Dangerously confident — I have broken things before and called it learning</label>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Radio group: FTP familiarity -->
+              <tr>
+                <td class="label">Do you know what FTP is and roughly how to use it?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="knows_ftp" value="Yes, I have used it"> Yes, I have used an FTP client before</label>
+                    <label><input type="radio" name="knows_ftp" value="I know what it is but have not used it"> I know what it is but have never actually done it</label>
+                    <label><input type="radio" name="knows_ftp" value="No"> No, but I am willing to learn</label>
+                    <label><input type="radio" name="knows_ftp" value="No and I do not care"> No and I would rather not think about it</label>
+                  </div>
+                  <div class="small-note">FTP is how you put files on the Xbox. You will probably need it at some point. "Someone else will do it" is not a plan.</div>
+                </td>
+              </tr>
+
+              <!--
+                Free text: video troubleshooting scenario.
+                placeholder is the grey hint text inside the box.
+                The small-note beneath is the separate hint below the box.
+              -->
+              <tr>
+                <td class="label">If your Xbox stopped showing a picture after you changed a video setting, what would you do first?</td>
+                <td>
+                  <textarea name="video_troubleshooting" placeholder="Walk me through it. There is no trick here. Just tell me what you would actually do."></textarea>
+                  <div class="small-note">Hint: there is a button combination that resets the video output. Whether you know it or can figure it out tells me something useful.</div>
+                </td>
+              </tr>
+
+              <!-- Radio group: acknowledges responsibility for their own settings changes -->
+              <tr>
+                <td class="label">Do you understand that randomly changing settings on a modified console can break things, and that is on you?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="understands_settings_risk" value="Yes" required> Yes, I understand that</label>
+                    <label><input type="radio" name="understands_settings_risk" value="I do now"> I do now after reading this page</label>
+                  </div>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+        <!--
+          ============================================================
+          SECTION 6: BUILD DETAILS
+          ============================================================
+          Mix of radio groups, a checkbox group, and a free textarea.
+
+          STORAGE RADIO GROUP: options show size + plain description.
+          Edit the visible text after > freely. Keep value consistent.
+
+          CHECKLIST (interests): same rules as Section 2 checkboxes.
+          Add or remove <label> lines freely.
+
+          The final textarea (name="notes") is optional — no required.
+        -->
+        <div class="window">
+          <div class="window-title">Build Details</div>
+          <div class="window-body">
+            <table class="form-table">
+
+              <!-- Radio group: storage size preference -->
+              <tr>
+                <td class="label">How much storage are you thinking?</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="drive_size" value="Small — just a few games"> Small — I just want a few games, nothing fancy</label>
+                    <label><input type="radio" name="drive_size" value="500GB"> 500GB</label>
+                    <label><input type="radio" name="drive_size" value="1TB"> 1TB</label>
+                    <label><input type="radio" name="drive_size" value="2TB"> 2TB — I want as much as it can take</label>
+                    <label><input type="radio" name="drive_size" value="I need guidance"> I have no idea, tell me what makes sense</label>
+                  </div>
+                  <div class="small-note">For context: the original Xbox shipped with 8GB. 1TB is a reasonable modern starting point if you plan to use it seriously.</div>
+                </td>
+              </tr>
+
+              <!-- Radio group: controller preference -->
+              <tr>
+                <td class="label">Controller situation</td>
+                <td>
+                  <div class="choice-group">
+                    <label><input type="radio" name="controller_pref" value="OEM original Xbox controller"> OEM original Xbox controller — I want it to feel authentic</label>
+                    <label><input type="radio" name="controller_pref" value="Modern controller via adapter"> Modern controller via adapter (OGX Mini, Bluetooth, etc.)</label>
+                    <label><input type="radio" name="controller_pref" value="No preference"> No preference, tell me what you recommend</label>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Checkbox group: additional accessories or services they want -->
+              <tr>
+                <td class="label">Anything else you are interested in?</td>
+                <td>
+                  <div class="checklist">
+                    <label><input type="checkbox" name="interests" value="Electron Shepherd XOUT"> Electron Shepherd XOUT (HDMI adapter)</label>
+                    <label><input type="checkbox" name="interests" value="OGX Mini Bluetooth controller support"> OGX Mini / Bluetooth controller support</label>
+                    <label><input type="checkbox" name="interests" value="Modchip install"> Modchip install</label>
+                    <label><input type="checkbox" name="interests" value="Mail-in repair on a system I already own"> Mail-in repair on a system I already own</label>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Free text: optional catch-all notes field -->
+              <tr>
+                <td class="label">Anything I should know before I read your application?</td>
+                <td>
+                  <textarea name="notes" placeholder="Weird setup, unusual use case, specific concerns, previous experience with modded hardware, extenuating circumstances. Whatever feels relevant."></textarea>
+                </td>
+              </tr>
+
+            </table>
+          </div>
+        </div>
+
+        <!--
+          ============================================================
+          SECTION 7: DISCLAIMER AND SUBMISSION
+          ============================================================
+          The bullet list is inside <ul>...</ul>.
+          Each bullet is one <li>...</li> line.
+          Edit bullet text freely. Add or remove <li> lines as needed.
+
+          The final checkbox label is what they must check to submit.
+          Edit the text after the > to change what the checkbox says.
+
+          The <div class="small-note"> is the small grey line at the
+          very bottom before the submit button.
+        -->
+       <div class="window">
+          <div class="window-title">Acknowledgment and Submission</div>
+          <div class="window-body">
+
+            <p><strong>NOTICE OF RISK, RESPONSIBILITY, AND OWNER OBLIGATIONS</strong></p>
+            <p>By proceeding, you acknowledge that in my professional opinion I do not recommend that most people buy a modified Xbox from me. I recommend that, whenever possible, people learn the process and modify their own Xbox themselves. Owning a modified Xbox that you do not understand carries inherent risk. If you do not understand what has been changed, how the dashboard works, how your AV setup works, or how your network is configured, you are more likely to create problems for yourself.</p>
+            <p>This is not a new consumer appliance. It is a 20-plus year old console with aftermarket parts, modified software, custom configuration, and behavior that can change depending on your TV, cables, adapter, controller setup, router, or the choices you make after it arrives. Something as simple as changing a video setting in the dashboard can make the console appear unusable on your particular setup. If you do not have multiple displays, multiple cable options, or a second way to troubleshoot video output, you may be out of luck until the issue is diagnosed and corrected.</p>
+            <p>By submitting this application, you are affirmatively representing that you understand you are seeking to adopt and operate modified hardware at your own risk, and that you are accepting the duty to learn how to properly care for, connect, maintain, and use that hardware. You further acknowledge that any change to settings, dashboards, scripts, storage layout, video modes, network configuration, or connected accessories may result in unintended behavior, compatibility issues, loss of functionality, or a system that no longer works properly on your specific setup.</p>
+
+            <ul style="margin: 10px 0 14px 18px; line-height: 1.8;">
+              <li>These are 20-plus year old consoles. They are not new, they are not foolproof, and they will not behave like new retail electronics.</li>
+              <li>They have been modified on purpose. That modification is the value of the system and also the source of additional risk, complexity, and owner responsibility.</li>
+              <li>I make no representation that any modified console will remain problem-free if you change settings, alter files, swap accessories, ignore instructions, or use hardware that is incompatible with your setup.</li>
+              <li>Your TV, monitor, HDMI adapter, AV cables, router, modem, ISP equipment, controller adapters, storage devices, and every decision you make after delivery are your responsibility, not mine.</li>
+              <li>I strongly advise that you contact me before changing settings or options you do not fully understand. If you decide to change things anyway, you are assuming the risk of whatever happens next.</li>
+              <li>Submitting this form does not guarantee a sale, a quote, support, or a response. It means I will review your answers and decide whether I want to proceed.</li>
+              <li>If you break something by ignoring documentation, experimenting blindly, or making changes without understanding the consequences, that is not a warranty claim. That is ownership.</li>
+            </ul>
+
+            <label>
+              <input type="checkbox" name="accept_disclaimer" required>
+              I have read and understood this acknowledgment, I accept the risks of owning modified hardware, I understand that I am responsible for learning how to operate and care for this console, and I agree to contact Meat Man before changing settings or options I do not understand.
+            </label>
+
+            <div class="small-note" style="margin-top: 10px;">If you are not comfortable taking responsibility for a modified Xbox, do not submit this form.</div>
+
+          </div>
+        </div>
+
+        <!-- Hidden metadata fields — do not touch these -->
+        <input type="hidden" name="submitted_at" id="submitted_at">
+        <input type="hidden" name="browser_user_agent" id="browser_user_agent">
+        <input type="hidden" name="screen_resolution" id="screen_resolution">
+        <input type="hidden" name="timezone" id="timezone">
+        <input type="hidden" name="page_url" id="page_url">
+        <input type="hidden" name="tour_total_seconds" id="tour_total_seconds">
+        <input type="hidden" name="tour_step_times" id="tour_step_times">
+        <input type="hidden" name="tour_started_at" id="tour_started_at">
+
+        <!--
+          SUBMIT BUTTON
+          Edit the text between <button ...> and </button> to change
+          what the button says.
+        -->
+        <div class="button-row">
+          <button type="submit">SUBMIT ADOPTION APPLICATION</button>
+        </div>
+
+        <!-- Status message area — text is set by the script below after submission -->
+        <div id="form-status" class="small-note" style="display:none;"></div>
+
+      </form>
+    </div>
+
+    <!--
+      PAGE FOOTER — the small text at the very bottom.
+      Edit the text between <div class="footer"> and </div> freely.
+    -->
+    <div class="footer">
+      Meat Man Xbox Adoption Program // This page intentionally looks like it was built in 2003. The Xboxes look like they were built in 2003 too. That is the point.
+    </div>
+
+  </div>
+
+
+  <div class="modal" id="success-modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">Application Received</div>
+      <div class="modal-body">
+        <p>Your application was received.</p>
+        <p>This is not an approval, reservation, quote, or promise of a response. It means the form went through and I will review it.</p>
+        <p>If your setup makes sense and your answers were honest, you may hear back.</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="close-success-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="error-modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">Submission Failed</div>
+      <div class="modal-body">
+        <p>The form did not go through.</p>
+        <p>Try again in a minute. If it still fails, contact Meat Man directly.</p>
+      </div>
+      <div class="modal-actions">
+        <button type="button" id="close-error-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    FORM SUBMISSION SCRIPT — handles what happens when someone clicks submit.
+    Sends data to Formspree and shows a message to the visitor.
+
+    The two lines you might want to edit are marked below.
+    Do not change anything else in here.
+  -->
+  
+  <script>
+    document.getElementById('submitted_at').value = new Date().toISOString();
+    document.getElementById('browser_user_agent').value = navigator.userAgent;
+    document.getElementById('screen_resolution').value = window.screen.width + 'x' + window.screen.height;
+    document.getElementById('timezone').value = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
+    document.getElementById('page_url').value = window.location.href;
+
+    // Read tour timing data from sessionStorage
+    const tourTotal = sessionStorage.getItem('xbox_tour_total_seconds');
+    const tourSteps = sessionStorage.getItem('xbox_tour_step_times');
+    const tourStartedAt = sessionStorage.getItem('xbox_tour_started_at');
+    if (tourTotal !== null) {
+      document.getElementById('tour_total_seconds').value = tourTotal + 's';
+      document.getElementById('tour_step_times').value = tourSteps || '';
+      document.getElementById('tour_started_at').value = tourStartedAt || '';
+    }
+
+    const form = document.getElementById('adoptionForm');
+    const status = document.getElementById('form-status');
+    const successModal = document.getElementById('success-modal');
+    const errorModal = document.getElementById('error-modal');
+    const closeSuccessModal = document.getElementById('close-success-modal');
+    const closeErrorModal = document.getElementById('close-error-modal');
+
+    function openModal(modal) {
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    closeSuccessModal.addEventListener('click', () => closeModal(successModal));
+    closeErrorModal.addEventListener('click', () => closeModal(errorModal));
+
+    successModal.addEventListener('click', (event) => {
+      if (event.target === successModal) closeModal(successModal);
+    });
+    errorModal.addEventListener('click', (event) => {
+      if (event.target === errorModal) closeModal(errorModal);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeModal(successModal);
+        closeModal(errorModal);
+      }
+    });
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      status.textContent = 'Submitting application...';
+
+      const data = new FormData(form);
+
+      try {
+        const response = await fetch(form.action, {
+          method: form.method,
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          form.reset();
+          status.textContent = '';
+          openModal(successModal);
+        } else {
+          status.textContent = '';
+          openModal(errorModal);
+        }
+      } catch (error) {
+        status.textContent = '';
+        openModal(errorModal);
+      }
+    });
+  </script>
+
+</body>
+</html>
