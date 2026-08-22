@@ -480,6 +480,21 @@
       }
     }
 
+    async function gatewayFetch(path, options = {}, allowLocalFallback = false) {
+      const url = gateway.replace(/\/$/, '') + path;
+      try {
+        return await fetch(url, options);
+      } catch (firstError) {
+        if (!allowLocalFallback) throw firstError;
+        try {
+          return await fetch(url, { ...options, targetAddressSpace: 'local' });
+        } catch (secondError) {
+          secondError.hamuelLocalFallback = true;
+          throw secondError;
+        }
+      }
+    }
+
     async function askHamuel(question) {
       const clean = String(question || '').trim().slice(0, 1000);
       if (!clean || requestInFlight) return;
@@ -500,24 +515,28 @@
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 80000);
       try {
-        const response = await fetch(gateway.replace(/\/$/, '') + '/ask', {
+        const response = await gatewayFetch('/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: clean, session_id: sessionId(), section: currentSection }),
           signal: controller.signal
-        });
+        }, true);
         let payload = {};
         try { payload = await response.json(); } catch (_) {}
         if (!response.ok || !payload.ok || !payload.response) {
           if (response.status === 429) throw new Error('rate_limited');
           throw new Error(payload.error || `HTTP ${response.status}`);
         }
+        status.dataset.connection = 'online';
+        avatar.updateLabels();
         await typeHamuel(String(payload.response));
       } catch (error) {
         avatar.fail();
         const message = error && error.message === 'rate_limited'
           ? 'That is enough questions for one minute. Give me a moment and try again.'
-          : 'I lost the connection to the server. The rest of the site still works; try me again in a minute.';
+          : error && error.hamuelLocalFallback
+            ? 'I could not reach the server. If this device is connected to MeatMan\'s Tailscale network, allow Local Network Access for this site in your browser and try again. Otherwise, try me again in a minute.'
+            : 'I lost the connection to the server. The rest of the site still works; try me again in a minute.';
         addLine('HAMUEL', message);
       } finally {
         clearTimeout(timer);
@@ -560,15 +579,15 @@
         status.dataset.connection = 'offline';
         status.textContent = 'OFFLINE';
       } else {
-        fetch(gateway.replace(/\/$/, '') + '/health', { cache: 'no-store' })
+        gatewayFetch('/health', { cache: 'no-store' }, false)
           .then((response) => {
             if (!response.ok) throw new Error('offline');
             status.dataset.connection = 'online';
             avatar.updateLabels();
           })
           .catch(() => {
-            status.dataset.connection = 'offline';
-            status.textContent = 'OFFLINE';
+            status.dataset.connection = 'unknown';
+            status.textContent = 'READY // CONNECT ON ASK';
           });
       }
     }
