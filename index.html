@@ -1,546 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MeatMan Mods | Guided Tour</title>
-  <meta name="description" content="A guided tour through original Xbox restoration, pricing, modern display compatibility, networking, controllers, and the MeatMan Mods adoption process." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MeatMan Mods original Xbox restoration, setup, adoption, and support.">
+  <title>MeatMan Mods // Hamuel Guided Console</title>
   <style>
     :root {
-      --bg:#0b0f0b; --panel:#121812; --panel-2:#181f18; --line:#2c3a2c; --green:#8acb88; --green-bright:#b7ef9d;
-      --text:#e6efe3; --muted:#a7b3a3; --warn:#d8b15f; --danger:#d97979; --shadow:rgba(0,0,0,0.45); --max:1020px;
+      --bg:#050805; --panel:#0b100b; --panel2:#101710; --line:#2c452d;
+      --green:#39ff6a; --green2:#8cff9f; --text:#d5e0d2; --muted:#819181;
+      --amber:#ffbf35; --red:#ff5449; --shell:#b9ad8f; --shadow:rgba(0,0,0,.48);
     }
     * { box-sizing:border-box; }
-    html, body { min-height:100%; }
-    body {
-      margin:0; font-family:Verdana, Tahoma, Arial, sans-serif;
-      background: radial-gradient(circle at top left, #173117 0%, transparent 30%), linear-gradient(180deg, #0b0f0b 0%, #0f140f 100%);
-      color:var(--text); line-height:1.62;
+    html, body { margin:0; min-height:100%; background:#020402; color:var(--text); font-family:Arial,Helvetica,sans-serif; }
+    body { padding:18px; }
+    button, input { font:inherit; }
+    button, a { -webkit-tap-highlight-color:transparent; }
+    a { color:var(--green2); }
+    .computer {
+      width:min(1440px,100%); margin:0 auto; min-height:calc(100vh - 36px);
+      background:linear-gradient(180deg,#0a0e0a,#050805); border:1px solid #456045;
+      box-shadow:0 24px 70px var(--shadow), inset 0 0 0 1px #111a11; display:flex; flex-direction:column;
     }
-    a { color:var(--green-bright); text-decoration:none; }
-    a:hover { text-decoration:underline; }
-    .wrap { width:min(calc(100% - 32px), var(--max)); margin:0 auto; }
-    .top-strip {
-      background:#000; color:var(--green-bright); border-bottom:1px solid #294129; font-size:12px; padding:8px 0;
-    }
-    .top-strip .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
-    header {
-      border-bottom:1px solid var(--line); background:rgba(9,12,9,0.92); backdrop-filter:blur(6px); position:sticky; top:0; z-index:40;
-    }
-    .nav { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:14px 0; flex-wrap:wrap; }
-    .brand { font-size:28px; font-weight:700; color:var(--green-bright); text-shadow:1px 1px 0 #000; }
-    .brand small { display:block; font-size:11px; color:var(--muted); font-weight:400; letter-spacing:1.2px; text-transform:uppercase; margin-top:3px; }
-    .utility-links { display:flex; gap:16px; flex-wrap:wrap; font-size:13px; }
+    .system-bar { display:flex; justify-content:space-between; gap:16px; align-items:center; padding:10px 14px; border-bottom:1px solid var(--line); background:#0e150e; font:12px/1.2 Consolas,'Courier New',monospace; }
+    .system-brand { color:var(--green); letter-spacing:.8px; font-weight:700; }
+    .system-meta { color:var(--muted); text-align:right; }
+    .screen-tabs { display:grid; grid-template-columns:repeat(6,1fr); border-bottom:1px solid var(--line); background:#080c08; }
+    .screen-tabs button { border:0; border-right:1px solid #203220; background:transparent; color:#78907a; padding:11px 8px; cursor:pointer; font:11px/1.25 Consolas,'Courier New',monospace; text-transform:uppercase; }
+    .screen-tabs button:last-child { border-right:0; }
+    .screen-tabs button:hover, .screen-tabs button.active { background:#111b11; color:var(--green); }
+    .screen-tabs button.active { box-shadow:inset 0 -2px var(--green); }
+    .app-shell { flex:1; display:grid; grid-template-columns:minmax(0,1.18fr) minmax(390px,.82fr); min-height:0; }
+    .content-bay { padding:34px; border-right:1px solid var(--line); min-width:0; display:flex; flex-direction:column; }
+    .screen-content { flex:1; min-height:0; display:flex; }
+    .screen-page { display:none; width:100%; align-self:center; max-width:800px; animation:screenIn .18s ease-out; }
+    .screen-page.active { display:block; }
+    @keyframes screenIn { from { opacity:.25; transform:translateY(5px); } to { opacity:1; transform:none; } }
+    .eyebrow { font:11px/1.2 Consolas,'Courier New',monospace; letter-spacing:1.2px; text-transform:uppercase; color:var(--green); margin-bottom:9px; }
+    h1,h2 { margin:0 0 16px; color:#f0f5ee; line-height:1.08; }
+    h1 { font-size:clamp(32px,4vw,58px); }
+    h2 { font-size:clamp(27px,3vw,44px); }
+    h3 { margin:0 0 8px; color:var(--green2); font-size:16px; }
+    p, li { line-height:1.6; }
+    p { margin:0 0 15px; }
+    ul { margin:8px 0 0; padding-left:20px; }
+    .callout { padding:14px 16px; border-left:3px solid var(--green); background:#0c140c; margin:18px 0; line-height:1.55; }
+    .grid-2,.grid-3 { display:grid; gap:12px; margin:18px 0; }
+    .grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .card { background:#0a100a; border:1px solid #263b26; padding:15px; }
+    .card p { margin-bottom:0; font-size:14px; }
+    .screen-actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:24px; }
+    .btn { border:1px solid #4e7650; background:#132013; color:var(--green); padding:10px 14px; cursor:pointer; text-decoration:none; display:inline-block; font-weight:700; }
+    .btn:hover { background:#1b2b1b; }
+    .btn.secondary { color:#cbd7c8; border-color:#405040; background:#0d120d; }
+    .btn.primary { background:#18311c; border-color:#65a369; }
+    .content-footer { margin-top:24px; color:#718071; font:10px/1.4 Consolas,'Courier New',monospace; display:flex; justify-content:space-between; gap:12px; }
+    .program-window { display:none; flex:1; min-height:0; border:1px solid #2a402b; background:#050805; flex-direction:column; }
+    .content-bay.program-open .screen-content { display:none; }
+    .content-bay.program-open .program-window { display:flex; }
+    .program-head { display:flex; justify-content:space-between; gap:10px; align-items:center; padding:9px 10px; background:#0d150d; border-bottom:1px solid #2a402b; color:var(--green); font:700 11px/1.2 Consolas,'Courier New',monospace; }
+    .program-frame { width:100%; flex:1; min-height:620px; border:0; background:#fff; }
+    .program-close { border:1px solid #415b42; background:#0a0f0a; color:#becbbe; padding:5px 8px; cursor:pointer; }
 
-    main { padding:34px 0 52px; }
-    .progress {
-      border:1px solid var(--line); background:#101610; padding:12px 14px; font-size:13px; color:var(--muted); margin-bottom:18px;
-      box-shadow:0 8px 18px var(--shadow);
-    }
-    .progress strong { color:var(--green-bright); }
-    .tour-stage {
-      display:none; background:linear-gradient(180deg, rgba(18,24,18,0.98), rgba(14,18,14,0.98)); border:1px solid var(--line);
-      box-shadow:0 16px 36px var(--shadow); padding:28px;
-    }
-    .tour-stage.active { display:block; }
-    .eyebrow {
-      display:inline-block; padding:4px 8px; border:1px solid #436343; background:#101610; color:var(--green-bright);
-      font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px;
-    }
-    h1,h2,h3 { line-height:1.15; margin:0 0 14px; }
-    h1 { font-size:clamp(33px, 6vw, 56px); }
-    h2 { font-size:clamp(26px, 4vw, 38px); }
-    h3 { font-size:20px; color:var(--green-bright); }
-    p { margin:0 0 14px; }
-    ul { margin:0 0 14px 20px; padding:0; }
-    li { margin-bottom:8px; }
-    .muted { color:var(--muted); }
-    .quote {
-      border-left:4px solid #5f8d5f; padding-left:14px; color:var(--green-bright); margin:18px 0; font-style:italic;
-    }
-    .callout, .warning, .danger {
-      padding:14px 16px; margin:18px 0; border-left:4px solid var(--green); background:#0d150d;
-    }
-    .warning { border-left-color:var(--warn); background:#181307; color:#ead79a; }
-    .danger { border-left-color:var(--danger); background:#180d0d; color:#f0c3c3; }
-    .panel { background:var(--panel-2); border:1px solid var(--line); padding:18px; }
-    .grid-2 { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
-    .grid-4 { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
-    .button-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
-    .btn {
-      display:inline-block; padding:12px 18px; border:1px solid #658f65; background:linear-gradient(180deg,#294729,#1c311c);
-      color:#fff; font-weight:700; font-size:14px; cursor:pointer;
-    }
-    .btn.secondary { background:#131913; color:var(--green-bright); border-color:#415741; }
-    .btn:disabled { opacity:0.65; cursor:default; }
-    .subtle-link { font-size:13px; }
-    .dongle-rule {
-      display:flex; align-items:flex-start; gap:12px; background:#0a120a; border:1px solid #3a5a3a; padding:12px 16px; margin:20px 0; font-size:13px; color:var(--muted);
-    }
-    .dongle-badge {
-      flex-shrink:0; background:var(--green-bright); color:#000; font-weight:bold; font-size:11px; padding:4px 8px; text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap;
-    }
-    .compare-table { width:100%; border-collapse:collapse; font-size:13px; margin:0 0 18px; }
-    .compare-table th { background:#1a261a; color:var(--green-bright); padding:10px 12px; text-align:left; border-bottom:2px solid var(--line); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
-    .compare-table td { padding:9px 12px; border-bottom:1px solid #1e281e; vertical-align:top; }
-    .compare-table tr:nth-child(even) td { background:#0f150f; }
-    .good { color:var(--green-bright); }
-    .bad { color:#e87070; }
-    .mid { color:var(--warn); }
-    .end-cta {
-      padding:24px; text-align:center; background:linear-gradient(180deg, rgba(28,49,28,0.95), rgba(15,22,15,0.95)); border:1px solid #466246; box-shadow:0 16px 36px var(--shadow); margin-top:26px;
-    }
-    footer { border-top:1px solid var(--line); padding:24px 0 40px; color:var(--muted); font-size:12px; }
-    .tiny { font-size:12px; color:var(--muted); }
-
-    .modal {
-      position:fixed; inset:0; background:rgba(0,0,0,0.78); display:none; align-items:center; justify-content:center; padding:20px; z-index:120;
-    }
-    .modal.open { display:flex; }
-    .modal-card {
-      width:min(1100px, 100%); height:min(86vh, 900px); background:#0a0a0a; border:1px solid #4d6b4d; box-shadow:0 18px 42px rgba(0,0,0,0.6); display:flex; flex-direction:column;
-    }
-    .modal-head {
-      display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 12px; background:#111811; border-bottom:1px solid #2e412e;
-    }
-    .modal-title { color:var(--green-bright); font-weight:700; font-size:14px; }
-    .modal iframe { border:0; width:100%; height:100%; background:#fff; }
-
-
-    .hero-grid { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr); gap:20px; align-items:start; }
-    .hamuel-terminal { background:#070b07; border:1px solid #4b704b; box-shadow:inset 0 0 0 1px #101a10, 0 12px 28px rgba(0,0,0,.35); min-width:0; }
-    .hamuel-terminal-head { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:10px 12px; border-bottom:1px solid #304430; background:#0e150e; }
-    .hamuel-terminal-title { color:var(--green-bright); font-weight:700; font-size:13px; letter-spacing:.7px; }
-    .hamuel-status { color:var(--muted); font-size:11px; white-space:nowrap; }
-    .hamuel-status::before { content:'●'; color:var(--green-bright); margin-right:6px; }
-    .hamuel-status[data-connection="offline"]::before { color:#d27d42; }
-    .hamuel-console-main { display:grid; grid-template-columns:minmax(145px,.72fr) minmax(0,1.28fr); min-height:230px; border-bottom:1px solid #263526; }
-    .hamuel-avatar-bay { padding:12px; background:#080c08; border-right:1px solid #263526; display:flex; flex-direction:column; justify-content:center; }
-    .hamuel-crt { width:min(100%,210px); margin:0 auto; padding:9px 9px 7px; border:4px solid #6d634d; border-radius:9px 9px 5px 5px; background:#b9ad8f; box-shadow:0 10px 18px rgba(0,0,0,.45), inset 0 0 0 2px #d4c9aa; }
-    .hamuel-crt-screen { position:relative; overflow:hidden; padding:5px; border:5px solid #29261f; border-radius:7px; background:#39ff6a; box-shadow:inset 0 0 18px rgba(0,18,4,.8), 0 0 13px rgba(57,255,106,.18); }
-    .hamuel-crt-screen::after { content:''; position:absolute; inset:0; pointer-events:none; background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 3px,rgba(0,0,0,.11) 4px,rgba(0,0,0,.11) 5px); mix-blend-mode:multiply; }
-    .hamuel-crt-screen::before { content:''; position:absolute; inset:0; z-index:2; pointer-events:none; background:linear-gradient(115deg,rgba(255,255,255,.10),transparent 24%,transparent 72%,rgba(255,255,255,.035)); }
+    .hamuel-bay { min-width:0; background:#050705; display:flex; align-items:stretch; }
+    .hamuel-terminal { width:100%; display:flex; flex-direction:column; min-height:100%; background:#060906; }
+    .hamuel-terminal-head { display:flex; justify-content:space-between; gap:10px; align-items:center; padding:10px 12px; border-bottom:1px solid var(--line); background:#0e150e; }
+    .hamuel-terminal-title { color:var(--green); font:700 12px/1.2 Consolas,'Courier New',monospace; letter-spacing:.8px; }
+    .hamuel-status { color:var(--muted); font:10px/1.2 Consolas,'Courier New',monospace; white-space:nowrap; }
+    .hamuel-status::before { content:'●'; color:var(--green); margin-right:5px; }
+    .hamuel-status[data-connection="offline"]::before { color:var(--red); }
+    .hamuel-avatar-bay { padding:18px 18px 10px; display:flex; flex-direction:column; align-items:center; }
+    .hamuel-crt { width:min(340px,88%); background:linear-gradient(145deg,#c4b897,#897e63); padding:16px 16px 10px; border-radius:12px; box-shadow:inset -8px -8px 0 rgba(32,28,20,.26), inset 4px 4px 0 rgba(255,255,255,.12), 0 13px 24px rgba(0,0,0,.36); }
+    .hamuel-crt-screen { position:relative; border:8px solid #4d4637; background:#111; border-radius:8px; overflow:hidden; box-shadow:inset 0 0 18px #000, 0 0 14px rgba(57,255,106,.1); }
+    .hamuel-crt-screen::after { content:''; pointer-events:none; position:absolute; inset:0; background:radial-gradient(circle at 50% 45%,transparent 35%,rgba(0,0,0,.16) 100%); }
     #hamuel-avatar { display:block; width:100%; height:auto; aspect-ratio:1; image-rendering:pixelated; }
-    .hamuel-crt-controls { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:7px; color:#29261f; font:700 9px/1.1 Consolas,'Courier New',monospace; letter-spacing:.4px; }
-    .hamuel-crt-led { color:#28b94b; text-shadow:0 0 5px rgba(40,185,75,.8); }
-    .hamuel-crt-knobs { letter-spacing:2px; color:#6d634d; }
-    .hamuel-avatar-meta { display:flex; justify-content:space-between; gap:8px; margin-top:8px; color:#6f8b70; font:10px/1.2 Consolas,'Courier New',monospace; text-transform:uppercase; }
-    .hamuel-avatar-meta strong { color:var(--green-bright); font-weight:600; }
-    .hamuel-transcript { min-height:230px; max-height:300px; overflow:auto; padding:12px; font-family:Consolas, 'Courier New', monospace; font-size:12px; line-height:1.55; background:#050805; }
+    .hamuel-crt-controls { display:flex; justify-content:space-between; align-items:center; color:#383327; margin-top:8px; font:700 10px/1 Consolas,'Courier New',monospace; }
+    .hamuel-crt-led { color:#1aa43c; text-shadow:0 0 5px #39ff6a; }
+    .hamuel-avatar-meta { width:min(340px,88%); display:flex; justify-content:space-between; gap:8px; color:#718071; font:10px/1.2 Consolas,'Courier New',monospace; margin-top:8px; }
+    .hamuel-avatar-meta strong { color:var(--green); }
+    .hamuel-transcript { flex:1; min-height:170px; max-height:270px; overflow:auto; margin:5px 14px 0; padding:12px; border:1px solid #223423; background:#020402; font:12px/1.55 Consolas,'Courier New',monospace; }
     .hamuel-line { margin:0 0 10px; white-space:pre-wrap; overflow-wrap:anywhere; }
-    .hamuel-line strong { color:var(--green-bright); }
-    .hamuel-line.user strong { color:#d7e7d2; }
-    .hamuel-quick { display:flex; flex-wrap:wrap; gap:6px; padding:0 12px 10px; }
-    .hamuel-quick button { font:inherit; font-size:11px; color:var(--green-bright); background:#101610; border:1px solid #3d563d; padding:7px 8px; cursor:pointer; }
-    .hamuel-form { display:flex; gap:8px; padding:10px 12px; border-top:1px solid #263526; }
-    .hamuel-form input { min-width:0; flex:1; background:#0d130d; color:var(--text); border:1px solid #3d563d; padding:10px 11px; font:inherit; font-size:16px; }
-    .hamuel-form button { flex:0 0 auto; }
-    .hamuel-handoff { padding:0 12px 12px; }
-    .hamuel-handoff .btn { width:100%; text-align:center; }
-    .hamuel-handoff .btn[disabled] { opacity:.55; cursor:not-allowed; }
-    .hamuel-note { margin:8px 0 0; color:var(--muted); font-size:11px; }
+    .hamuel-line strong { color:var(--green); }
+    .hamuel-line.user strong { color:#dce5da; }
+    .hamuel-line.guide { color:#b8c7b5; border-left:2px solid #284929; padding-left:8px; }
+    .hamuel-form { display:flex; gap:8px; padding:10px 14px 8px; }
+    .hamuel-form input { min-width:0; flex:1; background:#0a100a; color:var(--text); border:1px solid #39533a; padding:11px; font-size:16px; }
+    .faq-zone { padding:0 14px 12px; }
+    .faq-label { color:#738774; font:10px/1.2 Consolas,'Courier New',monospace; text-transform:uppercase; letter-spacing:.7px; margin:2px 0 7px; }
+    .hamuel-quick { display:flex; flex-wrap:wrap; gap:6px; }
+    .hamuel-quick button { background:#0c130c; border:1px solid #324a33; color:#a7c5a7; padding:7px 8px; cursor:pointer; font:11px/1.2 Arial,Helvetica,sans-serif; }
+    .hamuel-quick button:hover { color:var(--green); border-color:#557b57; }
+    .hamuel-handoff { border-top:1px solid #1e2d1f; padding:10px 14px 13px; display:flex; gap:8px; }
+    .hamuel-handoff .btn { flex:1; text-align:center; font-size:12px; }
+    .hamuel-handoff button[disabled] { opacity:.48; cursor:not-allowed; }
 
+    .modal { position:fixed; inset:0; z-index:50; display:none; place-items:center; padding:20px; background:rgba(0,0,0,.82); }
+    .modal.open { display:grid; }
+    .modal-card { width:min(1100px,100%); height:min(86vh,850px); background:#080b08; border:1px solid #466047; display:flex; flex-direction:column; }
+    .modal-head { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:10px 12px; border-bottom:1px solid var(--line); }
+    .modal-title { color:var(--green); font:700 12px/1.2 Consolas,'Courier New',monospace; }
+    .modal iframe { width:100%; height:100%; border:0; background:#fff; }
 
-    @media (max-width: 820px) {
-      .grid-2, .grid-4, .hero-grid { grid-template-columns:1fr; }
-      .nav { flex-direction:column; align-items:flex-start; }
-      .tour-stage { padding:22px; }
-      .dongle-rule { flex-direction:column; }
-      .hamuel-console-main { grid-template-columns:1fr; }
-      .hamuel-avatar-bay { border-right:0; border-bottom:1px solid #263526; }
-      .hamuel-crt { width:min(72vw,230px); }
-      .hamuel-transcript { min-height:170px; max-height:240px; }
+    @media (max-width:1000px) {
+      body { padding:0; }
+      .computer { min-height:100vh; border-left:0; border-right:0; }
+      .app-shell { grid-template-columns:1fr; }
+      .content-bay { border-right:0; border-bottom:1px solid var(--line); padding:26px 20px; }
+      .hamuel-terminal { min-height:auto; }
+      .hamuel-avatar-bay { padding-top:14px; }
+      .hamuel-crt { width:min(300px,84vw); }
+      .hamuel-avatar-meta { width:min(300px,84vw); }
+      .hamuel-transcript { min-height:150px; max-height:220px; }
+      .program-frame { min-height:72vh; }
+    }
+    @media (max-width:650px) {
+      .system-meta { display:none; }
+      .screen-tabs { grid-template-columns:repeat(3,1fr); }
+      .screen-tabs button:nth-child(3) { border-right:0; }
+      .screen-tabs button:nth-child(-n+3) { border-bottom:1px solid #203220; }
+      .grid-2,.grid-3 { grid-template-columns:1fr; }
+      .content-bay { padding:23px 16px; }
+      .content-footer { flex-direction:column; }
+      .hamuel-handoff { flex-direction:column; }
     }
   </style>
 </head>
 <body>
-  <div class="top-strip">
-    <div class="wrap">
-      <div>Original Xbox restoration, modification, and practical setup guidance.</div>
-      <div>No shopping cart. No one-size-fits-all build. Read first. Apply second.</div>
+  <main class="computer" aria-label="MeatMan Mods guided console">
+    <div class="system-bar">
+      <div class="system-brand">MEATMAN MODS // ORIGINAL XBOX SYSTEM</div>
+      <div class="system-meta">HAMUEL PUBLIC INTERFACE // READ FIRST · APPLY SECOND</div>
     </div>
-  </div>
 
-  <header>
-    <div class="wrap nav">
-      <div class="brand">MeatMan Mods<small>Original Xbox restoration and adoption</small></div>
-      <div class="utility-links">
-        <a href="buying-guide.html">Buying Guide</a>
-        <a href="help.html">Help / Guides</a>
-        <a href="ogx-mini.html">OGX-Mini</a>
-        <a href="#" id="open-meatspace">Meat Space</a>
-      </div>
-    </div>
-  </header>
+    <nav class="screen-tabs" aria-label="Guide sections">
+      <button class="active" type="button" data-screen="start">01 // Start</button>
+      <button type="button" data-screen="build">02 // The Build</button>
+      <button type="button" data-screen="modern_setup">03 // Setup</button>
+      <button type="button" data-screen="pricing">04 // Pricing</button>
+      <button type="button" data-screen="support">05 // Support</button>
+      <button type="button" data-screen="ready">06 // Continue</button>
+    </nav>
 
-  <main>
-    <div class="wrap">
-      <div class="progress"><strong>Tour progress:</strong> <span id="progress-text">Start here — why this is not an online store.</span></div>
-
-      <section class="tour-stage active" data-step="0">
-        <div class="hero-grid">
-          <div>
-            <div class="eyebrow">Start Here</div>
+    <div class="app-shell">
+      <section class="content-bay" aria-live="polite">
+        <div class="screen-content">
+          <article class="screen-page active" data-screen-page="start">
+            <div class="eyebrow">System 01 // Orientation</div>
             <h1>This is not an online store.</h1>
             <p>I restore and modify original Xbox consoles for people who plan to actually use them. There is no shopping cart because there is no single standard Xbox build sitting on a shelf with one fixed price.</p>
-            <p>Every console starts with a different donor, and every customer has a different display, network, storage plan, controller setup, and reason for owning one. Those details matter more than most people expect.</p>
-            <div class="callout"><strong>The short version:</strong> before I can tell you what an Xbox should cost, I need to know what you actually need the Xbox to do and what you plan to connect it to.</div>
-            <p>This tour explains the parts people usually do not know to ask about. It is intentionally broken into short sections so you can deal with one subject at a time.</p>
-            <div class="button-row"><button class="btn next-btn" type="button">Start the tour</button></div>
+            <p>Every donor starts in a different condition, and every customer has a different display, network, storage plan, controller setup, and reason for owning one.</p>
+            <div class="callout"><strong>The point of this site:</strong> give you enough information to understand what you actually need before either of us starts talking about a build or a price.</div>
+            <p>Hamuel lives on the right side of this screen. He is a locally hosted AI assistant running from MeatMan's server. Ask him questions whenever something here does not make sense.</p>
+            <div class="screen-actions"><button class="btn primary next-screen" type="button">Continue</button><a class="btn secondary program-link" href="help.html" data-program-title="HELP LIBRARY">Open help library</a></div>
+          </article>
+
+          <article class="screen-page" data-screen-page="build">
+            <div class="eyebrow">System 02 // The Console</div>
+            <h2>“I only want Rainbow Six” still requires a real Xbox build.</h2>
+            <p>A smaller game library can reduce how much storage you need. It does not remove the work required to make twenty-five-year-old hardware dependable.</p>
+            <div class="grid-2">
+              <div class="card"><h3>The donor matters</h3><p>Board revision, capacitor condition, corrosion, DVD health, prior repairs, ports, power supply, and storage condition all vary from console to console.</p></div>
+              <div class="card"><h3>The setup work still exists</h3><p>Inspection, cleaning, EEPROM backup, storage setup, dashboard/mod configuration, title updates, controller checks, networking, and testing still have to happen.</p></div>
+            </div>
+            <div class="callout">Most of the work is not “installing a lot of games.” It is turning an aging original Xbox into a system you can reliably plug in and use.</div>
+            <div class="screen-actions"><button class="btn secondary prev-screen" type="button">Back</button><button class="btn primary next-screen" type="button">Modern setup</button></div>
+          </article>
+
+          <article class="screen-page" data-screen-page="modern_setup">
+            <div class="eyebrow">System 03 // Modern Setup</div>
+            <h2>A 2001 console has to live in a 2026 house.</h2>
+            <p>The Xbox itself is only half of the system. Your television, network, and controller choices determine what else is required.</p>
+            <div class="grid-3">
+              <div class="card"><h3>Video</h3><p>The original Xbox outputs analog video, not HDMI. HDMI-only displays need a proper analog-to-digital solution; component is the preferred source when you want progressive-scan quality.</p></div>
+              <div class="card"><h3>Network</h3><p>The Xbox has wired 10/100 Ethernet and no built-in Wi-Fi. Insignia works well, but the physical network path and router still matter.</p></div>
+              <div class="card"><h3>Controllers</h3><p>OEM controllers are simple. Modern controllers need protocol translation such as an OGX-Mini; a cable that physically fits is not enough.</p></div>
+            </div>
+            <div class="screen-actions"><button class="btn secondary prev-screen" type="button">Back</button><button class="btn primary next-screen" type="button">Why pricing varies</button><a class="btn secondary program-link" href="ogx-mini.html" data-program-title="OGX-MINI">OGX-Mini details</a></div>
+          </article>
+
+          <article class="screen-page" data-screen-page="pricing">
+            <div class="eyebrow">System 04 // Pricing</div>
+            <h2>There is no useful one-line answer to “How much is an Xbox?”</h2>
+            <p>The answer changes because the build changes. I would rather understand your setup first than hand you a fake universal price that stops being true as soon as we talk about the actual console.</p>
+            <div class="grid-2">
+              <div class="card"><h3>What can change</h3><ul><li>Donor condition and repair work</li><li>Storage size/type</li><li>Video hardware</li><li>Controllers/adapters</li><li>Accessories and shipping</li></ul></div>
+              <div class="card"><h3>What does not disappear</h3><ul><li>Inspection and service</li><li>EEPROM and software setup</li><li>Testing</li><li>Making sure the build fits your real setup</li></ul></div>
+            </div>
+            <div class="callout">The goal is not to sell the most expensive Xbox. It is to build the Xbox that makes sense for what you are actually going to do with it.</div>
+            <div class="screen-actions"><button class="btn secondary prev-screen" type="button">Back</button><button class="btn primary next-screen" type="button">Support & ownership</button><a class="btn secondary program-link" href="buying-guide.html" data-program-title="BUYING GUIDE">Buying guide</a></div>
+          </article>
+
+          <article class="screen-page" data-screen-page="support">
+            <div class="eyebrow">System 05 // Ownership</div>
+            <h2>I stand behind the work. You are still adopting old hardware.</h2>
+            <p>The purpose of restoration is reliability, not pretending a twenty-five-year-old console has become a brand-new appliance. If something related to my work fails, I want to know about it and I will help diagnose it.</p>
+            <p>At the same time, an original Xbox is still a complicated piece of aging electronics. Displays change settings, routers behave differently, adapters fail, and old hardware can develop new problems.</p>
+            <div class="callout"><strong>The expectation:</strong> you do not need to become an Xbox technician, but you should be willing to communicate clearly and do basic troubleshooting when something unusual happens.</div>
+            <div class="screen-actions"><button class="btn secondary prev-screen" type="button">Back</button><button class="btn primary next-screen" type="button">I'm still interested</button></div>
+          </article>
+
+          <article class="screen-page" data-screen-page="ready">
+            <div class="eyebrow">System 06 // Continue</div>
+            <h2>If all of that still sounds reasonable, continue.</h2>
+            <p>The readiness check is short. It confirms that the basic hardware/setup concepts above make sense before the application asks about your television, network, storage, controller preferences, and intended use.</p>
+            <div class="grid-2">
+              <div class="card"><h3>New adoption / build</h3><p>Take the readiness check first, then continue into the application. The answers help me plan a build instead of guessing.</p></div>
+              <div class="card"><h3>Questions / existing customer</h3><p>Keep talking to Hamuel here, or continue with him in Discord once the public invite is connected. Discord gives him an authenticated identity and additional customer-safe tools.</p></div>
+            </div>
+            <div class="screen-actions"><a class="btn primary program-link" id="readiness-link" href="readiness-check.html" data-program-title="READINESS CHECK">Start readiness check</a><a class="btn secondary program-link" href="adoption-application.html" data-program-title="ADOPTION APPLICATION">Application</a><button class="btn secondary" id="open-meatspace-final" type="button">Meat Space</button><button class="btn secondary prev-screen" type="button">Back</button></div>
+          </article>
+        </div>
+        <div class="program-window" id="program-window" aria-live="polite">
+          <div class="program-head"><span id="program-title">PROGRAM</span><button class="program-close" id="program-close" type="button">CLOSE // RETURN</button></div>
+          <iframe class="program-frame" id="program-frame" title="MeatMan Mods program window"></iframe>
+        </div>
+        <div class="content-footer"><span id="screen-progress">SCREEN 01 / 06 · START</span><span>MEATMANMODS.COM // HAMUEL GUIDED INTERFACE</span></div>
+      </section>
+
+      <aside class="hamuel-bay">
+        <div class="hamuel-terminal" aria-label="Hamuel public site assistant" data-section="start" data-gateway="https://meatman-ms-7b61.tail5ebf20.ts.net:8443">
+          <div class="hamuel-terminal-head"><div class="hamuel-terminal-title">HAMUEL // LOCAL AI GUIDE</div><div class="hamuel-status" id="hamuel-status">CONNECTING</div></div>
+          <div class="hamuel-avatar-bay">
+            <div class="hamuel-crt"><div class="hamuel-crt-screen"><canvas id="hamuel-avatar" width="320" height="320" aria-label="Animated Hamuel avatar"></canvas></div><div class="hamuel-crt-controls"><span>HAMUEL-86</span><span><span class="hamuel-crt-led">●</span> ◌ ◌</span></div></div>
+            <div class="hamuel-avatar-meta"><span>STATE <strong id="hamuel-avatar-state">IDLE</strong></span><span>PUBLIC // ANON</span></div>
           </div>
-
-          <aside class="hamuel-terminal" aria-label="Hamuel site guide" data-gateway="https://meatman-ms-7b61.tail5ebf20.ts.net:8443">
-            <div class="hamuel-terminal-head">
-              <div class="hamuel-terminal-title">HAMUEL // PRE-ADOPTION TERMINAL</div>
-              <div class="hamuel-status" id="hamuel-status">CONNECTING</div>
-            </div>
-            <div class="hamuel-console-main">
-              <div class="hamuel-avatar-bay" aria-label="Animated Hamuel status display">
-                <div class="hamuel-crt">
-                  <div class="hamuel-crt-screen"><canvas id="hamuel-avatar" width="256" height="256" aria-label="Hamuel animated CRT avatar"></canvas></div>
-                  <div class="hamuel-crt-controls"><span>HAMUEL-86</span><span><span class="hamuel-crt-led">●</span> <span class="hamuel-crt-knobs">◌ ◌</span></span></div>
-                </div>
-                <div class="hamuel-avatar-meta"><span>STATE <strong id="hamuel-avatar-state">IDLE</strong></span><span>PUBLIC // ANON</span></div>
-              </div>
-              <div class="hamuel-transcript" id="hamuel-transcript" aria-live="polite">
-                <p class="hamuel-line"><strong>HAMUEL:</strong> Hey. I can answer questions about the Xbox builds, pricing, video, networking, controllers, the application, or Discord verification. Ask me something.</p>
-              </div>
-            </div>
-            <div class="hamuel-quick">
-              <button type="button" data-hamuel-question="Why isn't there a fixed price?">Price</button>
-              <button type="button" data-hamuel-question="I only want Rainbow Six. Why can't I get a cheap Xbox?">Only Rainbow Six</button>
-              <button type="button" data-hamuel-question="What do I need for HDMI?">HDMI</button>
-              <button type="button" data-hamuel-question="How does Discord verification work?">Discord</button>
-            </div>
-            <form class="hamuel-form" id="hamuel-form">
-              <input id="hamuel-input" name="question" maxlength="240" autocomplete="off" placeholder="Ask Hamuel a question..." aria-label="Ask Hamuel a question">
-              <button class="btn" type="submit">Send</button>
-            </form>
-            <div class="hamuel-handoff">
-              <button class="btn secondary" id="discord-handoff" type="button" disabled>Continue with Hamuel on Discord</button>
-              <p class="hamuel-note">Discord handoff will activate when the current server invite is connected. This site terminal is customer-safe and does not expose private Hamuel tools.</p>
-            </div>
-          </aside>
+          <div class="hamuel-transcript" id="hamuel-transcript" aria-live="polite"><p class="hamuel-line guide"><strong>HAMUEL:</strong> I'm Hamuel, MeatMan's locally hosted AI assistant. You can ask me questions about the Xbox builds, pricing, video, networking, controllers, and the adoption process. I can help you figure out what setup actually makes sense for you.</p></div>
+          <form class="hamuel-form" id="hamuel-form"><input id="hamuel-input" name="question" maxlength="1000" autocomplete="off" placeholder="Ask Hamuel anything about the build..." aria-label="Ask Hamuel a question"><button class="btn primary" type="submit">Send</button></form>
+          <div class="faq-zone"><div class="faq-label">Frequently asked questions // current screen</div><div class="hamuel-quick" id="hamuel-faq-list"></div></div>
+          <div class="hamuel-handoff"><button class="btn secondary" id="discord-handoff" type="button" disabled>Continue with Hamuel in Discord</button><button class="btn secondary" id="open-meatspace" type="button">Meat Space</button></div>
         </div>
-      </section>
-
-      <section class="tour-stage" data-step="1">
-        <div class="eyebrow">Step 1</div>
-        <h2>Why there is an application.</h2>
-        <p>I am not trying to make buying an Xbox difficult for the sake of it. The application is there because the wrong build for your setup wastes your money and creates support problems that could have been avoided before I ever shipped anything.</p>
-        <div class="grid-2">
-          <div class="panel"><h3>What I need to understand</h3><ul>
-            <li>What display you plan to use and what inputs it actually has</li>
-            <li>Whether the Xbox will be wired to your network and how</li>
-            <li>Whether you want Insignia and online play</li>
-            <li>How much storage you realistically need</li>
-            <li>Whether you want OEM or modern controllers</li>
-            <li>How comfortable you are troubleshooting old hardware</li>
-          </ul></div>
-          <div class="panel"><h3>What that lets me do</h3><ul>
-            <li>Recommend the build that fits your use instead of the most expensive one</li>
-            <li>Catch display or networking problems before they become your problem</li>
-            <li>Avoid selling you hardware or accessories you do not need</li>
-            <li>Explain the limitations before money changes hands</li>
-            <li>Know what needs to be tested before the console leaves me</li>
-          </ul></div>
-        </div>
-        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
-      </section>
-
-      <section class="tour-stage" data-step="2">
-        <div class="eyebrow">Step 2</div>
-        <h2>“I only want to play Rainbow Six” does not make the Xbox cheap.</h2>
-        <p>This is one of the most common misunderstandings. The number of games you want changes how much storage makes sense. It does not remove the work required to make a twenty-plus-year-old console reliable.</p>
-        <table class="compare-table"><thead><tr><th>If you only want a few games...</th><th>What does not disappear</th></tr></thead><tbody>
-          <tr><td>A smaller hard drive may be enough.</td><td>The motherboard still has to be inspected, cleaned, serviced, and tested.</td></tr>
-          <tr><td>You may need fewer apps or extras.</td><td>The console still needs a reliable storage setup, dashboard, EEPROM backup, and configuration.</td></tr>
-          <tr><td>You may not need every accessory.</td><td>Your TV still needs a compatible video path and online play still needs a workable network.</td></tr>
-          <tr><td>Your final build can be simpler.</td><td>The donor console, repair parts, labor, testing, and shipping still exist.</td></tr>
-        </tbody></table>
-        <div class="warning">A small game library can reduce the size of the build. It does not turn restoration work into a $40 used-console transaction.</div>
-        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
-      </section>
-
-      <section class="tour-stage" data-step="3">
-        <div class="eyebrow">Step 3</div>
-        <h2>What actually happens to a console before it leaves.</h2>
-        <p>“Modded Xbox” describes the software people see. Most of the work is everything underneath it.</p>
-        <div class="grid-2">
-          <div class="panel"><h3>Hardware and preservation</h3><ul>
-            <li>Full teardown, cleaning, and board inspection</li>
-            <li>Clock-capacitor service appropriate to the motherboard revision</li>
-            <li>Known problem capacitors inspected and replaced when required</li>
-            <li>Fresh thermal interface material and cooling inspection</li>
-            <li>DVD, controller ports, video output, and power behavior checked</li>
-            <li>EEPROM captured and preserved before storage work</li>
-          </ul></div>
-          <div class="panel"><h3>Storage, software, and testing</h3><ul>
-            <li>Hard-drive upgrade and lock/configuration matched to the console</li>
-            <li>Dashboard, applications, title updates, and file structure configured</li>
-            <li>Insignia and network setup tested when part of the build</li>
-            <li>Controllers and ports checked under real use</li>
-            <li>Extended stress testing before final clean and packing</li>
-            <li>Build information and EEPROM recovery material retained</li>
-          </ul></div>
-        </div>
-        <p>Some of that is bench work. Some of it is file transfer time. Some of it is simply running the machine long enough to learn whether it can be trusted.</p>
-        <div class="callout"><strong>About the DVD drive:</strong> even when it works, it is aging mechanical hardware. The normal day-to-day plan is to run installed games from the hard drive and avoid putting unnecessary hours on the optical drive.</div>
-        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
-      </section>
-
-      <section class="tour-stage" data-step="4">
-        <div class="eyebrow">Step 4</div>
-        <h2>An analog console in a digital house.</h2>
-        <p>The original Xbox was designed around analog video. A modern HDMI-only television was not part of the design brief. Connecting the two means converting signals, and the quality of that conversion matters.</p>
-        <div class="grid-2">
-          <div class="panel"><h3>The console side</h3><ul>
-            <li>Composite is the lowest-quality native video path.</li>
-            <li>Component supports the progressive/high-definition modes people usually want.</li>
-            <li>The Xbox does not output HDMI natively.</li>
-            <li>CRT and older HDTV setups can behave very differently from modern panels.</li>
-          </ul></div>
-          <div class="panel"><h3>The modern-display side</h3><ul>
-            <li>An HDMI-only display needs a proper analog-to-digital adapter.</li>
-            <li>Cheap converters often start with the worst source signal and add more problems.</li>
-            <li>480p-era art can look harsh when scaled across a large 4K panel.</li>
-            <li>Your display choice is part of the Xbox setup, not an unrelated detail.</li>
-          </ul></div>
-        </div>
-        <div class="callout">For HDMI-only setups I generally recommend the Electron Shepherd XOUT because it uses the right signal path and handles the job without turning the display chain into another project.</div>
-        <p><a href="buying-guide.html#analog">Read the full analog/video explanation in the buying guide.</a></p>
-        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
-      </section>
-
-      <section class="tour-stage" data-step="5">
-        <div class="eyebrow">Step 5</div>
-        <h2>Networking is still 2001 networking.</h2>
-        <p>The original Xbox has wired Ethernet. It does not have built-in Wi-Fi. If you want online play through Insignia, I need to know how the console is getting to your router and whether you can actually manage that router if something needs to change.</p>
-        <div class="grid-2">
-          <div class="panel"><h3>The easy case</h3><p>Direct Ethernet from the Xbox to a normal router or switch. This is the setup I can reason about, reproduce, and meaningfully help troubleshoot.</p></div>
-          <div class="panel"><h3>The complicated case</h3><p>ISP combo boxes, wireless bridges, powerline adapters, unusual firewall rules, or networks nobody has admin access to. These can work, but every extra layer creates another place for old hardware to disagree with modern infrastructure.</p></div>
-        </div>
-        <p>Your internet plan can be extremely fast and the Xbox can still have a networking problem. Bandwidth and compatibility are not the same thing.</p>
-        <p><a href="buying-guide.html#networking">Read the full networking section.</a></p>
-        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
-      </section>
-
-      <section class="tour-stage" data-step="6">
-        <div class="eyebrow">Step 6</div>
-        <h2>Controllers and adapters are part of the system.</h2>
-        <p>Original Xbox controller ports are electrically related to USB, but a modern USB or Bluetooth controller does not become an Xbox controller because the plug can be adapted.</p>
-        <div class="grid-2">
-          <div class="panel"><h3>OEM controller</h3><p>The simplest option. It speaks the protocol the console expects and adds no translation layer.</p></div>
-          <div class="panel"><h3>Modern controller</h3><p>A device such as an OGX-Mini translates modern controller protocols into what the Xbox understands. That adds capability, but it is another piece of hardware that needs to be chosen and configured correctly.</p></div>
-        </div>
-        <p>The same general rule applies to video adapters, network bridges, and other accessories: compatibility is a system-level question. The Xbox is only one part of the chain.</p>
-        <p><a href="ogx-mini.html">Learn about the OGX-Mini builds.</a></p>
-        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
-      </section>
-
-
-      <section class="tour-stage" data-step="7">
-        <div class="eyebrow">Step 7</div>
-        <h2>Why there is no one answer to “How much?”</h2>
-        <p>Price follows the actual build. I can estimate ranges, but I cannot responsibly quote one universal number before I know what I am building and what the donor console requires.</p>
-        <div class="grid-2">
-          <div class="panel"><h3>Things that change the cost</h3><ul>
-            <li>Condition and revision of the donor console</li>
-            <li>Capacitors, DVD drive, or other hardware that needs service</li>
-            <li>Hard-drive size and storage hardware</li>
-            <li>Video and controller adapters required by your setup</li>
-            <li>Special repair or recovery work</li>
-            <li>Shipping and packing requirements</li>
-          </ul></div>
-          <div class="panel"><h3>What I do not want to sell you</h3><ul>
-            <li>A bigger drive just because a bigger number sounds better</li>
-            <li>A modchip when the build does not need one</li>
-            <li>An HDMI adapter that does not fit your display plan</li>
-            <li>Accessories you will never use</li>
-            <li>A console I already know is a bad match for your setup</li>
-          </ul></div>
-        </div>
-        <div class="callout"><strong>The goal is not the cheapest Xbox or the most expensive Xbox.</strong> It is the correct Xbox for the person who is going to own it.</div>
-        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
-      </section>
-
-      <section class="tour-stage" data-step="8">
-        <div class="eyebrow">Step 8</div>
-        <h2>What I stand behind, and what ownership means.</h2>
-        <p>I want the console to arrive working, documented, and tested for the setup we agreed on. I also want the owner to understand that this is modified twenty-plus-year-old hardware, not a sealed modern appliance.</p>
-        <div class="grid-2">
-          <div class="panel"><h3>My responsibility</h3><ul>
-            <li>Describe the build honestly</li>
-            <li>Repair and configure what I say I repaired and configured</li>
-            <li>Test the machine before it leaves</li>
-            <li>Keep recovery information that matters</li>
-            <li>Help diagnose a real problem instead of immediately blaming the customer</li>
-          </ul></div>
-          <div class="panel"><h3>Your responsibility</h3><ul>
-            <li>Use the display, adapters, and network setup we discussed</li>
-            <li>Read the documentation before changing settings</li>
-            <li>Ask before changing something you do not understand</li>
-            <li>Be able to explain what changed if a problem starts after you changed something</li>
-            <li>Accept that old hardware still has old-hardware limitations</li>
-          </ul></div>
-        </div>
-        <p>If you would rather understand every part of the machine yourself, I genuinely encourage learning to mod your own Xbox. I would rather help someone learn than sell them something they are not comfortable owning.</p>
-        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
-      </section>
-
-      <section class="tour-stage" data-step="9">
-        <div class="eyebrow">Final Step</div>
-        <h2>If all of that still sounds reasonable, continue.</h2>
-        <p>The readiness check is short. It exists to confirm that the important parts of this tour made it through before the application asks me to evaluate your setup.</p>
-        <div class="end-cta">
-          <h3>Take the readiness check</h3>
-          <p>Pass it and the adoption application opens. Your tour timing is carried forward so the application record can show that you actually went through the material.</p>
-          <p><a class="btn" href="readiness-check.html">Start the readiness check</a></p>
-        </div>
-        <div class="grid-2" style="margin-top:18px;">
-          <div class="panel"><h3>Want more technical detail?</h3><p>The buying guide goes deeper on analog video, HDMI conversion, audio, networking, and controllers.</p><p><a href="buying-guide.html">Open the buying guide</a></p></div>
-          <div class="panel"><h3>Discord onboarding</h3><p>Hamuel already handles the in-server Verified-role handoff and opens the customer DM portal.</p><p><button class="btn secondary" type="button" disabled>Join Discord / Start Verification</button></p><p class="tiny">The current public server invite still needs to be connected before launch.</p></div>
-          <div class="panel"><h3>Want the backstory?</h3><p>The fake MySpace profile survived for a reason.</p><p><a href="#" id="open-meatspace-final">Open Meat Space</a></p></div>
-          <div class="panel"><h3>Already need help?</h3><p>Troubleshooting and customer guidance live on the help page.</p><p><a href="help.html">Open Help / Guides</a></p></div>
-        </div>
-        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button></div>
-      </section>
+      </aside>
     </div>
   </main>
 
-
-  <footer>
-    <div class="wrap">
-      <p class="tiny">MeatMan Mods // Guided tour version</p>
-      <p class="tiny">MeatMan Mods // No virtual shopping cart. No digital checkout. Analog by design.</p>
-    </div>
-  </footer>
-
-  <div class="modal" id="xout-modal" aria-hidden="true">
-    <div class="modal-card" style="max-width:900px;height:auto;max-height:86vh;overflow:auto;background:#111811;">
-      <div class="modal-head">
-        <div class="modal-title">Electron Shepherd XOUT // Why it is the right adapter</div>
-        <button class="btn secondary" id="close-xout" type="button">Close window</button>
-      </div>
-      <div style="padding:18px;">
-        <p>The XOUT works well because it starts with the proper component signal, keeps the analog path short, and converts to digital without adding unnecessary complexity.</p>
-        <p>That matters because most cheap HDMI adapters are cheap by cutting the wrong corners: bad shielding, weak components, sloppy signal handling, stereo-only audio, and inconsistent results from one TV to the next.</p>
-        <p>The XOUT works across Xbox revisions, passes Dolby Digital, and solves the problem without turning your setup into an experiment. It is not magic. It is just the adapter that does the job the way it should have been done in the first place.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="meatspace-modal" aria-hidden="true">
-    <div class="modal-card">
-      <div class="modal-head">
-        <div class="modal-title">Meat Space // Supplemental Lore Window</div>
-        <button class="btn secondary" id="close-meatspace" type="button">Close window</button>
-      </div>
-      <iframe src="meat-space.html" title="Meat Space profile"></iframe>
-    </div>
-  </div>
-
-  <div class="modal" id="ogx-modal" aria-hidden="true">
-    <div class="modal-card" style="max-width:900px;height:auto;max-height:86vh;overflow:auto;background:#111811;">
-      <div class="modal-head">
-        <div class="modal-title">OGX-Mini // What it is</div>
-        <button class="btn secondary" id="close-ogx" type="button">Close window</button>
-      </div>
-      <div style="padding:18px;">
-        <p>The OGX-Mini is an open-source controller adapter project for the original Xbox. It is not a retail product. There is no single official version — different builders produce it with different boards, different firmware, and different levels of quality control. That matters when you are shopping around.</p>
-        <p>The version I build is the <strong>DVD dongle style</strong> — it sits in the DVD drive bay area rather than hanging off the front controller ports. Clean install, no mess, no cable dangling out of the front of the console.</p>
-        <p>What it does: it translates between modern wireless controllers and the original Xbox's proprietary controller protocol. That translation introduces a small amount of latency — same as any protocol conversion. In practice you will not feel it. But it is not magic and anyone telling you otherwise is selling you something.</p>
-        <p>Not every version of the OGX-Mini supports every modern controller. Some builds have better firmware, better controller compatibility, and better reliability than others. If you are buying one from somewhere else, check what controllers are actually supported on that specific build before you commit.</p>
-        <p>If you want modern wireless controller support on original hardware done right, this is the answer. If you want zero additional complexity, use an OEM Xbox controller and call it a day.</p>
-      </div>
-    </div>
-  </div>
+  <div class="modal" id="meatspace-modal" aria-hidden="true"><div class="modal-card"><div class="modal-head"><div class="modal-title">MEAT SPACE // UNNECESSARY BACKSTORY</div><button class="btn secondary" id="close-meatspace" type="button">Close</button></div><iframe src="meat-space.html" title="Meat Space profile"></iframe></div></div>
 
   <script>
-    const stages = Array.from(document.querySelectorAll('.tour-stage'));
-    const progressText = document.getElementById('progress-text');
-    const labels = [
-      'Start here — why this is not an online store.',
-      'Step 1 of 8 — why there is an application.',
-      'Step 2 of 8 — why a small game list does not remove the real cost.',
-      'Step 3 of 8 — what happens to the hardware before it leaves.',
-      'Step 4 of 8 — analog video in a modern display setup.',
-      'Step 5 of 8 — networking and Insignia reality.',
-      'Step 6 of 8 — controllers, adapters, and compatibility.',
-      'Step 7 of 8 — why there is no universal price.',
-      'Step 8 of 8 — support and owner responsibility.',
-      'Final step — readiness check ahead.'
-    ];
+    const order = ['start','build','modern_setup','pricing','support','ready'];
+    const names = {start:'START',build:'THE BUILD',modern_setup:'MODERN SETUP',pricing:'PRICING',support:'SUPPORT',ready:'CONTINUE'};
+    const pages = [...document.querySelectorAll('[data-screen-page]')];
+    const tabs = [...document.querySelectorAll('[data-screen]')];
+    const progress = document.getElementById('screen-progress');
+    const contentBay = document.querySelector('.content-bay');
+    const programWindow = document.getElementById('program-window');
+    const programFrame = document.getElementById('program-frame');
+    const programTitle = document.getElementById('program-title');
+    const programClose = document.getElementById('program-close');
+    let current = 'start';
+    let startedAt = null;
+    let stepStartedAt = Date.now();
+    const stepTimes = {};
 
-    let currentIndex = 0;
-    let tourStarted = false;
-    let tourStartTime = null;
-    let stepStartTime = Date.now();
-    const stepTimes = [];
-
-    function setStage(index) {
-      const elapsed = Math.round((Date.now() - stepStartTime) / 1000);
-      stepTimes[currentIndex] = (stepTimes[currentIndex] || 0) + elapsed;
-      currentIndex = Math.max(0, Math.min(index, stages.length - 1));
-      stages.forEach((stage, i) => stage.classList.toggle('active', i === currentIndex));
-      progressText.textContent = labels[currentIndex];
-      stepStartTime = Date.now();
-      if (!tourStarted && index > 0) {
-        tourStarted = true;
-        tourStartTime = Date.now();
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    function recordTime() {
+      const elapsed = Math.round((Date.now() - stepStartedAt) / 1000);
+      stepTimes[current] = (stepTimes[current] || 0) + elapsed;
+      stepStartedAt = Date.now();
     }
-
-    document.querySelectorAll('.next-btn').forEach(btn => btn.addEventListener('click', () => setStage(currentIndex + 1)));
-    document.querySelectorAll('.prev-btn').forEach(btn => btn.addEventListener('click', () => setStage(currentIndex - 1)));
-
-    document.addEventListener('click', function(e) {
-      const link = e.target.closest('a');
-      if (link && link.href && link.href.includes('readiness-check')) {
-        const elapsed = Math.round((Date.now() - stepStartTime) / 1000);
-        stepTimes[currentIndex] = (stepTimes[currentIndex] || 0) + elapsed;
-        const totalSeconds = tourStartTime ? Math.round((Date.now() - tourStartTime) / 1000) : 0;
-        const stepLog = stepTimes.map((t, i) => 'step' + i + ':' + (t || 0) + 's').join(', ');
-        sessionStorage.setItem('xbox_tour_total_seconds', totalSeconds);
-        sessionStorage.setItem('xbox_tour_step_times', stepLog);
-        sessionStorage.setItem('xbox_tour_started_at', tourStartTime ? new Date(tourStartTime).toISOString() : 'never');
+    function setScreen(name) {
+      if (!order.includes(name) || name === current && pages.find(p => p.dataset.screenPage === name)?.classList.contains('active')) return;
+      recordTime();
+      closeProgram();
+      current = name;
+      if (!startedAt && name !== 'start') startedAt = Date.now();
+      pages.forEach(page => page.classList.toggle('active', page.dataset.screenPage === name));
+      tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.screen === name));
+      const index = order.indexOf(name);
+      progress.textContent = `SCREEN ${String(index + 1).padStart(2,'0')} / 06 · ${names[name]}`;
+      window.dispatchEvent(new CustomEvent('hamuel:section', { detail:{ section:name } }));
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function openProgram(url, title) {
+      if (!url) return;
+      programTitle.textContent = title || 'PROGRAM';
+      programFrame.src = url;
+      contentBay.classList.add('program-open');
+      programWindow.scrollTop = 0;
+    }
+    function closeProgram() {
+      if (!contentBay.classList.contains('program-open')) return;
+      contentBay.classList.remove('program-open');
+      programFrame.src = 'about:blank';
+    }
+    programClose.addEventListener('click', closeProgram);
+    tabs.forEach(tab => tab.addEventListener('click', () => setScreen(tab.dataset.screen)));
+    document.addEventListener('click', event => {
+      const next = event.target.closest('.next-screen');
+      const prev = event.target.closest('.prev-screen');
+      if (next) setScreen(order[Math.min(order.length - 1, order.indexOf(current) + 1)]);
+      if (prev) setScreen(order[Math.max(0, order.indexOf(current) - 1)]);
+      const programLink = event.target.closest('.program-link');
+      if (programLink) {
+        event.preventDefault();
+        openProgram(programLink.getAttribute('href'), programLink.dataset.programTitle || programLink.textContent.trim());
+      }
+      const readiness = event.target.closest('#readiness-link');
+      if (readiness) {
+        recordTime();
+        sessionStorage.setItem('xbox_tour_total_seconds', startedAt ? Math.round((Date.now() - startedAt) / 1000) : 0);
+        sessionStorage.setItem('xbox_tour_step_times', order.map(k => `${k}:${stepTimes[k] || 0}s`).join(', '));
+        sessionStorage.setItem('xbox_tour_started_at', startedAt ? new Date(startedAt).toISOString() : 'never');
       }
     });
+
     const modal = document.getElementById('meatspace-modal');
-    const openBtn = document.getElementById('open-meatspace');
-    const openBtnFinal = document.getElementById('open-meatspace-final');
-    const closeBtn = document.getElementById('close-meatspace');
-    function closeModal() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
-    const xoutModal = document.getElementById('xout-modal');
-    const xoutOpen = document.getElementById('open-xout');
-    const xoutClose = document.getElementById('close-xout');
-    function closeXout() { xoutModal.classList.remove('open'); xoutModal.setAttribute('aria-hidden', 'true'); }
-    const ogxModal = document.getElementById('ogx-modal');
-    const ogxOpen = document.getElementById('open-ogx');
-    const ogxClose = document.getElementById('close-ogx');
-    function closeOgx() { ogxModal.classList.remove('open'); ogxModal.setAttribute('aria-hidden', 'true'); }
-    function openMeatspace(e) {
-      if (e) e.preventDefault();
-      modal.classList.add('open');
-      modal.setAttribute('aria-hidden', 'false');
-    }
-    if (openBtn) openBtn.addEventListener('click', openMeatspace);
-    if (openBtnFinal) openBtnFinal.addEventListener('click', openMeatspace);
-    closeBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    if (xoutOpen) { xoutOpen.addEventListener('click', (e) => { e.preventDefault(); xoutModal.classList.add('open'); xoutModal.setAttribute('aria-hidden','false'); }); }
-    xoutClose.addEventListener('click', closeXout);
-    xoutModal.addEventListener('click', (e) => { if (e.target === xoutModal) closeXout(); });
-    if (ogxOpen) { ogxOpen.addEventListener('click', (e) => { e.preventDefault(); ogxModal.classList.add('open'); ogxModal.setAttribute('aria-hidden','false'); }); }
-    const xoutOpen2 = document.getElementById('open-xout-2');
-    if (xoutOpen2) { xoutOpen2.addEventListener('click', (e) => { e.preventDefault(); xoutModal.classList.add('open'); xoutModal.setAttribute('aria-hidden','false'); }); }
-    ogxClose.addEventListener('click', closeOgx);
-    ogxModal.addEventListener('click', (e) => { if (e.target === ogxModal) closeOgx(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(); closeXout(); closeOgx(); } });
-
-
-
+    const openers = [document.getElementById('open-meatspace'), document.getElementById('open-meatspace-final')].filter(Boolean);
+    const closer = document.getElementById('close-meatspace');
+    function openMeatSpace() { modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
+    function closeMeatSpace() { modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+    openers.forEach(btn => btn.addEventListener('click', openMeatSpace));
+    closer.addEventListener('click', closeMeatSpace);
+    modal.addEventListener('click', e => { if (e.target === modal) closeMeatSpace(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMeatSpace(); });
   </script>
   <script src="hamuel-avatar-data.js"></script>
   <script src="hamuel-site.js"></script>

@@ -8,6 +8,57 @@
   const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
   const rand = (min, max) => min + Math.random() * (max - min);
 
+  const SECTION_CONFIG = {
+    start: {
+      guide: "I'm Hamuel, MeatMan's locally hosted AI assistant. I can answer questions about the Xbox builds, pricing, video, networking, controllers, and the adoption process. I can also help you figure out what setup actually makes sense for you.",
+      faqs: [
+        ["What does MeatMan Mods actually do?", "What does MeatMan Mods actually do?"],
+        ["Why isn't this a normal store?", "Why isn't this a normal online store?"],
+        ["How does the process work?", "How does the adoption process work?"]
+      ]
+    },
+    build: {
+      guide: "This screen is about the part people usually underestimate: the console itself. A short game list can reduce storage, but it does not remove the work required to make twenty-five-year-old hardware dependable.",
+      faqs: [
+        ["Only Rainbow Six?", "I only want Rainbow Six. Why can't I get a cheap untouched Xbox?"],
+        ["What gets restored?", "What restoration work normally goes into an Xbox?"],
+        ["Why upgrade the hard drive?", "Why do you normally upgrade the Xbox hard drive?"]
+      ]
+    },
+    modern_setup: {
+      guide: "Now we're dealing with the stuff around the Xbox: modern displays, a 2001 network interface, and controllers that may speak a completely different protocol.",
+      faqs: [
+        ["What do I need for HDMI?", "What do I need to connect an original Xbox to HDMI?"],
+        ["Does Xbox have Wi-Fi?", "Does the original Xbox have Wi-Fi?"],
+        ["Can I use a modern controller?", "Can I use a modern Xbox controller on an original Xbox?"]
+      ]
+    },
+    pricing: {
+      guide: "There is no single Xbox price because there is no single Xbox build. The useful question is what your setup actually requires and which parts of the build change with that requirement.",
+      faqs: [
+        ["What changes the price?", "What parts of an Xbox build usually change the price?"],
+        ["Can I save money on storage?", "Can I lower the cost if I need less storage?"],
+        ["Can you quote me here?", "Can you give me a price quote from the website?"]
+      ]
+    },
+    support: {
+      guide: "A restored Xbox should be reliable, but it is still old hardware. This screen explains what MeatMan stands behind and what normal ownership still asks of the person using it.",
+      faqs: [
+        ["What do you guarantee?", "What does MeatMan stand behind after I get the Xbox?"],
+        ["What if something fails?", "What happens if my Xbox has a problem later?"],
+        ["How much troubleshooting is normal?", "How much troubleshooting should an original Xbox owner expect?"]
+      ]
+    },
+    ready: {
+      guide: "If the rest of this makes sense, the next step is simple: take the readiness check, submit the application, or continue with me in Discord when you want authenticated customer help.",
+      faqs: [
+        ["Why the readiness check?", "Why do I need to take a readiness check?"],
+        ["Why an application?", "Why is there an application instead of a checkout page?"],
+        ["What changes in Discord?", "What can you do for me after I continue with you in Discord?"]
+      ]
+    }
+  };
+
   function weightedChoice(pool) {
     const total = pool.reduce((sum, item) => sum + item[1], 0);
     let pick = Math.random() * total;
@@ -215,19 +266,15 @@
       const h = this.canvas.height / DATA.height;
       const pulse = this.reducedMotion ? 0 : (Math.sin(this.tick * 0.18) + 1) / 2;
       const screen = mixHex(palette.screen, palette.noise_bright, DATA.crt.glow_pulse * pulse);
-      const dim = mixHex(screen, palette.screen_dim, DATA.crt.scanline_strength);
-      const scanOffset = Math.floor(this.tick / DATA.crt.scanline_vibrate_speed) % 2;
-
       this.ctx.fillStyle = screen;
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       for (let y = 0; y < DATA.height; y++) {
-        const scanDim = DATA.crt.scanlines_enabled && ((Math.floor(y / 2) + scanOffset) % 2);
         for (let x = 0; x < DATA.width; x++) {
           const value = pixels[y][x];
           if (value === 1) this.ctx.fillStyle = palette.face;
           else if (value === 2) this.ctx.fillStyle = palette.noise_dim;
           else if (value === 3) this.ctx.fillStyle = palette.noise_bright;
-          else this.ctx.fillStyle = scanDim ? dim : screen;
+          else this.ctx.fillStyle = screen;
           this.ctx.fillRect(Math.floor(x * w), Math.floor(y * h), Math.ceil(w), Math.ceil(h));
         }
       }
@@ -267,24 +314,30 @@
     const transcript = $('hamuel-transcript');
     const status = $('hamuel-status');
     const stateLabel = $('hamuel-avatar-state');
+    const quickWrap = $('hamuel-faq-list');
     if (!terminal || !canvas || !form || !input || !transcript) return;
 
     const gateway = terminal.dataset.gateway || window.HAMUEL_GATEWAY_URL || '';
     const avatar = new HamuelAvatar(canvas, stateLabel, status);
     const sendButton = form.querySelector('button[type="submit"]');
-    const quickButtons = [...document.querySelectorAll('[data-hamuel-question]')];
     let requestInFlight = false;
+    let currentSection = terminal.dataset.section || 'start';
+    let lastAnnouncedSection = '';
+
+    function faqButtons() {
+      return quickWrap ? [...quickWrap.querySelectorAll('[data-hamuel-question]')] : [];
+    }
 
     function setControls(disabled) {
       requestInFlight = disabled;
       input.disabled = disabled;
       sendButton.disabled = disabled;
-      quickButtons.forEach((button) => { button.disabled = disabled; });
+      faqButtons().forEach((button) => { button.disabled = disabled; });
     }
 
-    function addLine(label, text, user = false) {
+    function addLine(label, text, user = false, guide = false) {
       const p = document.createElement('p');
-      p.className = 'hamuel-line' + (user ? ' user' : '');
+      p.className = 'hamuel-line' + (user ? ' user' : '') + (guide ? ' guide' : '');
       const strong = document.createElement('strong');
       strong.textContent = label + ':';
       p.append(strong, document.createTextNode(' ' + text));
@@ -293,22 +346,47 @@
       return p;
     }
 
-    async function typeHamuel(text) {
+    async function typeHamuel(text, guide = false) {
       const p = document.createElement('p');
-      p.className = 'hamuel-line';
+      p.className = 'hamuel-line' + (guide ? ' guide' : '');
       const strong = document.createElement('strong');
       strong.textContent = 'HAMUEL:';
       const node = document.createTextNode(' ');
       p.append(strong, node);
       transcript.appendChild(p);
       avatar.startTalking();
-      const chunk = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? text.length : 7;
+      const chunk = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? text.length : 9;
       for (let i = 0; i < text.length; i += chunk) {
         node.textContent += text.slice(i, i + chunk);
         transcript.scrollTop = transcript.scrollHeight;
-        if (chunk < text.length) await new Promise((resolve) => setTimeout(resolve, 18));
+        if (chunk < text.length) await new Promise((resolve) => setTimeout(resolve, 14));
       }
       avatar.finishTalking();
+    }
+
+    function renderFaqs(section) {
+      if (!quickWrap) return;
+      quickWrap.replaceChildren();
+      const config = SECTION_CONFIG[section] || SECTION_CONFIG.start;
+      config.faqs.forEach(([label, question]) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.dataset.hamuelQuestion = question;
+        button.textContent = label;
+        quickWrap.appendChild(button);
+      });
+    }
+
+    async function applySection(section, announce = true) {
+      if (!SECTION_CONFIG[section]) section = 'start';
+      currentSection = section;
+      terminal.dataset.section = section;
+      renderFaqs(section);
+      avatar.noteActivity();
+      if (announce && section !== lastAnnouncedSection) {
+        lastAnnouncedSection = section;
+        await typeHamuel(SECTION_CONFIG[section].guide, true);
+      }
     }
 
     async function askHamuel(question) {
@@ -322,7 +400,7 @@
 
       if (!gateway) {
         avatar.fail();
-        await typeHamuel('My public connection is not online yet. The website interface is ready, but the server gateway still needs to be published.');
+        await typeHamuel('My public connection is not online right now. The rest of the site still works.');
         setControls(false);
         input.focus();
         return;
@@ -334,7 +412,7 @@
         const response = await fetch(gateway.replace(/\/$/, '') + '/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: clean, session_id: sessionId() }),
+          body: JSON.stringify({ text: clean, session_id: sessionId(), section: currentSection }),
           signal: controller.signal
         });
         let payload = {};
@@ -366,14 +444,25 @@
       event.preventDefault();
       askHamuel(input.value);
     });
-    quickButtons.forEach((button) => {
-      button.addEventListener('click', () => askHamuel(button.dataset.hamuelQuestion || ''));
+    if (quickWrap) {
+      quickWrap.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-hamuel-question]');
+        if (button) askHamuel(button.dataset.hamuelQuestion || '');
+      });
+    }
+    window.addEventListener('hamuel:section', (event) => {
+      const section = event.detail && event.detail.section ? event.detail.section : 'start';
+      applySection(section, true);
     });
+
+    window.HamuelSite = { setSection: (section) => applySection(section, true), ask: askHamuel };
+    renderFaqs(currentSection);
+    lastAnnouncedSection = currentSection;
 
     if (status) {
       if (!gateway) {
         status.dataset.connection = 'offline';
-        status.textContent = 'LOCAL PREVIEW';
+        status.textContent = 'OFFLINE';
       } else {
         fetch(gateway.replace(/\/$/, '') + '/health', { cache: 'no-store' })
           .then((response) => {
