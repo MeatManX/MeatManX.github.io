@@ -445,12 +445,20 @@
       p.append(strong, node);
       transcript.appendChild(p);
       avatar.startTalking();
-      const chunk = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? text.length : 9;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const chunk = reducedMotion ? text.length : (guide ? 3 : 2);
       for (let i = 0; i < text.length; i += chunk) {
-        node.textContent += text.slice(i, i + chunk);
+        const piece = text.slice(i, i + chunk);
+        node.textContent += piece;
         transcript.scrollTop = transcript.scrollHeight;
         SiteAudio.blip();
-        if (chunk < text.length) await new Promise((resolve) => setTimeout(resolve, 14));
+        if (!reducedMotion && i + chunk < text.length) {
+          let delay = guide ? 26 : 42;
+          if (/[.!?][\s]*$/.test(piece)) delay += guide ? 70 : 150;
+          else if (/[,;:][\s]*$/.test(piece)) delay += guide ? 35 : 75;
+          else if (/\n/.test(piece)) delay += guide ? 55 : 110;
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
       }
       avatar.finishTalking();
     }
