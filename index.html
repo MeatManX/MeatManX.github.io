@@ -66,6 +66,10 @@
     .hamuel-bay { min-width:0; background:#050705; display:flex; align-items:stretch; }
     .hamuel-terminal { width:100%; display:flex; flex-direction:column; min-height:100%; background:#060906; }
     .hamuel-terminal-head { display:flex; justify-content:space-between; gap:10px; align-items:center; padding:10px 12px; border-bottom:1px solid var(--line); background:#0e150e; }
+    .hamuel-head-controls { display:flex; align-items:center; gap:9px; }
+    .audio-toggle { border:1px solid #354c36; background:#090e09; color:#91a792; padding:5px 7px; cursor:pointer; font:9px/1 Consolas,'Courier New',monospace; letter-spacing:.4px; }
+    .audio-toggle:hover { color:var(--green); border-color:#557b57; }
+    .audio-toggle[aria-pressed="true"] { color:#778077; border-color:#303830; }
     .hamuel-terminal-title { color:var(--green); font:700 12px/1.2 Consolas,'Courier New',monospace; letter-spacing:.8px; }
     .hamuel-status { color:var(--muted); font:10px/1.2 Consolas,'Courier New',monospace; white-space:nowrap; }
     .hamuel-status::before { content:'●'; color:var(--green); margin-right:5px; }
@@ -94,11 +98,15 @@
     .hamuel-handoff { border-top:1px solid #1e2d1f; padding:10px 14px 13px; display:flex; gap:8px; }
     .hamuel-handoff .btn { flex:1; text-align:center; font-size:12px; }
     .hamuel-handoff button[disabled] { opacity:.48; cursor:not-allowed; }
+    .site-footer { border-top:1px solid var(--line); background:#070b07; padding:9px 14px; display:flex; justify-content:space-between; gap:12px; align-items:center; color:#667467; font:10px/1.3 Consolas,'Courier New',monospace; }
+    .site-footer button { border:0; background:transparent; color:#91a792; padding:3px 0; cursor:pointer; text-decoration:underline; font:inherit; }
+    .site-footer button:hover { color:var(--green); }
 
     .modal { position:fixed; inset:0; z-index:50; display:none; place-items:center; padding:20px; background:rgba(0,0,0,.82); }
     .modal.open { display:grid; }
     .modal-card { width:min(1100px,100%); height:min(86vh,850px); background:#080b08; border:1px solid #466047; display:flex; flex-direction:column; }
     .modal-head { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:10px 12px; border-bottom:1px solid var(--line); }
+    .modal-head-controls { display:flex; align-items:center; gap:8px; }
     .modal-title { color:var(--green); font:700 12px/1.2 Consolas,'Courier New',monospace; }
     .modal iframe { width:100%; height:100%; border:0; background:#fff; }
 
@@ -187,7 +195,7 @@
               <div class="card"><h3>What can change</h3><ul><li>Donor condition and repair work</li><li>Storage size/type</li><li>Video hardware</li><li>Controllers/adapters</li><li>Accessories and shipping</li></ul></div>
               <div class="card"><h3>What does not disappear</h3><ul><li>Inspection and service</li><li>EEPROM and software setup</li><li>Testing</li><li>Making sure the build fits your real setup</li></ul></div>
             </div>
-            <div class="callout">The goal is not to sell the most expensive Xbox. It is to build the Xbox that makes sense for what you are actually going to do with it.</div>
+            <div class="callout">The goal is not to sell the most expensive Xbox. It is to build the Xbox that makes sense for what you are actually going to do with it. Play games.</div>
             <div class="screen-actions"><button class="btn secondary prev-screen" type="button">Back</button><button class="btn primary next-screen" type="button">Support & ownership</button><a class="btn secondary program-link" href="buying-guide.html" data-program-title="BUYING GUIDE">Buying guide</a></div>
           </article>
 
@@ -208,33 +216,34 @@
               <div class="card"><h3>New adoption / build</h3><p>Take the readiness check first, then continue into the application. The answers help me plan a build instead of guessing.</p></div>
               <div class="card"><h3>Questions / existing customer</h3><p>Keep talking to Hamuel here, or continue with him in Discord once the public invite is connected. Discord gives him an authenticated identity and additional customer-safe tools.</p></div>
             </div>
-            <div class="screen-actions"><a class="btn primary program-link" id="readiness-link" href="readiness-check.html" data-program-title="READINESS CHECK">Start readiness check</a><a class="btn secondary program-link" href="adoption-application.html" data-program-title="ADOPTION APPLICATION">Application</a><button class="btn secondary" id="open-meatspace-final" type="button">Meat Space</button><button class="btn secondary prev-screen" type="button">Back</button></div>
+            <div class="screen-actions"><a class="btn primary program-link" id="readiness-link" href="readiness-check.html" data-program-title="READINESS CHECK">Start readiness check</a><a class="btn secondary program-link" href="adoption-application.html" data-program-title="ADOPTION APPLICATION">Application</a><button class="btn secondary prev-screen" type="button">Back</button></div>
           </article>
         </div>
         <div class="program-window" id="program-window" aria-live="polite">
           <div class="program-head"><span id="program-title">PROGRAM</span><button class="program-close" id="program-close" type="button">CLOSE // RETURN</button></div>
           <iframe class="program-frame" id="program-frame" title="MeatMan Mods program window"></iframe>
         </div>
-        <div class="content-footer"><span id="screen-progress">SCREEN 01 / 06 · START</span><span>MEATMANMODS.COM // HAMUEL GUIDED INTERFACE</span></div>
+        <div class="content-footer"><span id="screen-progress">SCREEN 01 / 06 · START</span><span>ASK HAMUEL ANYTIME</span></div>
       </section>
 
       <aside class="hamuel-bay">
         <div class="hamuel-terminal" aria-label="Hamuel public site assistant" data-section="start" data-gateway="https://meatman-ms-7b61.tail5ebf20.ts.net:8443">
-          <div class="hamuel-terminal-head"><div class="hamuel-terminal-title">HAMUEL // LOCAL AI GUIDE</div><div class="hamuel-status" id="hamuel-status">CONNECTING</div></div>
+          <div class="hamuel-terminal-head"><div class="hamuel-terminal-title">HAMUEL // LOCAL AI GUIDE</div><div class="hamuel-head-controls"><button class="audio-toggle site-audio-toggle" id="hamuel-audio-toggle" type="button" aria-pressed="false" title="Mute or unmute site audio">AUDIO ON</button><div class="hamuel-status" id="hamuel-status">CONNECTING</div></div></div>
           <div class="hamuel-avatar-bay">
             <div class="hamuel-crt"><div class="hamuel-crt-screen"><canvas id="hamuel-avatar" width="320" height="320" aria-label="Animated Hamuel avatar"></canvas></div><div class="hamuel-crt-controls"><span>HAMUEL-86</span><span><span class="hamuel-crt-led">●</span> ◌ ◌</span></div></div>
             <div class="hamuel-avatar-meta"><span>STATE <strong id="hamuel-avatar-state">IDLE</strong></span><span>PUBLIC // ANON</span></div>
           </div>
-          <div class="hamuel-transcript" id="hamuel-transcript" aria-live="polite"><p class="hamuel-line guide"><strong>HAMUEL:</strong> I'm Hamuel, MeatMan's locally hosted AI assistant. You can ask me questions about the Xbox builds, pricing, video, networking, controllers, and the adoption process. I can help you figure out what setup actually makes sense for you.</p></div>
+          <div class="hamuel-transcript" id="hamuel-transcript" aria-live="polite"><p class="hamuel-line guide"><strong>HAMUEL:</strong> I'm Hamuel, MeatMan's locally hosted AI assistant. You can ask me questions about the Xbox builds, pricing, video, networking, controllers, and the adoption process. I can guide you through the site, answer questions, and help you figure out what Xbox build actually makes sense for you.</p></div>
           <form class="hamuel-form" id="hamuel-form"><input id="hamuel-input" name="question" maxlength="1000" autocomplete="off" placeholder="Ask Hamuel anything about the build..." aria-label="Ask Hamuel a question"><button class="btn primary" type="submit">Send</button></form>
           <div class="faq-zone"><div class="faq-label">Frequently asked questions // current screen</div><div class="hamuel-quick" id="hamuel-faq-list"></div></div>
-          <div class="hamuel-handoff"><button class="btn secondary" id="discord-handoff" type="button" disabled>Continue with Hamuel in Discord</button><button class="btn secondary" id="open-meatspace" type="button">Meat Space</button></div>
+          <div class="hamuel-handoff"><button class="btn secondary" id="discord-handoff" type="button" disabled>Continue with Hamuel in Discord</button></div>
         </div>
       </aside>
     </div>
+    <footer class="site-footer"><span>MEATMANMODS.COM // ORIGINAL XBOX RESTORATION</span><button id="open-meatspace" type="button">About MeatMan</button></footer>
   </main>
 
-  <div class="modal" id="meatspace-modal" aria-hidden="true"><div class="modal-card"><div class="modal-head"><div class="modal-title">MEAT SPACE // UNNECESSARY BACKSTORY</div><button class="btn secondary" id="close-meatspace" type="button">Close</button></div><iframe src="meat-space.html" title="Meat Space profile"></iframe></div></div>
+  <div class="modal" id="meatspace-modal" aria-hidden="true"><div class="modal-card"><div class="modal-head"><div class="modal-title">ABOUT MEATMAN // MEAT SPACE</div><div class="modal-head-controls"><button class="audio-toggle site-audio-toggle" id="meatspace-audio-toggle" type="button" aria-pressed="false">AUDIO ON</button><button class="btn secondary" id="close-meatspace" type="button">Close</button></div></div><iframe id="meatspace-frame" src="meat-space.html" title="Meat Space profile"></iframe></div></div>
 
   <script>
     const order = ['start','build','modern_setup','pricing','support','ready'];
@@ -304,14 +313,40 @@
     });
 
     const modal = document.getElementById('meatspace-modal');
-    const openers = [document.getElementById('open-meatspace'), document.getElementById('open-meatspace-final')].filter(Boolean);
+    const meatspaceFrame = document.getElementById('meatspace-frame');
+    const openers = [document.getElementById('open-meatspace')].filter(Boolean);
     const closer = document.getElementById('close-meatspace');
-    function openMeatSpace() { modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
-    function closeMeatSpace() { modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+    function meatspaceAudio() {
+      try { return meatspaceFrame.contentDocument && meatspaceFrame.contentDocument.getElementById('meatspace-audio'); }
+      catch (_) { return null; }
+    }
+    function syncMeatSpaceAudio(restart = false) {
+      const audio = meatspaceAudio();
+      if (!audio) return;
+      const open = modal.classList.contains('open');
+      const muted = window.HamuelAudio && window.HamuelAudio.isMuted();
+      if (!open || muted) { audio.pause(); return; }
+      if (restart) audio.currentTime = 0;
+      const promise = audio.play();
+      if (promise && typeof promise.catch === 'function') promise.catch(() => {});
+    }
+    function openMeatSpace() {
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+      syncMeatSpaceAudio(true);
+    }
+    function closeMeatSpace() {
+      const audio = meatspaceAudio();
+      if (audio) { audio.pause(); audio.currentTime = 0; }
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+    }
     openers.forEach(btn => btn.addEventListener('click', openMeatSpace));
     closer.addEventListener('click', closeMeatSpace);
     modal.addEventListener('click', e => { if (e.target === modal) closeMeatSpace(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMeatSpace(); });
+    meatspaceFrame.addEventListener('load', () => syncMeatSpaceAudio(false));
+    window.addEventListener('hamuel:audiochange', () => syncMeatSpaceAudio(false));
   </script>
   <script src="hamuel-avatar-data.js"></script>
   <script src="hamuel-site.js"></script>

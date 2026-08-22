@@ -43,7 +43,7 @@
     Example: src="meatspace-theme.mp3"
     autoplay + loop makes it play while this page is open.
   -->
-  <audio id="meatspace-audio" autoplay loop>
+  <audio id="meatspace-audio" loop preload="auto">
     <source src="meatspace-theme.mp3" type="audio/mpeg">
   </audio>
   <div class="navbar">
@@ -114,23 +114,7 @@
 
   <script>
     const meatspaceAudio = document.getElementById('meatspace-audio');
-    if (meatspaceAudio) {
-      const tryPlay = () => {
-        const playPromise = meatspaceAudio.play();
-        if (playPromise && typeof playPromise.catch === 'function') {
-          playPromise.catch(() => {});
-        }
-      };
-
-      window.addEventListener('load', tryPlay);
-      document.addEventListener('click', tryPlay, { once: true });
-      document.addEventListener('keydown', tryPlay, { once: true });
-
-      window.addEventListener('beforeunload', () => {
-        meatspaceAudio.pause();
-        meatspaceAudio.currentTime = 0;
-      });
-    }
+    if (meatspaceAudio) meatspaceAudio.volume = 0.55;
   </script>
 
 </body>

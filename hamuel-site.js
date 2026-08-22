@@ -59,6 +59,55 @@
     }
   };
 
+  const SiteAudio = (() => {
+    const storageKey = 'meatman_site_audio_muted_v1';
+    let muted = localStorage.getItem(storageKey) === '1';
+    let context = null;
+    let lastBlipAt = 0;
+    let blipCounter = 0;
+
+    function ensureContext() {
+      if (muted) return null;
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return null;
+      if (!context) context = new AudioCtx();
+      if (context.state === 'suspended') context.resume().catch(() => {});
+      return context;
+    }
+
+    function blip() {
+      if (muted) return;
+      const now = performance.now();
+      if (now - lastBlipAt < 36) return;
+      lastBlipAt = now;
+      const ctx = ensureContext();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const pitches = [620, 700, 660, 760];
+      osc.type = 'square';
+      osc.frequency.value = pitches[blipCounter++ % pitches.length];
+      gain.gain.setValueAtTime(0.018, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.026);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.028);
+    }
+
+    function setMuted(value) {
+      muted = Boolean(value);
+      localStorage.setItem(storageKey, muted ? '1' : '0');
+      window.dispatchEvent(new CustomEvent('hamuel:audiochange', { detail: { muted } }));
+      return muted;
+    }
+
+    function isMuted() { return muted; }
+    function unlock() { ensureContext(); }
+    return { blip, setMuted, isMuted, unlock };
+  })();
+  window.HamuelAudio = SiteAudio;
+
   function weightedChoice(pool) {
     const total = pool.reduce((sum, item) => sum + item[1], 0);
     let pick = Math.random() * total;
@@ -315,6 +364,7 @@
     const status = $('hamuel-status');
     const stateLabel = $('hamuel-avatar-state');
     const quickWrap = $('hamuel-faq-list');
+    const audioToggles = [...document.querySelectorAll('.site-audio-toggle')];
     if (!terminal || !canvas || !form || !input || !transcript) return;
 
     const gateway = terminal.dataset.gateway || window.HAMUEL_GATEWAY_URL || '';
@@ -323,6 +373,22 @@
     let requestInFlight = false;
     let currentSection = terminal.dataset.section || 'start';
     let lastAnnouncedSection = '';
+
+    function updateAudioToggle() {
+      const muted = SiteAudio.isMuted();
+      audioToggles.forEach((button) => {
+        button.textContent = muted ? 'AUDIO OFF' : 'AUDIO ON';
+        button.setAttribute('aria-pressed', muted ? 'true' : 'false');
+      });
+    }
+    updateAudioToggle();
+    audioToggles.forEach((button) => {
+      button.addEventListener('click', () => {
+        SiteAudio.unlock();
+        SiteAudio.setMuted(!SiteAudio.isMuted());
+      });
+    });
+    window.addEventListener('hamuel:audiochange', updateAudioToggle);
 
     function faqButtons() {
       return quickWrap ? [...quickWrap.querySelectorAll('[data-hamuel-question]')] : [];
@@ -359,6 +425,7 @@
       for (let i = 0; i < text.length; i += chunk) {
         node.textContent += text.slice(i, i + chunk);
         transcript.scrollTop = transcript.scrollHeight;
+        SiteAudio.blip();
         if (chunk < text.length) await new Promise((resolve) => setTimeout(resolve, 14));
       }
       avatar.finishTalking();
@@ -442,12 +509,16 @@
     input.addEventListener('focus', () => avatar.noteActivity());
     form.addEventListener('submit', (event) => {
       event.preventDefault();
+      SiteAudio.unlock();
       askHamuel(input.value);
     });
     if (quickWrap) {
       quickWrap.addEventListener('click', (event) => {
         const button = event.target.closest('[data-hamuel-question]');
-        if (button) askHamuel(button.dataset.hamuelQuestion || '');
+        if (button) {
+          SiteAudio.unlock();
+          askHamuel(button.dataset.hamuelQuestion || '');
+        }
       });
     }
     window.addEventListener('hamuel:section', (event) => {
