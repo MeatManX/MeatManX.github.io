@@ -364,6 +364,7 @@
     const status = $('hamuel-status');
     const stateLabel = $('hamuel-avatar-state');
     const quickWrap = $('hamuel-faq-list');
+    const discordHandoff = $('discord-handoff');
     const audioToggles = [...document.querySelectorAll('.site-audio-toggle')];
     if (!terminal || !canvas || !form || !input || !transcript) return;
 
@@ -389,6 +390,29 @@
       });
     });
     window.addEventListener('hamuel:audiochange', updateAudioToggle);
+
+    function configureDiscordHandoff() {
+      if (!discordHandoff) return;
+      const raw = String(discordHandoff.dataset.discordInvite || '').trim();
+      const match = raw.match(/(?:discord(?:app)?\.com\/invite\/|discord\.gg\/)?([A-Za-z0-9-]{2,})$/i);
+      if (!match) {
+        discordHandoff.hidden = true;
+        return;
+      }
+      const code = match[1];
+      const fallback = `https://discord.gg/${code}`;
+      discordHandoff.hidden = false;
+      discordHandoff.disabled = false;
+      discordHandoff.addEventListener('click', () => {
+        let leftPage = false;
+        const markLeft = () => { if (document.hidden) leftPage = true; };
+        document.addEventListener('visibilitychange', markLeft, { once:true });
+        window.location.href = `discord://-/invite/${code}`;
+        window.setTimeout(() => {
+          if (!leftPage && !document.hidden) window.location.href = fallback;
+        }, 900);
+      });
+    }
 
     function faqButtons() {
       return quickWrap ? [...quickWrap.querySelectorAll('[data-hamuel-question]')] : [];
@@ -529,6 +553,7 @@
     window.HamuelSite = { setSection: (section) => applySection(section, true), ask: askHamuel };
     renderFaqs(currentSection);
     lastAnnouncedSection = currentSection;
+    configureDiscordHandoff();
 
     if (status) {
       if (!gateway) {
