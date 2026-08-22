@@ -1,1043 +1,548 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!--
-    ============================================================
-    MEATMAN MODS — MAIN SITE (index.html)
-    ============================================================
-
-    INTERNAL EDITING NOTES:
-    This entire block is an HTML comment and is not visible to visitors.
-    Keep comment delimiters out of the explanatory text inside this block.
-
-    WHAT IS SAFE TO EDIT:
-    - Any visible text in the body (headings, paragraphs, list items,
-      button labels, nav links, footer text, FAQ answers, stat blocks)
-
-    WHAT TO LEAVE ALONE UNLESS YOU KNOW WHAT YOU ARE DOING:
-    - Anything inside  <style> ... </style>  (controls appearance)
-    - The  id="..."  values on sections — the nav links depend on them
-      (e.g. id="guides" is what  href="#guides"  in the nav points to)
-    - class="..." values unless you also update the CSS to match
-
-    QUICK REFERENCE — WHERE THINGS ARE IN THIS FILE:
-    1. Top strip (thin bar above the header)
-    2. Header / navigation bar
-    3. Hero section (first big section visitors see)
-    4. What I Do section
-    5. Adoption Philosophy section
-    6. Hardware and Accessories section
-    7. Networking section
-    8. Guides section
-    9. FAQ section
-    10. Apply / Call to Action section
-    11. Footer
-    ============================================================
-  -->
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- PAGE TITLE — shows in the browser tab and in search results -->
-  <title>MeatMan Mods</title>
-  <link rel="icon" type="image/x-icon" href="/favicon.ico">
-
-  <!--
-    META DESCRIPTION — the text that appears under your site name
-    in Google search results. Edit the content="..." value.
-  -->
-  <meta name="description" content="Restored and modified original Xbox systems, accessories, repair work, and setup guidance from MeatMan Mods." />
-
+  <title>MeatMan Mods | Guided Tour</title>
+  <meta name="description" content="A guided tour through original Xbox restoration, pricing, modern display compatibility, networking, controllers, and the MeatMan Mods adoption process." />
   <style>
-    /*
-      ============================================================
-      GLOBAL THEME VARIABLES
-      ------------------------------------------------------------
-      These are the site-wide color values.
-      Change a value here and it updates everywhere that color is used.
-      --bg         = main page background
-      --green      = standard green accent
-      --green-bright = bright green used for headings and highlights
-      --text       = main body text color
-      --muted      = dimmer secondary text color
-      ============================================================
-    */
     :root {
-      --bg: #0b0f0b;
-      --panel: #121812;
-      --panel-2: #181f18;
-      --line: #2c3a2c;
-      --green: #8acb88;
-      --green-bright: #b7ef9d;
-      --text: #e6efe3;
-      --muted: #a7b3a3;
-      --shadow: rgba(0,0,0,0.45);
-      --max: 1100px;
+      --bg:#0b0f0b; --panel:#121812; --panel-2:#181f18; --line:#2c3a2c; --green:#8acb88; --green-bright:#b7ef9d;
+      --text:#e6efe3; --muted:#a7b3a3; --warn:#d8b15f; --danger:#d97979; --shadow:rgba(0,0,0,0.45); --max:1020px;
     }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-
-    /*
-      ============================================================
-      BASE PAGE STYLING
-      Controls the full page background, body font, and default text.
-      ============================================================
-    */
+    * { box-sizing:border-box; }
+    html, body { min-height:100%; }
     body {
-      margin: 0;
-      font-family: Verdana, Tahoma, Arial, sans-serif;
-      background:
-        radial-gradient(circle at top left, #173117 0%, transparent 30%),
-        linear-gradient(180deg, #0b0f0b 0%, #0f140f 100%);
-      color: var(--text);
-      line-height: 1.55;
+      margin:0; font-family:Verdana, Tahoma, Arial, sans-serif;
+      background: radial-gradient(circle at top left, #173117 0%, transparent 30%), linear-gradient(180deg, #0b0f0b 0%, #0f140f 100%);
+      color:var(--text); line-height:1.62;
     }
-
-    a {
-      color: var(--green-bright);
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .wrap {
-      width: min(calc(100% - 32px), var(--max));
-      margin: 0 auto;
-    }
-
-    /*
-      ============================================================
-      TOP STRIP
-      Thin bar above the main header.
-      ============================================================
-    */
+    a { color:var(--green-bright); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .wrap { width:min(calc(100% - 32px), var(--max)); margin:0 auto; }
     .top-strip {
-      background: #000;
-      color: var(--green-bright);
-      border-bottom: 1px solid #294129;
-      font-size: 12px;
-      padding: 8px 0;
+      background:#000; color:var(--green-bright); border-bottom:1px solid #294129; font-size:12px; padding:8px 0;
     }
-
-    .top-strip .wrap {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    /*
-      ============================================================
-      STICKY HEADER + NAVIGATION
-      Stays at the top while scrolling.
-      Nav links use href="#sectionid" to jump to sections below.
-      ============================================================
-    */
+    .top-strip .wrap { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
     header {
-      border-bottom: 1px solid var(--line);
-      background: rgba(9, 12, 9, 0.86);
-      backdrop-filter: blur(6px);
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      border-bottom:1px solid var(--line); background:rgba(9,12,9,0.92); backdrop-filter:blur(6px); position:sticky; top:0; z-index:40;
     }
+    .nav { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:14px 0; flex-wrap:wrap; }
+    .brand { font-size:28px; font-weight:700; color:var(--green-bright); text-shadow:1px 1px 0 #000; }
+    .brand small { display:block; font-size:11px; color:var(--muted); font-weight:400; letter-spacing:1.2px; text-transform:uppercase; margin-top:3px; }
+    .utility-links { display:flex; gap:16px; flex-wrap:wrap; font-size:13px; }
 
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 14px 0;
+    main { padding:34px 0 52px; }
+    .progress {
+      border:1px solid var(--line); background:#101610; padding:12px 14px; font-size:13px; color:var(--muted); margin-bottom:18px;
+      box-shadow:0 8px 18px var(--shadow);
     }
-
-    .brand {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: var(--green-bright);
-      text-shadow: 1px 1px 0 #000;
+    .progress strong { color:var(--green-bright); }
+    .tour-stage {
+      display:none; background:linear-gradient(180deg, rgba(18,24,18,0.98), rgba(14,18,14,0.98)); border:1px solid var(--line);
+      box-shadow:0 16px 36px var(--shadow); padding:28px;
     }
-
-    .brand small {
-      display: block;
-      font-size: 11px;
-      color: var(--muted);
-      font-weight: 400;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      margin-top: 3px;
-    }
-
-    nav ul {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    nav a {
-      color: var(--text);
-      font-size: 14px;
-    }
-
-    /*
-      ============================================================
-      HERO SECTION
-      First major section visitors see.
-      Left card = main message and buttons.
-      Right card = image slot and supporting text.
-      ============================================================
-    */
-    .hero {
-      padding: 72px 0 56px;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.3fr 0.9fr;
-      gap: 26px;
-      align-items: stretch;
-    }
-
-    .card {
-      background: linear-gradient(180deg, rgba(18,24,18,0.96), rgba(14,18,14,0.96));
-      border: 1px solid var(--line);
-      box-shadow: 0 14px 32px var(--shadow);
-    }
-
-    .hero-main {
-      padding: 34px;
-    }
-
+    .tour-stage.active { display:block; }
     .eyebrow {
-      display: inline-block;
-      padding: 4px 8px;
-      border: 1px solid #436343;
-      background: #101610;
-      color: var(--green-bright);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 16px;
+      display:inline-block; padding:4px 8px; border:1px solid #436343; background:#101610; color:var(--green-bright);
+      font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px;
     }
-
-    h1, h2, h3 {
-      line-height: 1.15;
-      margin: 0 0 14px;
-    }
-
-    h1 {
-      font-size: clamp(34px, 6vw, 58px);
-      letter-spacing: 0.3px;
-    }
-
-    h2 {
-      font-size: clamp(26px, 4vw, 34px);
-    }
-
-    h3 {
-      font-size: 20px;
-    }
-
-    p {
-      margin: 0 0 14px;
-      color: var(--text);
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .hero-copy {
-      font-size: 17px;
-      max-width: 62ch;
-    }
-
-    /*
-      BUTTONS
-      .btn = main green button
-      .btn.secondary = outlined/dark secondary button
-    */
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 22px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 12px 18px;
-      border: 1px solid #658f65;
-      background: linear-gradient(180deg, #294729, #1c311c);
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-    }
-
-    .btn.secondary {
-      background: #131913;
-      color: var(--green-bright);
-      border-color: #415741;
-    }
-
-    .hero-side {
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    /*
-      IMAGE SLOT PLACEHOLDER
-      Replace with a real <img> tag when you have a photo.
-      See the comment in the body HTML below for instructions.
-    */
-    .image-slot {
-      min-height: 240px;
-      border: 1px dashed #547054;
-      background:
-        linear-gradient(135deg, rgba(138,203,136,0.08), rgba(138,203,136,0.02)),
-        #0f140f;
-      display: grid;
-      place-items: center;
-      color: var(--muted);
-      text-align: center;
-      padding: 18px;
-      font-size: 13px;
-    }
-
-    /* Stat blocks in the hero section */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .stat {
-      border: 1px solid var(--line);
-      background: var(--panel-2);
-      padding: 14px;
-    }
-
-    .stat strong {
-      display: block;
-      color: var(--green-bright);
-      font-size: 20px;
-      margin-bottom: 4px;
-    }
-
-    section {
-      padding: 28px 0;
-    }
-
-    .section-head {
-      margin-bottom: 18px;
-      max-width: 72ch;
-    }
-
-    /* Grid layouts used throughout the page */
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
-    }
-
-    /* Panel box — dark bordered box used throughout sections */
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      padding: 22px;
-      box-shadow: 0 10px 24px var(--shadow);
-    }
-
-    .panel ul {
-      margin: 12px 0 0 18px;
-      padding: 0;
-    }
-
-    .panel li { margin-bottom: 8px; }
-
-    /* Adoption section uses a two-column panel layout */
-    .adoption {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 18px;
-    }
-
-    /* Pull quote with left green border */
+    h1,h2,h3 { line-height:1.15; margin:0 0 14px; }
+    h1 { font-size:clamp(33px, 6vw, 56px); }
+    h2 { font-size:clamp(26px, 4vw, 38px); }
+    h3 { font-size:20px; color:var(--green-bright); }
+    p { margin:0 0 14px; }
+    ul { margin:0 0 14px 20px; padding:0; }
+    li { margin-bottom:8px; }
+    .muted { color:var(--muted); }
     .quote {
-      border-left: 4px solid #5f8d5f;
-      padding-left: 14px;
-      color: var(--green-bright);
-      margin-top: 16px;
+      border-left:4px solid #5f8d5f; padding-left:14px; color:var(--green-bright); margin:18px 0; font-style:italic;
     }
-
-    /* Numbered step boxes — numbers are auto-generated by CSS counter */
-    .steps {
-      counter-reset: step;
-      display: grid;
-      gap: 12px;
+    .callout, .warning, .danger {
+      padding:14px 16px; margin:18px 0; border-left:4px solid var(--green); background:#0d150d;
     }
-
-    .step {
-      border: 1px solid var(--line);
-      padding: 14px 16px;
-      background: var(--panel-2);
-      position: relative;
-      padding-left: 58px;
+    .warning { border-left-color:var(--warn); background:#181307; color:#ead79a; }
+    .danger { border-left-color:var(--danger); background:#180d0d; color:#f0c3c3; }
+    .panel { background:var(--panel-2); border:1px solid var(--line); padding:18px; }
+    .grid-2 { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
+    .grid-4 { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
+    .button-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
+    .btn {
+      display:inline-block; padding:12px 18px; border:1px solid #658f65; background:linear-gradient(180deg,#294729,#1c311c);
+      color:#fff; font-weight:700; font-size:14px; cursor:pointer;
     }
-
-    .step::before {
-      counter-increment: step;
-      content: counter(step);
-      position: absolute;
-      left: 14px;
-      top: 14px;
-      width: 28px;
-      height: 28px;
-      border: 1px solid #688f68;
-      display: grid;
-      place-items: center;
-      color: var(--green-bright);
-      font-weight: bold;
-      background: #101610;
+    .btn.secondary { background:#131913; color:var(--green-bright); border-color:#415741; }
+    .btn:disabled { opacity:0.65; cursor:default; }
+    .subtle-link { font-size:13px; }
+    .dongle-rule {
+      display:flex; align-items:flex-start; gap:12px; background:#0a120a; border:1px solid #3a5a3a; padding:12px 16px; margin:20px 0; font-size:13px; color:var(--muted);
     }
-
-    /* FAQ accordion — uses native HTML <details> and <summary> elements */
-    .faq details {
-      border: 1px solid var(--line);
-      background: var(--panel);
-      padding: 14px 16px;
-      margin-bottom: 12px;
+    .dongle-badge {
+      flex-shrink:0; background:var(--green-bright); color:#000; font-weight:bold; font-size:11px; padding:4px 8px; text-transform:uppercase; letter-spacing:0.5px; white-space:nowrap;
     }
-
-    .faq summary {
-      cursor: pointer;
-      font-weight: 700;
-      color: var(--green-bright);
+    .compare-table { width:100%; border-collapse:collapse; font-size:13px; margin:0 0 18px; }
+    .compare-table th { background:#1a261a; color:var(--green-bright); padding:10px 12px; text-align:left; border-bottom:2px solid var(--line); font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
+    .compare-table td { padding:9px 12px; border-bottom:1px solid #1e281e; vertical-align:top; }
+    .compare-table tr:nth-child(even) td { background:#0f150f; }
+    .good { color:var(--green-bright); }
+    .bad { color:#e87070; }
+    .mid { color:var(--warn); }
+    .end-cta {
+      padding:24px; text-align:center; background:linear-gradient(180deg, rgba(28,49,28,0.95), rgba(15,22,15,0.95)); border:1px solid #466246; box-shadow:0 16px 36px var(--shadow); margin-top:26px;
     }
+    footer { border-top:1px solid var(--line); padding:24px 0 40px; color:var(--muted); font-size:12px; }
+    .tiny { font-size:12px; color:var(--muted); }
 
-    .faq p {
-      margin-top: 10px;
-      color: var(--text);
+    .modal {
+      position:fixed; inset:0; background:rgba(0,0,0,0.78); display:none; align-items:center; justify-content:center; padding:20px; z-index:120;
     }
-
-    /* Call to action box at the bottom of the page */
-    .cta {
-      padding: 28px;
-      text-align: center;
-      background: linear-gradient(180deg, rgba(28,49,28,0.95), rgba(15,22,15,0.95));
-      border: 1px solid #466246;
-      box-shadow: 0 16px 36px var(--shadow);
+    .modal.open { display:flex; }
+    .modal-card {
+      width:min(1100px, 100%); height:min(86vh, 900px); background:#0a0a0a; border:1px solid #4d6b4d; box-shadow:0 18px 42px rgba(0,0,0,0.6); display:flex; flex-direction:column;
     }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--line);
-      margin-top: 20px;
-      padding: 24px 0 40px;
-      color: var(--muted);
-      font-size: 13px;
+    .modal-head {
+      display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 12px; background:#111811; border-bottom:1px solid #2e412e;
     }
+    .modal-title { color:var(--green-bright); font-weight:700; font-size:14px; }
+    .modal iframe { border:0; width:100%; height:100%; background:#fff; }
 
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 20px;
-    }
 
-    .tiny {
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .hero-grid { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr); gap:20px; align-items:start; }
+    .hamuel-terminal { background:#070b07; border:1px solid #4b704b; box-shadow:inset 0 0 0 1px #101a10, 0 12px 28px rgba(0,0,0,.35); min-width:0; }
+    .hamuel-terminal-head { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:10px 12px; border-bottom:1px solid #304430; background:#0e150e; }
+    .hamuel-terminal-title { color:var(--green-bright); font-weight:700; font-size:13px; letter-spacing:.7px; }
+    .hamuel-status { color:var(--muted); font-size:11px; white-space:nowrap; }
+    .hamuel-status::before { content:'●'; color:var(--green-bright); margin-right:6px; }
+    .hamuel-status[data-connection="offline"]::before { color:#d27d42; }
+    .hamuel-console-main { display:grid; grid-template-columns:minmax(145px,.72fr) minmax(0,1.28fr); min-height:230px; border-bottom:1px solid #263526; }
+    .hamuel-avatar-bay { padding:12px; background:#080c08; border-right:1px solid #263526; display:flex; flex-direction:column; justify-content:center; }
+    .hamuel-crt { width:min(100%,210px); margin:0 auto; padding:9px 9px 7px; border:4px solid #6d634d; border-radius:9px 9px 5px 5px; background:#b9ad8f; box-shadow:0 10px 18px rgba(0,0,0,.45), inset 0 0 0 2px #d4c9aa; }
+    .hamuel-crt-screen { position:relative; overflow:hidden; padding:5px; border:5px solid #29261f; border-radius:7px; background:#39ff6a; box-shadow:inset 0 0 18px rgba(0,18,4,.8), 0 0 13px rgba(57,255,106,.18); }
+    .hamuel-crt-screen::after { content:''; position:absolute; inset:0; pointer-events:none; background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 3px,rgba(0,0,0,.11) 4px,rgba(0,0,0,.11) 5px); mix-blend-mode:multiply; }
+    .hamuel-crt-screen::before { content:''; position:absolute; inset:0; z-index:2; pointer-events:none; background:linear-gradient(115deg,rgba(255,255,255,.10),transparent 24%,transparent 72%,rgba(255,255,255,.035)); }
+    #hamuel-avatar { display:block; width:100%; height:auto; aspect-ratio:1; image-rendering:pixelated; }
+    .hamuel-crt-controls { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:7px; color:#29261f; font:700 9px/1.1 Consolas,'Courier New',monospace; letter-spacing:.4px; }
+    .hamuel-crt-led { color:#28b94b; text-shadow:0 0 5px rgba(40,185,75,.8); }
+    .hamuel-crt-knobs { letter-spacing:2px; color:#6d634d; }
+    .hamuel-avatar-meta { display:flex; justify-content:space-between; gap:8px; margin-top:8px; color:#6f8b70; font:10px/1.2 Consolas,'Courier New',monospace; text-transform:uppercase; }
+    .hamuel-avatar-meta strong { color:var(--green-bright); font-weight:600; }
+    .hamuel-transcript { min-height:230px; max-height:300px; overflow:auto; padding:12px; font-family:Consolas, 'Courier New', monospace; font-size:12px; line-height:1.55; background:#050805; }
+    .hamuel-line { margin:0 0 10px; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .hamuel-line strong { color:var(--green-bright); }
+    .hamuel-line.user strong { color:#d7e7d2; }
+    .hamuel-quick { display:flex; flex-wrap:wrap; gap:6px; padding:0 12px 10px; }
+    .hamuel-quick button { font:inherit; font-size:11px; color:var(--green-bright); background:#101610; border:1px solid #3d563d; padding:7px 8px; cursor:pointer; }
+    .hamuel-form { display:flex; gap:8px; padding:10px 12px; border-top:1px solid #263526; }
+    .hamuel-form input { min-width:0; flex:1; background:#0d130d; color:var(--text); border:1px solid #3d563d; padding:10px 11px; font:inherit; font-size:16px; }
+    .hamuel-form button { flex:0 0 auto; }
+    .hamuel-handoff { padding:0 12px 12px; }
+    .hamuel-handoff .btn { width:100%; text-align:center; }
+    .hamuel-handoff .btn[disabled] { opacity:.55; cursor:not-allowed; }
+    .hamuel-note { margin:8px 0 0; color:var(--muted); font-size:11px; }
 
-    /*
-      ============================================================
-      MOBILE RESPONSIVE RULES
-      When the screen is narrow, columns stack vertically.
-      ============================================================
-    */
-    @media (max-width: 900px) {
-      .hero-grid,
-      .adoption,
-      .grid-3,
-      .grid-2,
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
 
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .nav {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      nav ul {
-        justify-content: flex-start;
-      }
-
-      .hero {
-        padding-top: 44px;
-      }
+    @media (max-width: 820px) {
+      .grid-2, .grid-4, .hero-grid { grid-template-columns:1fr; }
+      .nav { flex-direction:column; align-items:flex-start; }
+      .tour-stage { padding:22px; }
+      .dongle-rule { flex-direction:column; }
+      .hamuel-console-main { grid-template-columns:1fr; }
+      .hamuel-avatar-bay { border-right:0; border-bottom:1px solid #263526; }
+      .hamuel-crt { width:min(72vw,230px); }
+      .hamuel-transcript { min-height:170px; max-height:240px; }
     }
   </style>
 </head>
 <body>
-
-  <!--
-    ============================================================
-    1. TOP STRIP
-    The thin black bar at the very top of the page.
-    Two pieces of text — left side and right side.
-    Edit either piece of text freely.
-    ============================================================
-  -->
   <div class="top-strip">
     <div class="wrap">
-      <div>Restored original Xbox systems. Not for everyone. Probably not for you.</div>
-      <div>Read the whole damn page first.</div>
+      <div>Original Xbox restoration, modification, and practical setup guidance.</div>
+      <div>No shopping cart. No one-size-fits-all build. Read first. Apply second.</div>
     </div>
   </div>
 
-  <!--
-    ============================================================
-    2. HEADER / NAVIGATION BAR
-    Stays fixed at the top while scrolling.
-
-    BRAND NAME: edit the text inside <div class="brand"> — the big
-    name — and the <small> tag beneath it for the tagline.
-
-    NAV LINKS: each <li><a href="#sectionid">Label</a></li> is one
-    nav link. The href="#..." must match the id="..." on the section
-    it points to below. Do not change the href values unless you
-    also change the matching id on the section.
-    ============================================================
-  -->
   <header>
     <div class="wrap nav">
-      <div class="brand">
-        MeatMan Mods
-        <small>Original Xbox restoration and rehoming</small>
+      <div class="brand">MeatMan Mods<small>Original Xbox restoration and adoption</small></div>
+      <div class="utility-links">
+        <a href="buying-guide.html">Buying Guide</a>
+        <a href="help.html">Help / Guides</a>
+        <a href="ogx-mini.html">OGX-Mini</a>
+        <a href="#" id="open-meatspace">Meat Space</a>
       </div>
-      <nav>
-        <ul>
-          <li><a href="#what-i-do">What I Do</a></li>
-          <li><a href="#adoption">Adoption Process</a></li>
-          <li><a href="#hardware">Hardware</a></li>
-          <li><a href="#guides">Guides</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="#apply">Apply</a></li>
-        </ul>
-      </nav>
     </div>
   </header>
 
   <main>
+    <div class="wrap">
+      <div class="progress"><strong>Tour progress:</strong> <span id="progress-text">Start here — why this is not an online store.</span></div>
 
-    <!--
-      ============================================================
-      3. HERO SECTION — first thing visitors see
-      ============================================================
-      LEFT CARD (hero-main):
-      - eyebrow: the small all-caps label above the headline
-      - h1: the main headline
-      - hero-copy paragraphs: the body text beneath the headline
-      - button-row: the two buttons (primary and secondary)
-      - stats: three stat blocks at the bottom of the left card
-
-      RIGHT CARD (hero-side):
-      - image-slot: placeholder for a photo — see instructions below
-      - h3 + paragraph: the supporting text beneath the image
-
-      ADDING A REAL IMAGE:
-      When you have a photo, replace this entire div:
-        <div class="image-slot">...</div>
-      with this:
-        <img src="images/your-photo.jpg" alt="Description" style="width:100%; display:block;" />
-      Put the image file in an  images/  folder in your repo.
-      ============================================================
-    -->
-    <section class="hero">
-      <div class="wrap hero-grid">
-
-        <!-- Left card: main message -->
-        <div class="card hero-main">
-
-          <!-- Small label above the headline — all caps, edit freely -->
-          <div class="eyebrow">Rescued. Rebuilt. Rehomed. Reluctantly.</div>
-
-          <!-- Main headline -->
-          <h1>Original Xbox systems dragged back from the dead. You had better deserve one.</h1>
-
-          <!-- First body paragraph beneath the headline -->
-          <p class="hero-copy">
-            I find the worst ones on purpose. Broken, filthy, neglected, capacitor-bombed, abandoned. The kind of Xbox that was on its way to a landfill or a garage sale bin. I bring them back. Then I make you prove you are worth handing one to.
-          </p>
-
-          <!-- Second body paragraph — uses .muted for slightly dimmer colour -->
-          <p class="hero-copy muted">
-            If you want a brand new plug-and-play appliance, get out. If you want a machine that has been through something, that has a history, that was broken and is now better than it was the day it left the factory — and if you are willing to put in the minimum effort required to not immediately destroy it — keep reading.
-          </p>
-
-          <!--
-            BUTTONS
-            The first button is the primary action (solid green).
-            The second has class="btn secondary" for the outlined style.
-            Edit the text between <a ...> and </a> to change button labels.
-            Edit href="#apply" or href="#guides" to change where they go.
-          -->
-          <div class="button-row">
-            <a class="btn" href="#apply">Think you qualify? Prove it.</a>
-            <a class="btn secondary" href="#guides">Read the guides first (you won't)</a>
-          </div>
-
-          <!--
-            STAT BLOCKS — three small boxes at the bottom of the left card.
-            Each .stat has a <strong> for the bold headline and then body text.
-            Edit the <strong> text and the paragraph text freely.
-          -->
-          <div class="stats">
-            <div class="stat">
-              <strong>20+ years old</strong>
-              These machines have already survived more than you. Show some respect.
-            </div>
-            <div class="stat">
-              <strong>No flat pricing</strong>
-              Every build is different. "How much for a quick Xbox" is not a real question.
-            </div>
-            <div class="stat">
-              <strong>Support has limits</strong>
-              I will help where I can. I am not responsible for your router, your TV, or your decisions.
-            </div>
-          </div>
-        </div>
-
-        <!-- Right card: image + supporting text -->
-        <div class="card hero-side">
-
-          <!--
-            IMAGE PLACEHOLDER — replace this div with an <img> tag when ready.
-            To replace: delete the entire <div class="image-slot">...</div>
-            and paste:  <img src="images/yourphoto.jpg" alt="Restored Xbox" style="width:100%; display:block;" />
-          -->
-          <div class="image-slot">[INSERT IMAGE: restored Xbox, packaging shot, or Xbox in a crib if you want to commit to the bit]</div>
-
-          <!-- Supporting text beneath the image -->
+      <section class="tour-stage active" data-step="0">
+        <div class="hero-grid">
           <div>
-            <h3>What these machines actually are</h3>
-            <p class="muted">Beat up on the outside. Rebuilt on the inside. Cleaned, repaired, recapped where needed, configured properly, and tested before they go anywhere. They are not pretty. They have scars. That is the point.</p>
+            <div class="eyebrow">Start Here</div>
+            <h1>This is not an online store.</h1>
+            <p>I restore and modify original Xbox consoles for people who plan to actually use them. There is no shopping cart because there is no single standard Xbox build sitting on a shelf with one fixed price.</p>
+            <p>Every console starts with a different donor, and every customer has a different display, network, storage plan, controller setup, and reason for owning one. Those details matter more than most people expect.</p>
+            <div class="callout"><strong>The short version:</strong> before I can tell you what an Xbox should cost, I need to know what you actually need the Xbox to do and what you plan to connect it to.</div>
+            <p>This tour explains the parts people usually do not know to ask about. It is intentionally broken into short sections so you can deal with one subject at a time.</p>
+            <div class="button-row"><button class="btn next-btn" type="button">Start the tour</button></div>
           </div>
 
-        </div>
-      </div>
-    </section>
-
-    <!--
-      ============================================================
-      4. WHAT I DO SECTION
-      ============================================================
-      id="what-i-do" — this is what the nav link href="#what-i-do" points to.
-      Do not change the id unless you also update the nav link.
-
-      section-head: the h2 title and subtitle paragraph for this section.
-      grid-3: three panel boxes side by side.
-
-      Each panel has an h3 title and a <ul> list.
-      Edit the h3 and the <li> items freely.
-      To add a list item: copy a <li> line, paste it, change the text.
-      To remove one: delete the <li> line.
-      ============================================================
-    -->
-    <section id="what-i-do">
-      <div class="wrap">
-
-        <!-- Section heading and subtitle -->
-        <div class="section-head">
-          <h2>What I do</h2>
-          <p class="muted">I work on original Xbox hardware. Here is exactly what that means, because apparently people need it spelled out.</p>
-        </div>
-
-        <!-- Three panel boxes — edit h3 titles and list items freely -->
-        <div class="grid-3">
-
-          <div class="panel">
-            <h3>Restoration</h3>
-            <ul>
-              <li>Full teardown, cleaning, and inspection</li>
-              <li>Clock capacitor removal — non-negotiable, it will explode otherwise</li>
-              <li>Capacitor inspection and replacement where needed</li>
-              <li>Fresh thermal paste, because the original dried up twenty years ago</li>
-              <li>General health check before the machine goes anywhere</li>
-            </ul>
-          </div>
-
-          <div class="panel">
-            <h3>Modification</h3>
-            <ul>
-              <li>Softmod installs and dashboard configuration</li>
-              <li>Hard drive upgrades with proper file structure</li>
-              <li>XBMC4Gamers set up as the main dashboard</li>
-              <li>Apps, artwork, and supporting files installed</li>
-              <li>Modchip installs when the situation calls for it</li>
-            </ul>
-          </div>
-
-          <div class="panel">
-            <h3>Rescue work</h3>
-            <ul>
-              <li>Mail-in repair and system recovery</li>
-              <li>Reviving consoles that others gave up on</li>
-              <li>Diagnosing what is actually wrong versus what you think is wrong</li>
-              <li>Cleaning up damage from people who thought they knew what they were doing</li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!--
-      ============================================================
-      5. ADOPTION PHILOSOPHY SECTION
-      ============================================================
-      id="adoption" — matched by the nav link href="#adoption".
-
-      Left panel: paragraphs and a pull quote (<p class="quote">).
-      Right panel: h3 title and numbered step boxes.
-
-      The steps are inside <div class="step"> — the numbers are
-      generated automatically by CSS, so do not add them manually.
-      Just edit the text inside each .step div.
-
-      To add a step: copy a <div class="step">...</div> block and paste it.
-      To remove a step: delete the entire <div class="step">...</div> block.
-      ============================================================
-    -->
-    <section id="adoption">
-      <div class="wrap adoption">
-
-        <!-- Left panel: philosophy text -->
-        <div class="panel">
-          <div class="section-head">
-            <h2>The adoption philosophy</h2>
-          </div>
-
-          <!-- Body paragraphs — edit freely -->
-          <p>
-            I seek out the worst of the worst on purpose. The ones that look like they lost a fight. The ones with melted capacitors, stripped screws, mystery stickers, and hard drives that haven't spun up since the Bush administration. I find those specifically because nobody else wants them, and I think that is a character flaw on everyone else's part.
-          </p>
-          <p>
-            I put a lot of time into repairing, cleaning, testing, and configuring these systems, so I do not treat them like anonymous used electronics. The application exists because I want to know what you actually plan to do with the Xbox, what equipment you already have, and whether the setup I build will make sense for you before either of us spends money.
-          </p>
-
-          <!-- Pull quote — the green left-bordered highlighted line -->
-          <p class="quote">
-            You are not buying a new console. You are adopting a 20-year-old modified machine with a history. More capable than stock. More responsibility than a retail box. If that scares you, the door is behind you.
-          </p>
-
-          <!-- Muted paragraph — slightly dimmer colour -->
-          <p class="muted">
-            If you randomly change settings you do not understand, use a garbage HDMI adapter because it was cheaper, ignore the networking guide, or freestyle your way through the file structure and corrupt something — that is entirely on you. These machines can take abuse. What they cannot take is careless owners who assume it will all just work itself out.
-          </p>
-        </div>
-
-        <!-- Right panel: process steps -->
-        <div class="panel">
-          <h3>How this works</h3>
-          <div class="steps">
-            <!-- Each .step div gets an auto-numbered circle from CSS -->
-            <div class="step">
-              Read this entire site. Not skim it. Read it. The guides exist because these questions have been answered already. If you message me something covered here, that is not a good start.
+          <aside class="hamuel-terminal" aria-label="Hamuel site guide" data-gateway="https://meatman-ms-7b61.tail5ebf20.ts.net:8443">
+            <div class="hamuel-terminal-head">
+              <div class="hamuel-terminal-title">HAMUEL // PRE-ADOPTION TERMINAL</div>
+              <div class="hamuel-status" id="hamuel-status">CONNECTING</div>
             </div>
-            <div class="step">
-              Fill out the adoption application. Tell me about your setup, your expectations, your technical ability, and why you actually want one of these. "I think it would be cool" is not an answer.
+            <div class="hamuel-console-main">
+              <div class="hamuel-avatar-bay" aria-label="Animated Hamuel status display">
+                <div class="hamuel-crt">
+                  <div class="hamuel-crt-screen"><canvas id="hamuel-avatar" width="256" height="256" aria-label="Hamuel animated CRT avatar"></canvas></div>
+                  <div class="hamuel-crt-controls"><span>HAMUEL-86</span><span><span class="hamuel-crt-led">●</span> <span class="hamuel-crt-knobs">◌ ◌</span></span></div>
+                </div>
+                <div class="hamuel-avatar-meta"><span>STATE <strong id="hamuel-avatar-state">IDLE</strong></span><span>PUBLIC // ANON</span></div>
+              </div>
+              <div class="hamuel-transcript" id="hamuel-transcript" aria-live="polite">
+                <p class="hamuel-line"><strong>HAMUEL:</strong> Hey. I can answer questions about the Xbox builds, pricing, video, networking, controllers, the application, or Discord verification. Ask me something.</p>
+              </div>
             </div>
-            <div class="step">
-              If your application does not immediately disqualify you, I will follow up. We will talk hardware, accessories, storage, timing, and whether your router situation is going to be a problem before it becomes my problem.
+            <div class="hamuel-quick">
+              <button type="button" data-hamuel-question="Why isn't there a fixed price?">Price</button>
+              <button type="button" data-hamuel-question="I only want Rainbow Six. Why can't I get a cheap Xbox?">Only Rainbow Six</button>
+              <button type="button" data-hamuel-question="What do I need for HDMI?">HDMI</button>
+              <button type="button" data-hamuel-question="How does Discord verification work?">Discord</button>
             </div>
-          </div>
+            <form class="hamuel-form" id="hamuel-form">
+              <input id="hamuel-input" name="question" maxlength="240" autocomplete="off" placeholder="Ask Hamuel a question..." aria-label="Ask Hamuel a question">
+              <button class="btn" type="submit">Send</button>
+            </form>
+            <div class="hamuel-handoff">
+              <button class="btn secondary" id="discord-handoff" type="button" disabled>Continue with Hamuel on Discord</button>
+              <p class="hamuel-note">Discord handoff will activate when the current server invite is connected. This site terminal is customer-safe and does not expose private Hamuel tools.</p>
+            </div>
+          </aside>
         </div>
+      </section>
 
-      </div>
-    </section>
-
-    <!--
-      ============================================================
-      6. HARDWARE AND ACCESSORIES SECTION
-      ============================================================
-      id="hardware" — matched by the nav link href="#hardware".
-
-      Two panel boxes side by side (grid-2).
-      Edit h3 titles, paragraphs, and list items freely.
-      ============================================================
-    -->
-    <section id="hardware">
-      <div class="wrap">
-
-        <div class="section-head">
-          <h2>Hardware and accessories</h2>
-          <p class="muted">There is no cheap version of doing this correctly. If that is a dealbreaker, that is also information.</p>
-        </div>
-
+      <section class="tour-stage" data-step="1">
+        <div class="eyebrow">Step 1</div>
+        <h2>Why there is an application.</h2>
+        <p>I am not trying to make buying an Xbox difficult for the sake of it. The application is there because the wrong build for your setup wastes your money and creates support problems that could have been avoided before I ever shipped anything.</p>
         <div class="grid-2">
-
-          <div class="panel">
-            <h3>Systems and upgrades</h3>
-            <p>The original Xbox shipped with an 8GB hard drive. That is not enough to do anything interesting with. A proper modern setup means a hard drive upgrade, a SATA to IDE adapter, and an 80-wire cable at minimum. Storage size, parts quality, revision of the board, and the amount of work the machine needed all factor into what something costs.</p>
-            <p class="muted">No, it does not get cheaper because you only want two games. The labor is the same either way.</p>
-          </div>
-
-          <div class="panel">
-            <h3>Accessories I will actually recommend</h3>
-            <p>Not all HDMI adapters are equal. Some are acceptable. Some are an insult to the hardware. I am selective about what I put my name next to, because I will be the one hearing about it when your cheap adapter introduces input lag and you decide that is somehow the Xbox's fault.</p>
-            <ul>
-              <li>Electron Shepherd XOUT — the HDMI solution I recommend</li>
-              <li>OGX Mini / Bluetooth controller options for modern controller support</li>
-              <li>OEM original controllers when you want to do it right</li>
-              <li>Component cables for CRT setups — still the correct answer in that situation</li>
-            </ul>
-          </div>
-
+          <div class="panel"><h3>What I need to understand</h3><ul>
+            <li>What display you plan to use and what inputs it actually has</li>
+            <li>Whether the Xbox will be wired to your network and how</li>
+            <li>Whether you want Insignia and online play</li>
+            <li>How much storage you realistically need</li>
+            <li>Whether you want OEM or modern controllers</li>
+            <li>How comfortable you are troubleshooting old hardware</li>
+          </ul></div>
+          <div class="panel"><h3>What that lets me do</h3><ul>
+            <li>Recommend the build that fits your use instead of the most expensive one</li>
+            <li>Catch display or networking problems before they become your problem</li>
+            <li>Avoid selling you hardware or accessories you do not need</li>
+            <li>Explain the limitations before money changes hands</li>
+            <li>Know what needs to be tested before the console leaves me</li>
+          </ul></div>
         </div>
-      </div>
-    </section>
+        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
+      </section>
 
-    <!--
-      ============================================================
-      7. NETWORKING SECTION
-      ============================================================
-      id="networking" — not currently in the nav, but could be added.
-      To add it to nav: add  <li><a href="#networking">Networking</a></li>
-      inside the nav <ul>.
+      <section class="tour-stage" data-step="2">
+        <div class="eyebrow">Step 2</div>
+        <h2>“I only want to play Rainbow Six” does not make the Xbox cheap.</h2>
+        <p>This is one of the most common misunderstandings. The number of games you want changes how much storage makes sense. It does not remove the work required to make a twenty-plus-year-old console reliable.</p>
+        <table class="compare-table"><thead><tr><th>If you only want a few games...</th><th>What does not disappear</th></tr></thead><tbody>
+          <tr><td>A smaller hard drive may be enough.</td><td>The motherboard still has to be inspected, cleaned, serviced, and tested.</td></tr>
+          <tr><td>You may need fewer apps or extras.</td><td>The console still needs a reliable storage setup, dashboard, EEPROM backup, and configuration.</td></tr>
+          <tr><td>You may not need every accessory.</td><td>Your TV still needs a compatible video path and online play still needs a workable network.</td></tr>
+          <tr><td>Your final build can be simpler.</td><td>The donor console, repair parts, labor, testing, and shipping still exist.</td></tr>
+        </tbody></table>
+        <div class="warning">A small game library can reduce the size of the build. It does not turn restoration work into a $40 used-console transaction.</div>
+        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
+      </section>
 
-      Two panel boxes side by side (grid-2).
-      Edit paragraphs freely.
-      ============================================================
-    -->
-    <section id="networking">
-      <div class="wrap">
-
-        <div class="section-head">
-          <h2>The networking situation</h2>
-          <p class="muted">This is where most people embarrass themselves. Read it.</p>
-        </div>
-
+      <section class="tour-stage" data-step="3">
+        <div class="eyebrow">Step 3</div>
+        <h2>What actually happens to a console before it leaves.</h2>
+        <p>“Modded Xbox” describes the software people see. Most of the work is everything underneath it.</p>
         <div class="grid-2">
-
-          <div class="panel">
-            <h3>The original Xbox does not have Wi-Fi</h3>
-            <p>It never did. It uses Ethernet. That means a physical cable from the Xbox to your router or switch. If your router is on a different floor of your house, that is your problem to solve before you contact me, not after the Xbox arrives.</p>
-            <p class="muted">Powerline adapters, MoCA adapters, and a long Ethernet cable are all valid options. Laptop bridging through a shared Windows connection is not something I will guarantee or support.</p>
-          </div>
-
-          <div class="panel">
-            <h3>Modern router and modem combos are a known problem</h3>
-            <p>A lot of current all-in-one ISP-provided modem/router combos do not play nicely with the original Xbox — particularly for Insignia online play. This is not the Xbox being difficult. This is 2003 networking meeting 2024 equipment that was not designed with it in mind.</p>
-            <p class="muted">You may need to access your router's admin settings, adjust NAT behavior, or put the Xbox in a DMZ. If you do not know what any of that means, say so on the application. That is not disqualifying. Pretending you know and then asking me why Insignia does not work is.</p>
-          </div>
-
+          <div class="panel"><h3>Hardware and preservation</h3><ul>
+            <li>Full teardown, cleaning, and board inspection</li>
+            <li>Clock-capacitor service appropriate to the motherboard revision</li>
+            <li>Known problem capacitors inspected and replaced when required</li>
+            <li>Fresh thermal interface material and cooling inspection</li>
+            <li>DVD, controller ports, video output, and power behavior checked</li>
+            <li>EEPROM captured and preserved before storage work</li>
+          </ul></div>
+          <div class="panel"><h3>Storage, software, and testing</h3><ul>
+            <li>Hard-drive upgrade and lock/configuration matched to the console</li>
+            <li>Dashboard, applications, title updates, and file structure configured</li>
+            <li>Insignia and network setup tested when part of the build</li>
+            <li>Controllers and ports checked under real use</li>
+            <li>Extended stress testing before final clean and packing</li>
+            <li>Build information and EEPROM recovery material retained</li>
+          </ul></div>
         </div>
-      </div>
-    </section>
+        <p>Some of that is bench work. Some of it is file transfer time. Some of it is simply running the machine long enough to learn whether it can be trusted.</p>
+        <div class="callout"><strong>About the DVD drive:</strong> even when it works, it is aging mechanical hardware. The normal day-to-day plan is to run installed games from the hard drive and avoid putting unnecessary hours on the optical drive.</div>
+        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
+      </section>
 
-    <!--
-      ============================================================
-      8. GUIDES SECTION
-      ============================================================
-      id="guides" — matched by the nav link href="#guides".
-
-      Three panel boxes (grid-3). Each has an h3 title, a paragraph,
-      and a link. Replace the href="#" with actual guide URLs when ready.
-      The REPLACE_ME text next to the link is a reminder — delete it
-      once you have added a real link.
-      ============================================================
-    -->
-    <section id="guides">
-      <div class="wrap">
-
-        <div class="section-head">
-          <h2>Guides and support</h2>
-          <p class="muted">These exist so you do not have to ask me things that are already written down. Use them.</p>
+      <section class="tour-stage" data-step="4">
+        <div class="eyebrow">Step 4</div>
+        <h2>An analog console in a digital house.</h2>
+        <p>The original Xbox was designed around analog video. A modern HDMI-only television was not part of the design brief. Connecting the two means converting signals, and the quality of that conversion matters.</p>
+        <div class="grid-2">
+          <div class="panel"><h3>The console side</h3><ul>
+            <li>Composite is the lowest-quality native video path.</li>
+            <li>Component supports the progressive/high-definition modes people usually want.</li>
+            <li>The Xbox does not output HDMI natively.</li>
+            <li>CRT and older HDTV setups can behave very differently from modern panels.</li>
+          </ul></div>
+          <div class="panel"><h3>The modern-display side</h3><ul>
+            <li>An HDMI-only display needs a proper analog-to-digital adapter.</li>
+            <li>Cheap converters often start with the worst source signal and add more problems.</li>
+            <li>480p-era art can look harsh when scaled across a large 4K panel.</li>
+            <li>Your display choice is part of the Xbox setup, not an unrelated detail.</li>
+          </ul></div>
         </div>
+        <div class="callout">For HDMI-only setups I generally recommend the Electron Shepherd XOUT because it uses the right signal path and handles the job without turning the display chain into another project.</div>
+        <p><a href="buying-guide.html#analog">Read the full analog/video explanation in the buying guide.</a></p>
+        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
+      </section>
 
-        <div class="grid-3">
-
-          <div class="panel">
-            <h3>Quick Start Guide</h3>
-            <p>What to do when your Xbox arrives, how to connect it without making a mess of it, and how to actually use the dashboard without wandering into something you should not touch.</p>
-            <!-- Replace the # with your actual guide URL when you have one -->
-            <p><a href="#">REPLACE_ME: Add guide link</a></p>
-          </div>
-
-          <div class="panel">
-            <h3>Networking and Insignia</h3>
-            <p>Ethernet setup, Insignia expectations, what your router might be doing to cause problems, and why "it won't connect" is not enough information for me to help you.</p>
-            <p><a href="#">REPLACE_ME: Add guide link</a></p>
-          </div>
-
-          <div class="panel">
-            <h3>Video output and HDMI</h3>
-            <p>Composite versus component versus HDMI conversion, what each option actually looks like, what the tradeoffs are, and why the ten-dollar adapter you found is not a real solution.</p>
-            <p><a href="#">REPLACE_ME: Add guide link</a></p>
-          </div>
-
+      <section class="tour-stage" data-step="5">
+        <div class="eyebrow">Step 5</div>
+        <h2>Networking is still 2001 networking.</h2>
+        <p>The original Xbox has wired Ethernet. It does not have built-in Wi-Fi. If you want online play through Insignia, I need to know how the console is getting to your router and whether you can actually manage that router if something needs to change.</p>
+        <div class="grid-2">
+          <div class="panel"><h3>The easy case</h3><p>Direct Ethernet from the Xbox to a normal router or switch. This is the setup I can reason about, reproduce, and meaningfully help troubleshoot.</p></div>
+          <div class="panel"><h3>The complicated case</h3><p>ISP combo boxes, wireless bridges, powerline adapters, unusual firewall rules, or networks nobody has admin access to. These can work, but every extra layer creates another place for old hardware to disagree with modern infrastructure.</p></div>
         </div>
-      </div>
-    </section>
+        <p>Your internet plan can be extremely fast and the Xbox can still have a networking problem. Bandwidth and compatibility are not the same thing.</p>
+        <p><a href="buying-guide.html#networking">Read the full networking section.</a></p>
+        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
+      </section>
 
-    <!--
-      ============================================================
-      9. FAQ SECTION
-      ============================================================
-      id="faq" — matched by the nav link href="#faq".
-
-      Each FAQ entry uses a <details> and <summary> tag pair.
-      <summary> = the clickable question line (click to expand)
-      <p> inside = the answer text that appears when expanded
-
-      To add a new FAQ entry: copy an entire <details>...</details>
-      block, paste it, and change the summary text and the <p> text.
-      To remove an entry: delete the entire <details>...</details> block.
-      ============================================================
-    -->
-    <section id="faq">
-      <div class="wrap faq">
-
-        <div class="section-head">
-          <h2>Frequently asked questions</h2>
+      <section class="tour-stage" data-step="6">
+        <div class="eyebrow">Step 6</div>
+        <h2>Controllers and adapters are part of the system.</h2>
+        <p>Original Xbox controller ports are electrically related to USB, but a modern USB or Bluetooth controller does not become an Xbox controller because the plug can be adapted.</p>
+        <div class="grid-2">
+          <div class="panel"><h3>OEM controller</h3><p>The simplest option. It speaks the protocol the console expects and adds no translation layer.</p></div>
+          <div class="panel"><h3>Modern controller</h3><p>A device such as an OGX-Mini translates modern controller protocols into what the Xbox understands. That adds capability, but it is another piece of hardware that needs to be chosen and configured correctly.</p></div>
         </div>
+        <p>The same general rule applies to video adapters, network bridges, and other accessories: compatibility is a system-level question. The Xbox is only one part of the chain.</p>
+        <p><a href="ogx-mini.html">Learn about the OGX-Mini builds.</a></p>
+        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
+      </section>
 
-        <!-- Each <details> block is one FAQ entry -->
 
-        <details>
-          <!-- summary = the clickable question -->
-          <summary>How much is an Xbox?</summary>
-          <!-- The answer text inside -->
-          <p>There is no number I can give you right now. What it costs depends on the condition of the system I start with, what work it needs, what parts go into it, how much storage you want, and what configuration makes sense for your setup. Anyone selling modded original Xboxes at a flat rate is either cutting corners or lying to you. Possibly both.</p>
-        </details>
-
-        <details>
-          <summary>Does it have Wi-Fi?</summary>
-          <p>No. It is a 2001 console. It has an Ethernet port. Run a cable. If you absolutely cannot run a cable, read the networking guide and come to the application prepared to explain your situation honestly.</p>
-        </details>
-
-        <details>
-          <summary>Can I use any HDMI adapter?</summary>
-          <p>Technically yes. You can also put regular gas in a diesel engine and see what happens. The original Xbox outputs analog video. Every HDMI solution is doing signal conversion. The quality of that conversion varies dramatically. I recommend the Electron Shepherd XOUT. What you do with that information is your business.</p>
-        </details>
-
-        <details>
-          <summary>Will you help me if something goes wrong?</summary>
-          <p>Within reason. I will help with issues that are actually the Xbox's fault. I will not troubleshoot your ISP, diagnose your router firmware, or figure out why you changed a video setting you did not understand and now have no picture. Read the guides. If the problem is still clearly the hardware, reach out.</p>
-        </details>
-
-        <details>
-          <summary>These look beat up. Is that a problem?</summary>
-          <p>That is the whole point. I specifically look for the worst ones. The ones nobody else wanted. The shells have scratches, scuffs, missing stickers, mystery marks, and whatever else twenty-plus years of existence leaves behind. The insides are rebuilt. The outside tells a story. If you want something that looks factory fresh, buy something factory fresh. That is not what this is.</p>
-        </details>
-
-        <details>
-          <summary>Can I just message you instead of filling out the application?</summary>
-          <p>You can message me. I will send you the link to the application. Fill it out.</p>
-        </details>
-
-      </div>
-    </section>
-
-    <!--
-      ============================================================
-      10. APPLY / CALL TO ACTION SECTION
-      ============================================================
-      id="apply" — matched by the nav link href="#apply" and by
-      the buttons throughout the page that say href="#apply".
-
-      Edit the h2, the two <p> paragraphs, and the button text freely.
-
-      The first button links to adoption-application.html.
-      If you rename the application file, update that href too.
-      ============================================================
-    -->
-    <section id="apply">
-      <div class="wrap">
-        <div class="cta">
-
-          <!-- CTA headline -->
-          <h2>Think you are ready?</h2>
-
-          <!-- CTA body paragraphs -->
-          <p>
-            Fill out the adoption application. Tell me about your setup, your expectations, and your actual technical ability. Be honest. I would rather know you need help up front than find out after something breaks.
-          </p>
-          <p class="muted">
-            Completing this form does not guarantee anything. It means I will look at your answers and decide whether to follow up.
-          </p>
-
-          <!--
-            CTA BUTTONS
-            First button links to the application form file.
-            Second is a secondary link back to the guides section.
-            Edit button label text freely.
-          -->
-          <div class="button-row" style="justify-content:center;">
-            <a class="btn" href="adoption-application.html">Open the adoption application</a>
-            <a class="btn secondary" href="#guides">Read the guides first</a>
-          </div>
-
+      <section class="tour-stage" data-step="7">
+        <div class="eyebrow">Step 7</div>
+        <h2>Why there is no one answer to “How much?”</h2>
+        <p>Price follows the actual build. I can estimate ranges, but I cannot responsibly quote one universal number before I know what I am building and what the donor console requires.</p>
+        <div class="grid-2">
+          <div class="panel"><h3>Things that change the cost</h3><ul>
+            <li>Condition and revision of the donor console</li>
+            <li>Capacitors, DVD drive, or other hardware that needs service</li>
+            <li>Hard-drive size and storage hardware</li>
+            <li>Video and controller adapters required by your setup</li>
+            <li>Special repair or recovery work</li>
+            <li>Shipping and packing requirements</li>
+          </ul></div>
+          <div class="panel"><h3>What I do not want to sell you</h3><ul>
+            <li>A bigger drive just because a bigger number sounds better</li>
+            <li>A modchip when the build does not need one</li>
+            <li>An HDMI adapter that does not fit your display plan</li>
+            <li>Accessories you will never use</li>
+            <li>A console I already know is a bad match for your setup</li>
+          </ul></div>
         </div>
-      </div>
-    </section>
+        <div class="callout"><strong>The goal is not the cheapest Xbox or the most expensive Xbox.</strong> It is the correct Xbox for the person who is going to own it.</div>
+        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
+      </section>
 
+      <section class="tour-stage" data-step="8">
+        <div class="eyebrow">Step 8</div>
+        <h2>What I stand behind, and what ownership means.</h2>
+        <p>I want the console to arrive working, documented, and tested for the setup we agreed on. I also want the owner to understand that this is modified twenty-plus-year-old hardware, not a sealed modern appliance.</p>
+        <div class="grid-2">
+          <div class="panel"><h3>My responsibility</h3><ul>
+            <li>Describe the build honestly</li>
+            <li>Repair and configure what I say I repaired and configured</li>
+            <li>Test the machine before it leaves</li>
+            <li>Keep recovery information that matters</li>
+            <li>Help diagnose a real problem instead of immediately blaming the customer</li>
+          </ul></div>
+          <div class="panel"><h3>Your responsibility</h3><ul>
+            <li>Use the display, adapters, and network setup we discussed</li>
+            <li>Read the documentation before changing settings</li>
+            <li>Ask before changing something you do not understand</li>
+            <li>Be able to explain what changed if a problem starts after you changed something</li>
+            <li>Accept that old hardware still has old-hardware limitations</li>
+          </ul></div>
+        </div>
+        <p>If you would rather understand every part of the machine yourself, I genuinely encourage learning to mod your own Xbox. I would rather help someone learn than sell them something they are not comfortable owning.</p>
+        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button><button class="btn next-btn" type="button">Continue</button></div>
+      </section>
+
+      <section class="tour-stage" data-step="9">
+        <div class="eyebrow">Final Step</div>
+        <h2>If all of that still sounds reasonable, continue.</h2>
+        <p>The readiness check is short. It exists to confirm that the important parts of this tour made it through before the application asks me to evaluate your setup.</p>
+        <div class="end-cta">
+          <h3>Take the readiness check</h3>
+          <p>Pass it and the adoption application opens. Your tour timing is carried forward so the application record can show that you actually went through the material.</p>
+          <p><a class="btn" href="readiness-check.html">Start the readiness check</a></p>
+        </div>
+        <div class="grid-2" style="margin-top:18px;">
+          <div class="panel"><h3>Want more technical detail?</h3><p>The buying guide goes deeper on analog video, HDMI conversion, audio, networking, and controllers.</p><p><a href="buying-guide.html">Open the buying guide</a></p></div>
+          <div class="panel"><h3>Discord onboarding</h3><p>Hamuel already handles the in-server Verified-role handoff and opens the customer DM portal.</p><p><button class="btn secondary" type="button" disabled>Join Discord / Start Verification</button></p><p class="tiny">The current public server invite still needs to be connected before launch.</p></div>
+          <div class="panel"><h3>Want the backstory?</h3><p>The fake MySpace profile survived for a reason.</p><p><a href="#" id="open-meatspace-final">Open Meat Space</a></p></div>
+          <div class="panel"><h3>Already need help?</h3><p>Troubleshooting and customer guidance live on the help page.</p><p><a href="help.html">Open Help / Guides</a></p></div>
+        </div>
+        <div class="button-row"><button class="btn secondary prev-btn" type="button">Back</button></div>
+      </section>
+    </div>
   </main>
 
-  <!--
-    ============================================================
-    11. FOOTER
-    ============================================================
-    Two columns: left side has brand name + description,
-    right side has contact info and domain.
 
-    REPLACE_ME lines: fill in your actual email or Discord and
-    delete the REPLACE_ME text when done.
-
-    Edit all text in the footer freely.
-    ============================================================
-  -->
   <footer>
-    <div class="wrap footer-grid">
-
-      <!-- Left column: brand name and description -->
-      <div>
-        <div class="brand" style="font-size:22px;">MeatMan Mods</div>
-        <p class="tiny">Restored original Xbox systems. Modified, tested, and placed with people who actually know what they are getting into. Or at least had the decency to read the application.</p>
-      </div>
-
-      <!-- Right column: contact info — replace the REPLACE_ME text -->
-      <div>
-        <p class="tiny">REPLACE_ME: add your preferred email or Discord contact here</p>
-        <p class="tiny">Domain: meatmanmods.com</p>
-      </div>
-
+    <div class="wrap">
+      <p class="tiny">MeatMan Mods // Guided tour version</p>
+      <p class="tiny">MeatMan Mods // No virtual shopping cart. No digital checkout. Analog by design.</p>
     </div>
   </footer>
 
+  <div class="modal" id="xout-modal" aria-hidden="true">
+    <div class="modal-card" style="max-width:900px;height:auto;max-height:86vh;overflow:auto;background:#111811;">
+      <div class="modal-head">
+        <div class="modal-title">Electron Shepherd XOUT // Why it is the right adapter</div>
+        <button class="btn secondary" id="close-xout" type="button">Close window</button>
+      </div>
+      <div style="padding:18px;">
+        <p>The XOUT works well because it starts with the proper component signal, keeps the analog path short, and converts to digital without adding unnecessary complexity.</p>
+        <p>That matters because most cheap HDMI adapters are cheap by cutting the wrong corners: bad shielding, weak components, sloppy signal handling, stereo-only audio, and inconsistent results from one TV to the next.</p>
+        <p>The XOUT works across Xbox revisions, passes Dolby Digital, and solves the problem without turning your setup into an experiment. It is not magic. It is just the adapter that does the job the way it should have been done in the first place.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="meatspace-modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title">Meat Space // Supplemental Lore Window</div>
+        <button class="btn secondary" id="close-meatspace" type="button">Close window</button>
+      </div>
+      <iframe src="meat-space.html" title="Meat Space profile"></iframe>
+    </div>
+  </div>
+
+  <div class="modal" id="ogx-modal" aria-hidden="true">
+    <div class="modal-card" style="max-width:900px;height:auto;max-height:86vh;overflow:auto;background:#111811;">
+      <div class="modal-head">
+        <div class="modal-title">OGX-Mini // What it is</div>
+        <button class="btn secondary" id="close-ogx" type="button">Close window</button>
+      </div>
+      <div style="padding:18px;">
+        <p>The OGX-Mini is an open-source controller adapter project for the original Xbox. It is not a retail product. There is no single official version — different builders produce it with different boards, different firmware, and different levels of quality control. That matters when you are shopping around.</p>
+        <p>The version I build is the <strong>DVD dongle style</strong> — it sits in the DVD drive bay area rather than hanging off the front controller ports. Clean install, no mess, no cable dangling out of the front of the console.</p>
+        <p>What it does: it translates between modern wireless controllers and the original Xbox's proprietary controller protocol. That translation introduces a small amount of latency — same as any protocol conversion. In practice you will not feel it. But it is not magic and anyone telling you otherwise is selling you something.</p>
+        <p>Not every version of the OGX-Mini supports every modern controller. Some builds have better firmware, better controller compatibility, and better reliability than others. If you are buying one from somewhere else, check what controllers are actually supported on that specific build before you commit.</p>
+        <p>If you want modern wireless controller support on original hardware done right, this is the answer. If you want zero additional complexity, use an OEM Xbox controller and call it a day.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const stages = Array.from(document.querySelectorAll('.tour-stage'));
+    const progressText = document.getElementById('progress-text');
+    const labels = [
+      'Start here — why this is not an online store.',
+      'Step 1 of 8 — why there is an application.',
+      'Step 2 of 8 — why a small game list does not remove the real cost.',
+      'Step 3 of 8 — what happens to the hardware before it leaves.',
+      'Step 4 of 8 — analog video in a modern display setup.',
+      'Step 5 of 8 — networking and Insignia reality.',
+      'Step 6 of 8 — controllers, adapters, and compatibility.',
+      'Step 7 of 8 — why there is no universal price.',
+      'Step 8 of 8 — support and owner responsibility.',
+      'Final step — readiness check ahead.'
+    ];
+
+    let currentIndex = 0;
+    let tourStarted = false;
+    let tourStartTime = null;
+    let stepStartTime = Date.now();
+    const stepTimes = [];
+
+    function setStage(index) {
+      const elapsed = Math.round((Date.now() - stepStartTime) / 1000);
+      stepTimes[currentIndex] = (stepTimes[currentIndex] || 0) + elapsed;
+      currentIndex = Math.max(0, Math.min(index, stages.length - 1));
+      stages.forEach((stage, i) => stage.classList.toggle('active', i === currentIndex));
+      progressText.textContent = labels[currentIndex];
+      stepStartTime = Date.now();
+      if (!tourStarted && index > 0) {
+        tourStarted = true;
+        tourStartTime = Date.now();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.querySelectorAll('.next-btn').forEach(btn => btn.addEventListener('click', () => setStage(currentIndex + 1)));
+    document.querySelectorAll('.prev-btn').forEach(btn => btn.addEventListener('click', () => setStage(currentIndex - 1)));
+
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a');
+      if (link && link.href && link.href.includes('readiness-check')) {
+        const elapsed = Math.round((Date.now() - stepStartTime) / 1000);
+        stepTimes[currentIndex] = (stepTimes[currentIndex] || 0) + elapsed;
+        const totalSeconds = tourStartTime ? Math.round((Date.now() - tourStartTime) / 1000) : 0;
+        const stepLog = stepTimes.map((t, i) => 'step' + i + ':' + (t || 0) + 's').join(', ');
+        sessionStorage.setItem('xbox_tour_total_seconds', totalSeconds);
+        sessionStorage.setItem('xbox_tour_step_times', stepLog);
+        sessionStorage.setItem('xbox_tour_started_at', tourStartTime ? new Date(tourStartTime).toISOString() : 'never');
+      }
+    });
+    const modal = document.getElementById('meatspace-modal');
+    const openBtn = document.getElementById('open-meatspace');
+    const openBtnFinal = document.getElementById('open-meatspace-final');
+    const closeBtn = document.getElementById('close-meatspace');
+    function closeModal() { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); }
+    const xoutModal = document.getElementById('xout-modal');
+    const xoutOpen = document.getElementById('open-xout');
+    const xoutClose = document.getElementById('close-xout');
+    function closeXout() { xoutModal.classList.remove('open'); xoutModal.setAttribute('aria-hidden', 'true'); }
+    const ogxModal = document.getElementById('ogx-modal');
+    const ogxOpen = document.getElementById('open-ogx');
+    const ogxClose = document.getElementById('close-ogx');
+    function closeOgx() { ogxModal.classList.remove('open'); ogxModal.setAttribute('aria-hidden', 'true'); }
+    function openMeatspace(e) {
+      if (e) e.preventDefault();
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+    if (openBtn) openBtn.addEventListener('click', openMeatspace);
+    if (openBtnFinal) openBtnFinal.addEventListener('click', openMeatspace);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    if (xoutOpen) { xoutOpen.addEventListener('click', (e) => { e.preventDefault(); xoutModal.classList.add('open'); xoutModal.setAttribute('aria-hidden','false'); }); }
+    xoutClose.addEventListener('click', closeXout);
+    xoutModal.addEventListener('click', (e) => { if (e.target === xoutModal) closeXout(); });
+    if (ogxOpen) { ogxOpen.addEventListener('click', (e) => { e.preventDefault(); ogxModal.classList.add('open'); ogxModal.setAttribute('aria-hidden','false'); }); }
+    const xoutOpen2 = document.getElementById('open-xout-2');
+    if (xoutOpen2) { xoutOpen2.addEventListener('click', (e) => { e.preventDefault(); xoutModal.classList.add('open'); xoutModal.setAttribute('aria-hidden','false'); }); }
+    ogxClose.addEventListener('click', closeOgx);
+    ogxModal.addEventListener('click', (e) => { if (e.target === ogxModal) closeOgx(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeModal(); closeXout(); closeOgx(); } });
+
+
+
+  </script>
+  <script src="hamuel-avatar-data.js"></script>
+  <script src="hamuel-site.js"></script>
 </body>
 </html>

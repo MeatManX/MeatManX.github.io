@@ -79,15 +79,15 @@
   <div class="top-strip"><div class="wrap"><div>MeatMan Mods // Readiness Check</div><div>This is not hard. Read better.</div></div></div>
   <header>
     <div class="wrap nav">
-      <div class="brand">MeatMan Mods<small>Application gatekeeping division</small></div>
+      <div class="brand">MeatMan Mods<small>Readiness check</small></div>
       <a href="index.html">← Back to the tour</a>
     </div>
   </header>
   <main>
     <div class="wrap card">
       <h1>Readiness Check</h1>
-      <p>This is not meant to be difficult. It is meant to confirm that you paid attention to the actual customer-facing information instead of speedrunning your way toward the application like an impatient idiot.</p>
-      <p class="muted">Answer all five. Miss one or more and you go back to the start.</p>
+      <p>This is not meant to be difficult. It only checks the handful of details that matter before the application asks about your setup.</p>
+      <p class="muted">Answer all five. If you miss something, the tour is there so you can review it and try again.</p>
       <form id="quiz-form">
         <fieldset class="question">
           <legend>1. The original Xbox has a built-in Ethernet port. What does it NOT have?</legend>
@@ -136,9 +136,9 @@
 
   <div class="modal" id="pass-modal" aria-hidden="true">
     <div class="modal-card">
-      <div class="modal-head">Accepted by the Gate</div>
+      <div class="modal-head">Readiness Check Passed</div>
       <div class="modal-body">
-        <p>You actually read it. Miracles happen.</p>
+        <p>You have the baseline information needed to continue.</p>
         <p>You can proceed to the adoption application.</p>
       </div>
       <div class="modal-actions">
@@ -187,7 +187,7 @@
       result.style.display = 'block';
       if (!allAnswered) {
         result.className = 'fail';
-        result.innerHTML = '<strong>Not so fast.</strong><p>You skipped at least one question. That is exactly what this page exists to catch.</p>';
+        result.innerHTML = '<strong>One or more questions are unanswered.</strong><p>Complete all five before continuing.</p>';
         return;
       }
       if (allCorrect) {
@@ -195,7 +195,7 @@
         openModal();
       } else {
         result.className = 'fail';
-        result.innerHTML = '<strong>Incorrect.</strong><p>You missed one or more questions. Go back to the start, read the tour again, and try again.</p><p><a href="index.html">Return to the homepage and start over</a></p>';
+        result.innerHTML = '<strong>One or more answers need another look.</strong><p>Review the guided tour and try again.</p><p><a href="index.html">Return to the guided tour</a></p>';
         form.reset();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
