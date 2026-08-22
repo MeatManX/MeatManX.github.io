@@ -251,10 +251,10 @@
       </div>
 
       <!--
-        THE FORM — do not change action="..." (your Formspree address)
+        THE FORM — Google Apps Script is primary; Formspree is retained as fallback
         and do not change id="adoptionForm" (the script below needs it).
       -->
-      <form id="adoptionForm" action="https://formspree.io/f/xdaykrwd" method="POST">
+      <form id="adoptionForm" action="https://script.google.com/macros/s/AKfycbys7z6df2QAapkJLf6_9-_mU4djUhgh_LQT3ua5V7YJeL7CjnVg5eoMpLNqJ_aFtdg-bw/exec" method="POST" data-fallback-action="https://formspree.io/f/xdaykrwd">
         <input type="hidden" name="_subject" value="New Meat Man Xbox Adoption Application">
         <input type="hidden" name="_format" value="plain">
 
@@ -747,7 +747,7 @@
 
   <!--
     FORM SUBMISSION SCRIPT — handles what happens when someone clicks submit.
-    Sends data to Formspree and shows a message to the visitor.
+    Sends data to Google Apps Script first, with Formspree as a fallback.
 
     The two lines you might want to edit are marked below.
     Do not change anything else in here.
@@ -768,23 +768,55 @@
 
       const data = new FormData(form);
 
-      try {
-        const response = await fetch(form.action, {
+      // Apps Script's e.parameter keeps only one value for repeated fields.
+      // Collapse multi-select checkbox groups into a single readable value so
+      // every selected answer reaches the Google Sheet.
+      ['goals', 'interests'].forEach((fieldName) => {
+        const selected = Array.from(
+          form.querySelectorAll(`input[name="${fieldName}"]:checked`)
+        ).map((input) => input.value);
+        data.delete(fieldName);
+        if (selected.length > 0) {
+          data.append(fieldName, selected.join(' | '));
+        }
+      });
+
+      async function submitFormData(url) {
+        const response = await fetch(url, {
           method: form.method,
           body: data,
           headers: { 'Accept': 'application/json' }
         });
+        if (!response.ok) return false;
 
-        if (response.ok) {
-          // SUCCESS MESSAGE — edit this text to change what they see after a successful submit
+        // Google Apps Script returns HTTP 200 even when its JSON body reports
+        // an application-level error, so inspect the body when possible.
+        try {
+          const result = await response.clone().json();
+          if (result && result.result === 'error') return false;
+        } catch (_) {
+          // Formspree and future endpoints may return a different success body.
+        }
+        return true;
+      }
+
+      try {
+        let submitted = await submitFormData(form.action);
+
+        // Preserve the old Formspree endpoint as a safety net. It is used only
+        // if the Google pipeline fails, so normal submissions do not duplicate
+        // owner/applicant notifications.
+        if (!submitted && form.dataset.fallbackAction) {
+          submitted = await submitFormData(form.dataset.fallbackAction);
+        }
+
+        if (submitted) {
           status.textContent = 'Application received. If your setup makes sense and your answers were honest, you will hear back.';
           form.reset();
         } else {
-          // ERROR MESSAGE — edit this text to change what they see if the submission fails
           status.textContent = 'Something went wrong on submission. Try again or contact Meat Man directly.';
         }
       } catch (error) {
-        // NETWORK ERROR — shown if their internet drops during submission
         status.textContent = 'Network error. Give it a minute and try again.';
       }
     });
