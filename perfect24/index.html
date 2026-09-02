@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perfect 24</title>
+<style>
+:root{
+  --tape:#17121f; --panel:#221a2d; --panel2:#2c2239; --edge:#3b2f4c;
+  --label:#EDE3C8; --dim:#9a8fae; --amber:#F2B33D; --red:#E0503A; --green:#5BC99A;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--tape);color:var(--label);
+  font:15px/1.45 "Inter","Helvetica Neue",Helvetica,Arial,sans-serif}
+button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font:inherit;color:var(--label);background:var(--panel2);
+  border:1px solid var(--edge);border-radius:2px;padding:7px 9px}
+input:focus-visible,select:focus-visible,button:focus-visible{
+  outline:2px solid var(--amber);outline-offset:1px}
+.mono{font-family:"Courier New",Courier,monospace}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px 64px}
+
+/* ---- sticky counter ---- */
+.spine{position:sticky;top:0;z-index:10;background:var(--tape);
+  border-bottom:1px solid var(--edge);padding:14px 0 12px;margin-bottom:20px}
+.spine-row{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.brand{font-family:"Arial Narrow","Helvetica Neue Condensed",Impact,sans-serif;
+  font-weight:700;letter-spacing:.14em;font-size:19px;color:var(--amber)}
+.brand small{display:block;letter-spacing:.05em;font-size:11px;color:var(--dim);font-weight:400}
+.readout{margin-left:auto;text-align:right}
+.readout .big{font-family:"Arial Narrow","Helvetica Neue Condensed",Impact,sans-serif;
+  font-size:44px;line-height:.95}
+.readout .cap{font-size:12px;color:var(--dim)}
+.under .big{color:var(--label)} .over .big{color:var(--red)} .perfect .big{color:var(--green)}
+.reel{height:6px;background:var(--panel);margin-top:12px;position:relative;overflow:hidden}
+.reel i{position:absolute;inset:0 auto 0 0;background:var(--amber);transition:width .28s}
+.reel.over i{background:var(--red)} .reel.perfect i{background:var(--green)}
+
+.tabs{display:flex;gap:4px;margin-bottom:18px}
+.tabs button{padding:7px 16px;border:1px solid var(--edge);border-radius:2px;font-size:13px}
+.tabs button.on{background:var(--amber);color:var(--tape);border-color:var(--amber);font-weight:600}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+@media(max-width:860px){.cols{grid-template-columns:1fr}}
+h2{font-size:13px;letter-spacing:.08em;color:var(--dim);font-weight:600;margin:0 0 10px}
+.bar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.bar input[type=text]{flex:1 1 160px;min-width:0}
+
+.box{border:1px solid var(--edge)}
+.scroll{max-height:460px;overflow-y:auto}
+.row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--panel)}
+.row:last-child{border-bottom:none}
+.row .poster{width:32px;height:48px;object-fit:cover;border-radius:2px;background:var(--panel2);flex-shrink:0}
+.row .t{flex:1;min-width:0}
+.row .t b{font-weight:500;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .t span{font-size:12px;color:var(--dim)}
+.rt{color:var(--amber)}
+.add{border:1px solid var(--edge);padding:4px 10px;border-radius:2px;font-size:13px}
+.add:hover{background:var(--amber);color:var(--tape);border-color:var(--amber)}
+.empty{padding:24px 16px;color:var(--dim)}
+
+/* ---- drag ---- */
+.q-row{cursor:grab}
+.q-row.dragging{opacity:.35}
+.q-row.over-drop{border-top:2px solid var(--amber)}
+.grip{color:var(--dim);letter-spacing:-2px;user-select:none}
+.q-n{width:20px;color:var(--dim);font-size:13px;text-align:right}
+.q-min{width:56px;text-align:right;padding:4px 6px}
+.x{color:var(--dim);padding:2px 6px;font-size:16px}
+.x:hover{color:var(--red)}
+.q-row select{padding:2px 4px;font-size:12px;margin-top:3px;max-width:100%}
+
+.panel{border:1px solid var(--edge);padding:12px;margin-top:18px;background:var(--panel)}
+.go{background:var(--amber);color:var(--tape);padding:8px 16px;border-radius:2px;font-weight:600}
+.go:disabled{opacity:.35;cursor:default}
+.ghost{border:1px solid var(--edge);padding:6px 12px;border-radius:2px;font-size:13px}
+.ghost:hover{border-color:var(--amber);color:var(--amber)}
+.opts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.opts label{font-size:12px;color:var(--dim)}
+.sol{border-top:1px solid var(--edge);padding:9px 0;display:flex;gap:10px;align-items:center}
+.sol div{flex:1;font-size:13px}
+
+/* ---- submissions ---- */
+.sub{border:1px solid var(--edge);padding:14px;margin-bottom:14px;background:var(--panel)}
+.sub h3{margin:0 0 2px;font-size:16px}
+.sub .who{font-size:12px;color:var(--dim);margin-bottom:10px}
+.films{font-size:13px;color:var(--label);opacity:.85;line-height:1.7}
+.films span{white-space:nowrap}
+.rate{display:flex;gap:4px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.rate button{width:30px;height:30px;border:1px solid var(--edge);border-radius:2px;font-size:13px}
+.rate button:hover{background:var(--amber);color:var(--tape)}
+.rate button.mine{background:var(--amber);color:var(--tape);border-color:var(--amber);font-weight:700}
+.score{margin-left:auto;text-align:right;font-size:13px;color:var(--dim)}
+.score b{color:var(--amber);font-size:20px}
+.check{color:var(--green);font-weight:700}
+.note{font-size:12px;color:var(--dim);margin-top:22px;border-top:1px solid var(--edge);padding-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="spine">
+  <div class="spine-row">
+    <div class="brand">PERFECT 24<small>1,440 minutes. Then the world ends.</small></div>
+    <div class="readout" id="readout">
+      <div class="big mono" id="big">24h 00m</div>
+      <div class="cap" id="cap">left to fill</div>
+    </div>
+  </div>
+  <div class="reel" id="reel"><i style="width:0%"></i></div>
+</div>
+
+<div class="tabs">
+  <button id="tab-build" class="on" onclick="showTab('build')">Build</button>
+  <button id="tab-subs" onclick="showTab('subs')">Submissions</button>
+  <input type="text" id="username" placeholder="your name" style="margin-left:auto;width:150px">
+</div>
+
+<!-- ================= BUILD ================= -->
+<div id="view-build">
+<div class="cols">
+
+  <section>
+    <h2>Search the database</h2>
+    <div class="bar">
+      <input type="text" id="q" placeholder="Title (try: 7 Ninja Kids)" oninput="debouncedSearch()">
+    </div>
+    <div class="box scroll" id="results"><div class="empty">Loading…</div></div>
+  </section>
+
+  <section>
+    <h2>Your 24 hours — drag to reorder</h2>
+    <div class="box" id="queue"><div class="empty">Nothing queued yet.</div></div>
+
+    <div class="bar" style="margin-top:10px">
+      <input type="text" id="listtitle" placeholder="List title (optional)">
+      <button class="go" id="lockbtn" onclick="submitList()" disabled>Lock in &amp; submit</button>
+      <button class="ghost" onclick="clearList()">Clear</button>
+    </div>
+
+    <div class="panel">
+      <h2>Fill the rest</h2>
+      <div class="opts">
+        <label>Up to</label>
+        <select id="maxitems">
+          <option value="1">1 movie</option><option value="2">2 movies</option>
+          <option value="3" selected>3 movies</option><option value="4">4 movies</option>
+        </select>
+        <button class="go" id="solvebtn" onclick="runSolver()">Find exact fit</button>
+      </div>
+      <div id="sols"></div>
+    </div>
+  </section>
+
+</div>
+</div>
+
+<!-- ================= SUBMISSIONS ================= -->
+<div id="view-subs" style="display:none">
+  <h2>Locked lists</h2>
+  <div id="subs"><div class="empty">Loading…</div></div>
+</div>
+
+<p class="note">
+  Runtimes come from the local database. Editorial cuts (director's, extended, unrated)
+  are selectable where they exist; formats like VHS and DVD do not create a separate cut.
+  This product uses the TMDB API but is not endorsed or certified by TMDB.
+</p>
+</div>
+
+<script>
+/* Automatically uses the local server when you're testing on this
+   computer, and the public Tailscale address everywhere else (like
+   when this page is loaded from meatmanmods.com). You shouldn't need
+   to touch this. */
+const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+  ? ''
+  : 'https://meatman-ms-7b61.tail5ebf20.ts.net:8443/perfect24';
+const TARGET = 1440;
+let queue = [];           // [{film_id, title, year, runtime, versions, cut_name}]
+let dragFrom = null;
+
+/* ---------- helpers ---------- */
+const $ = id => document.getElementById(id);
+const fmt = m => `${Math.floor(Math.abs(m)/60)}h ${String(Math.abs(m)%60).padStart(2,'0')}m`;
+const user = () => ($('username').value.trim() || 'anonymous');
+
+$('username').value = localStorage.getItem('p24user') || '';
+$('username').addEventListener('input', e => localStorage.setItem('p24user', e.target.value));
+
+function showTab(t){
+  $('view-build').style.display = t==='build' ? '' : 'none';
+  $('view-subs').style.display  = t==='subs'  ? '' : 'none';
+  $('tab-build').className = t==='build' ? 'on' : '';
+  $('tab-subs').className  = t==='subs'  ? 'on' : '';
+  if(t==='subs') loadSubs();
+}
+
+/* ---------- search ---------- */
+let searchTimer;
+function debouncedSearch(){ clearTimeout(searchTimer); searchTimer = setTimeout(search, 220); }
+
+async function search(){
+  const q = $('q').value;
+  const r = await fetch(API + '/api/search?limit=40&q=' + encodeURIComponent(q));
+  const films = await r.json();
+  const box = $('results');
+  if(!films.length){ box.innerHTML = '<div class="empty">No match.</div>'; return; }
+  box.innerHTML = films.map(f => `
+    <div class="row">
+      ${posterTag(f.poster_path, f.title)}
+      <div class="t">
+        <b>${esc(f.title)}</b>
+        <span>${f.year || ''}${f.versions.length>1 ? ` · ${f.versions.length} cuts` : ''} · ${esc(f.genres||'')}</span>
+      </div>
+      <span class="rt mono">${f.runtime}</span>
+      <button class="add" onclick='addFilm(${JSON.stringify(f).replace(/'/g,"&#39;")})'>Add</button>
+    </div>`).join('');
+}
+
+function addFilm(f){
+  if(queue.some(i => i.film_id === f.id)) return;
+  queue.push({film_id:f.id, title:f.title, year:f.year,
+              runtime:f.versions[0].runtime, cut_name:f.versions[0].name,
+              versions:f.versions});
+  render();
+}
+
+/* ---------- the list ---------- */
+function render(){
+  const used = queue.reduce((s,i)=> s + (+i.runtime||0), 0);
+  const left = TARGET - used;
+  const state = (left===0 && queue.length) ? 'perfect' : left<0 ? 'over' : 'under';
+
+  $('readout').className = 'readout ' + state;
+  $('big').textContent = state==='perfect' ? '✓ PERFECT' : (left<0?'+':'') + fmt(left);
+  $('cap').textContent = (state==='perfect' ? 'exactly 24 hours'
+                        : state==='over' ? 'over — cut something' : 'left to fill')
+                        + ` · ${used} of ${TARGET} min`;
+  $('reel').className = 'reel ' + state;
+  $('reel').firstElementChild.style.width = Math.min(100, used/TARGET*100) + '%';
+  $('lockbtn').disabled = !(state === 'perfect');
+  $('solvebtn').disabled = left <= 0;
+
+  const box = $('queue');
+  if(!queue.length){ box.innerHTML = '<div class="empty">Nothing queued yet.</div>'; return; }
+  box.innerHTML = queue.map((it,i) => `
+    <div class="row q-row" draggable="true" data-i="${i}"
+         ondragstart="dragStart(event,${i})" ondragover="dragOver(event,${i})"
+         ondragleave="dragLeave(event)" ondrop="drop(event,${i})" ondragend="dragEnd(event)">
+      <span class="grip">⠿</span>
+      <span class="q-n mono">${i+1}</span>
+      <div class="t">
+        <b>${esc(it.title)} <span style="color:var(--dim);font-weight:400">${it.year||''}</span></b>
+        ${it.versions && it.versions.length>1 ? `
+          <select onchange="setCut(${i}, this.value)">
+            ${it.versions.map(v=>`<option value="${esc(v.name)}" ${v.name===it.cut_name?'selected':''}>
+              ${esc(v.name)} — ${v.runtime} min</option>`).join('')}
+          </select>` : `<span style="font-size:12px;color:var(--dim)">${esc(it.cut_name||'')}</span>`}
+      </div>
+      <input class="q-min mono" value="${it.runtime}" onchange="setRuntime(${i}, this.value)">
+      <button class="x" onclick="removeAt(${i})" title="Remove">×</button>
+    </div>`).join('');
+}
+
+function setCut(i, name){
+  const v = queue[i].versions.find(v => v.name === name);
+  if(v){ queue[i].cut_name = v.name; queue[i].runtime = v.runtime; render(); }
+}
+function setRuntime(i, val){ queue[i].runtime = parseInt(val,10) || 0; render(); }
+function removeAt(i){ queue.splice(i,1); render(); }
+function clearList(){ queue = []; $('sols').innerHTML=''; render(); }
+
+/* ---------- drag and drop ---------- */
+function dragStart(e,i){ dragFrom = i; e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain', i); }
+function dragOver(e,i){ e.preventDefault(); e.currentTarget.classList.add('over-drop'); }
+function dragLeave(e){ e.currentTarget.classList.remove('over-drop'); }
+function dragEnd(e){ e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.over-drop').forEach(n=>n.classList.remove('over-drop')); }
+function drop(e,to){
+  e.preventDefault();
+  if(dragFrom === null || dragFrom === to) return;
+  const [m] = queue.splice(dragFrom,1);
+  queue.splice(to,0,m);
+  dragFrom = null;
+  render();
+}
+
+/* ---------- solver ---------- */
+async function runSolver(){
+  const used = queue.reduce((s,i)=>s+(+i.runtime||0),0);
+  const left = TARGET - used;
+  if(left <= 0) return;
+  $('sols').innerHTML = '<div class="empty">Searching…</div>';
+  const ex = queue.map(i=>i.film_id).filter(Boolean).join(',');
+  const r = await fetch(API + `/api/solve?remaining=${left}&max_items=${$('maxitems').value}&exclude=${ex}`);
+  const sols = await r.json();
+  if(!sols.length){ $('sols').innerHTML =
+    '<div class="empty">No exact fit with those limits. Try more movies.</div>'; return; }
+  $('sols').innerHTML = sols.map((s,n)=>`
+    <div class="sol">
+      <div>${s.map(f=>`${esc(f.title)} (${f.runtime})`).join('  +  ')}</div>
+      <button class="add" onclick="addSolution(${n})">Add all</button>
+    </div>`).join('');
+  window._sols = sols;
+}
+async function addSolution(n){
+  for(const f of window._sols[n]){
+    const r = await fetch(API + '/api/search?limit=1&q=' + encodeURIComponent(f.title));
+    const hit = (await r.json()).find(x => x.id === f.id);
+    if(hit) addFilm(hit);
+    else queue.push({film_id:f.id, title:f.title, year:f.year,
+                     runtime:f.runtime, cut_name:'Theatrical', versions:[]});
+  }
+  $('sols').innerHTML = '';
+  render();
+}
+
+/* ---------- submit ---------- */
+async function submitList(){
+  const body = {
+    username: user(),
+    title: $('listtitle').value.trim() || null,
+    lock: true,
+    items: queue.map(i => ({film_id:i.film_id, cut_name:i.cut_name,
+                            title:i.title, year:i.year, runtime:i.runtime}))
+  };
+  const r = await fetch(API + '/api/lists', {method:'POST',
+    headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+  if(!r.ok){ alert((await r.json()).detail); return; }
+  clearList();
+  $('listtitle').value = '';
+  showTab('subs');
+}
+
+/* ---------- submissions ---------- */
+async function loadSubs(){
+  const r = await fetch(API + '/api/lists');
+  const lists = await r.json();
+  const box = $('subs');
+  if(!lists.length){ box.innerHTML =
+    '<div class="empty">No locked lists yet. Build one that hits exactly 1,440.</div>'; return; }
+  box.innerHTML = lists.map(l => `
+    <div class="sub">
+      <h3>${esc(l.title || 'Untitled Perfect 24')} <span class="check">✓</span></h3>
+      <div class="who">by ${esc(l.username)} · ${l.film_count} films · ${l.total} min</div>
+      <div class="films">${l.items.map(i =>
+        `<span>${esc(i.title)} <span class="rt mono">${i.runtime}</span></span>`).join(' · ')}</div>
+      <div class="rate">
+        ${[1,2,3,4,5,6,7,8,9,10].map(n =>
+          `<button onclick="rate(${l.id},${n})">${n}</button>`).join('')}
+        <div class="score">
+          ${l.votes ? `<b>${l.avg_score.toFixed(1)}</b> / 10<br>${l.votes} vote${l.votes>1?'s':''}`
+                    : 'no votes yet'}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function rate(id, score){
+  const r = await fetch(API + `/api/lists/${id}/rate`, {method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({username:user(), score})});
+  if(r.ok) loadSubs();
+}
+
+function esc(s){ return String(s ?? '').replace(/[&<>"]/g,
+  c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* TMDB serves images from image.tmdb.org — w92 is a small thumbnail
+   size, plenty for a search-results row. Films with no poster_path
+   (like the demo-seeded ones) just get no image, no broken icon. */
+function posterTag(path, title){
+  if(!path) return '';
+  return `<img class="poster" loading="lazy"
+    src="https://image.tmdb.org/t/p/w92${path}" alt="${esc(title)} poster">`;
+}
+
+search();
+render();
+</script>
+</body>
+</html>
