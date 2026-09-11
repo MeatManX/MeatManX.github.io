@@ -41,7 +41,7 @@
   let pollTimer = null;
 
   const demoDevice = {
-    device_id: 'AFK-004',
+    device_id: 'AFK-001',
     display_name: 'Rainbow Six 3 Server',
     online: true,
     remote_enabled: true,
@@ -315,8 +315,8 @@
   els.requestForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const code = els.requestCode.value.trim().toUpperCase();
-    if (!/^AFK-[A-Z0-9]{3,12}$/.test(code)) {
-      showNotice('Enter a dongle code such as AFK-004.', 'error');
+    if (!/^AFK-\d{3}$/.test(code)) {
+      showNotice('Enter a dongle code such as AFK-001.', 'error');
       return;
     }
     if (demo) {

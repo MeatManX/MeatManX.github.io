@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Authorized remote map control for OGX-Mini AFK dongles.">
   <title>OGX-Mini AFK // MeatMan Mods</title>
-  <link rel="icon" href="favicon.ico">
+  <link rel="icon" href="../favicon.ico">
   <style>
     :root {
       --bg:#030603; --panel:#0a100a; --panel2:#0e160e; --line:#2b432c;
@@ -92,7 +92,7 @@
   </style>
 </head>
 <body>
-  <div class="shell" data-ogx-afk-app data-gateway="">
+  <div class="shell" data-ogx-afk-app data-gateway="https://relay.meatmanmods.com">
     <div class="system-bar">
       <span class="brand">MEATMAN MODS // OGX-MINI AFK</span>
       <span class="meta" id="relay-status">REMOTE RELAY // CHECKING</span>
@@ -135,7 +135,7 @@
               <h3>Request access</h3>
               <p class="mode-note">Enter the code printed on a dongle. Hamuel will send MeatMan an approval request.</p>
               <form class="request-form" id="request-form">
-                <input id="request-code" maxlength="16" placeholder="AFK-004" aria-label="Dongle code">
+                <input id="request-code" maxlength="7" placeholder="AFK-001" aria-label="Dongle code">
                 <button class="btn secondary" type="submit">Request</button>
               </form>
             </div>
@@ -156,7 +156,7 @@
         </div>
       </section>
     </main>
-    <footer><span>CREATED BY MEATMAN AND SHREK</span><a href="index.html">Back to MeatMan Mods</a></footer>
+    <footer><span>CREATED BY MEATMAN AND SHREK</span><a href="../index.html">Back to MeatMan Mods</a></footer>
   </div>
   <script src="afk-site.js"></script>
 </body>
