@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Authorized remote map control for OGX-Mini AFK dongles.">
+  <title>OGX-Mini AFK // MeatMan Mods</title>
+  <link rel="icon" href="../favicon.ico">
+  <style>
+    :root {
+      --bg:#030603; --panel:#0a100a; --panel2:#0e160e; --line:#2b432c;
+      --green:#39ff6a; --green2:#9affad; --text:#dce7d9; --muted:#8c9b8b;
+      --amber:#ffbf35; --red:#ff665c; --blue:#67a8ff;
+    }
+    * { box-sizing:border-box; }
+    html,body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:Arial,Helvetica,sans-serif; }
+    body { padding:18px; font-size:16px; }
+    button,input,select { font:inherit; }
+    button,a { -webkit-tap-highlight-color:transparent; }
+    a { color:var(--green2); }
+    button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible { outline:2px solid var(--green); outline-offset:3px; }
+    .shell { width:min(1120px,100%); min-height:calc(100vh - 36px); margin:auto; border:1px solid #456046; background:linear-gradient(180deg,#0a0f0a,#050805); box-shadow:0 24px 70px rgba(0,0,0,.52); }
+    .system-bar { display:flex; justify-content:space-between; gap:16px; align-items:center; padding:11px 14px; border-bottom:1px solid var(--line); background:#0e150e; font:12px/1.3 Consolas,'Courier New',monospace; }
+    .brand { color:var(--green); font-weight:700; letter-spacing:.8px; }
+    .meta { color:var(--muted); text-align:right; }
+    main { padding:28px; }
+    .topline { display:flex; justify-content:space-between; gap:20px; align-items:flex-start; margin-bottom:22px; }
+    .eyebrow { color:var(--green); font:12px/1.3 Consolas,'Courier New',monospace; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+    h1,h2,h3,p { margin-top:0; }
+    h1 { margin-bottom:8px; font-size:clamp(30px,5vw,48px); line-height:1.05; color:#f2f7f0; }
+    h2 { font-size:22px; margin-bottom:12px; color:#f2f7f0; }
+    h3 { font-size:16px; margin-bottom:8px; color:var(--green2); }
+    p { line-height:1.55; }
+    .subhead { color:var(--muted); margin:0; max-width:680px; }
+    .panel { border:1px solid var(--line); background:var(--panel); padding:18px; }
+    .hidden { display:none !important; }
+    .btn { min-height:44px; border:1px solid #4d7450; background:#132013; color:var(--green2); padding:10px 14px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+    .btn:hover:not(:disabled) { background:#1a2a1b; border-color:#6a9b6d; }
+    .btn.primary { color:#061007; background:var(--green); border-color:var(--green); }
+    .btn.primary:hover:not(:disabled) { background:#8dffa4; }
+    .btn.secondary { color:var(--text); background:#0b110b; border-color:#394c39; }
+    .btn.danger { color:#ffd1cc; border-color:#7d3934; background:#1d0d0c; }
+    .btn.launch { color:#1c1400; background:var(--amber); border-color:var(--amber); }
+    .btn:disabled { opacity:.42; cursor:not-allowed; }
+    .identity { display:flex; gap:9px; align-items:center; flex-wrap:wrap; }
+    .user-chip { border:1px solid #334b34; background:#0a110a; padding:9px 11px; color:#c8d6c5; font:13px/1.2 Consolas,'Courier New',monospace; }
+    .signin { max-width:560px; margin:56px auto; text-align:center; padding:28px; }
+    .signin p { color:var(--muted); }
+    .signin .btn { margin-top:8px; width:min(320px,100%); }
+    .dashboard { display:grid; grid-template-columns:300px minmax(0,1fr); gap:16px; }
+    .sidebar { display:flex; flex-direction:column; gap:14px; }
+    .status-row { display:grid; grid-template-columns:auto 1fr; gap:8px 12px; font-size:14px; }
+    .status-row dt { color:var(--muted); }
+    .status-row dd { margin:0; text-align:right; overflow-wrap:anywhere; }
+    .dot { display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--red); margin-right:7px; }
+    .dot.online { background:var(--green); box-shadow:0 0 9px rgba(57,255,106,.55); }
+    label { display:block; color:#b9c8b6; font-weight:700; margin-bottom:7px; }
+    select,input { width:100%; min-height:44px; border:1px solid #3b573c; background:#070b07; color:var(--text); padding:10px; }
+    .request-form { display:flex; gap:8px; }
+    .request-form input { flex:1; }
+    .instruction { margin:0 0 16px; padding:12px 14px; border-left:3px solid var(--amber); background:#171207; color:#e7d29b; line-height:1.5; }
+    .map-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+    .map { position:relative; min-height:64px; border:1px solid #385339; background:#0c140c; color:#d8e5d5; padding:10px 12px; text-align:left; cursor:pointer; }
+    .map:hover:not(:disabled) { border-color:#638c65; background:#132013; }
+    .map.current { color:#061007; background:var(--green); border-color:var(--green); cursor:default; }
+    .map.selected { color:#1c1400; background:var(--amber); border-color:var(--amber); }
+    .map strong { display:block; font-size:15px; }
+    .map small { display:block; margin-top:5px; color:inherit; opacity:.76; font:11px/1.2 Consolas,'Courier New',monospace; text-transform:uppercase; }
+    .action-tray { display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin-top:16px; padding-top:16px; border-top:1px solid #253826; }
+    .action-tray .primary { flex:1; min-width:220px; }
+    .mode-note { color:var(--muted); font-size:13px; margin:10px 0 0; }
+    .notice { margin-bottom:16px; padding:12px 14px; border:1px solid #39543a; background:#0c150d; color:#c7d8c4; line-height:1.45; }
+    .notice.error { border-color:#743d38; background:#1b0d0c; color:#ffc4bf; }
+    .notice.success { border-color:#438148; color:#b8ffc5; }
+    .notice.busy { border-color:#735b23; color:#ffe2a0; }
+    .empty { text-align:center; padding:36px 18px; color:var(--muted); }
+    footer { display:flex; justify-content:space-between; gap:12px; padding:10px 14px; border-top:1px solid var(--line); color:#6e7d6e; font:11px/1.3 Consolas,'Courier New',monospace; }
+    @media(max-width:820px) {
+      body { padding:0; }
+      .shell { min-height:100vh; border-left:0; border-right:0; }
+      main { padding:22px 16px; }
+      .topline { flex-direction:column; }
+      .dashboard { grid-template-columns:1fr; }
+      .map-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .identity { width:100%; }
+    }
+    @media(max-width:460px) {
+      .system-bar,footer { flex-direction:column; align-items:flex-start; }
+      .meta { text-align:left; }
+      .map-grid { grid-template-columns:1fr; }
+      .request-form { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell" data-ogx-afk-app data-gateway="https://meatman-ms-7b61.tail5ebf20.ts.net:10000">
+    <div class="system-bar">
+      <span class="brand">MEATMAN MODS // OGX-MINI AFK</span>
+      <span class="meta" id="relay-status">REMOTE RELAY // CHECKING</span>
+    </div>
+    <main>
+      <div class="topline">
+        <div>
+          <div class="eyebrow">Rainbow Six 3 // Dedicated Map Control</div>
+          <h1>OGX-Mini AFK</h1>
+          <p class="subhead">Change a dedicated server map through an authorized dongle. The console owner stays in control of who gets access.</p>
+        </div>
+        <div class="identity hidden" id="identity">
+          <span class="user-chip" id="username">DISCORD USER</span>
+          <button class="btn secondary" id="signout" type="button">Sign out</button>
+        </div>
+      </div>
+
+      <section class="signin panel" id="signed-out">
+        <h2>Sign in to continue</h2>
+        <p>Discord identifies you to Hamuel. It does not give this page your Discord password or access to your messages.</p>
+        <button class="btn primary" id="signin" type="button">Sign in with Discord</button>
+        <p class="mode-note">Need access to somebody else's dongle? Sign in, enter the short code printed on it, and MeatMan can approve the request.</p>
+      </section>
+
+      <section class="hidden" id="signed-in">
+        <div id="notice" class="notice hidden" role="status" aria-live="polite"></div>
+        <div class="dashboard">
+          <aside class="sidebar">
+            <div class="panel">
+              <label for="device-select">Dongle</label>
+              <select id="device-select"></select>
+              <dl class="status-row">
+                <dt>Connection</dt><dd id="device-online"><span class="dot"></span>Offline</dd>
+                <dt>Remote control</dt><dd id="remote-enabled">Unknown</dd>
+                <dt>Game profile</dt><dd id="game-profile">Unknown</dd>
+                <dt>Firmware</dt><dd id="firmware-version">Unknown</dd>
+                <dt>Last report</dt><dd id="last-seen">Never</dd>
+              </dl>
+            </div>
+            <div class="panel">
+              <h3>Request access</h3>
+              <p class="mode-note">Enter the code printed on a dongle. Hamuel will send MeatMan an approval request.</p>
+              <form class="request-form" id="request-form">
+                <input id="request-code" maxlength="7" placeholder="AFK-001" aria-label="Dongle code">
+                <button class="btn secondary" type="submit">Request</button>
+              </form>
+            </div>
+          </aside>
+
+          <section class="panel">
+            <p class="instruction" id="xbox-instruction"><strong>Before changing maps or launching:</strong> the saved order must match the Xbox map list exactly, and the in-game cursor must be on <strong>Statistics</strong>.</p>
+            <div id="map-empty" class="empty">Choose an authorized dongle to load its maps.</div>
+            <div id="map-controls" class="hidden">
+              <div class="map-grid" id="map-grid" aria-label="Rainbow Six 3 map list"></div>
+              <div class="action-tray">
+                <button class="btn primary" id="change-map" type="button" disabled>Select a map</button>
+                <button class="btn launch" id="launch-game" type="button">Launch game</button>
+                <button class="btn secondary" id="correct-current" type="button">Correct current map</button>
+              </div>
+              <p class="mode-note" id="mode-note">Current map is green. Choose another map, then press Change Map. There is no extra confirmation popup.</p>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <footer><span>CREATED BY MEATMAN AND SHREK</span><a href="../index.html">Back to MeatMan Mods</a></footer>
+  </div>
+  <script src="afk-site.js"></script>
+</body>
+</html>
