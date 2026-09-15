@@ -40,6 +40,7 @@
     .btn.primary:hover:not(:disabled) { background:#8dffa4; }
     .btn.secondary { color:var(--text); background:#0b110b; border-color:#394c39; }
     .btn.danger { color:#ffd1cc; border-color:#7d3934; background:#1d0d0c; }
+    .btn.launch { color:#1c1400; background:var(--amber); border-color:var(--amber); }
     .btn:disabled { opacity:.42; cursor:not-allowed; }
     .identity { display:flex; gap:9px; align-items:center; flex-wrap:wrap; }
     .user-chip { border:1px solid #334b34; background:#0a110a; padding:9px 11px; color:#c8d6c5; font:13px/1.2 Consolas,'Courier New',monospace; }
@@ -73,6 +74,8 @@
     .notice.success { border-color:#438148; color:#b8ffc5; }
     .notice.busy { border-color:#735b23; color:#ffe2a0; }
     .empty { text-align:center; padding:36px 18px; color:var(--muted); }
+    .scroll-tools { position:fixed; right:6px; top:50%; transform:translateY(-50%); z-index:20; display:grid; gap:6px; opacity:.84; }
+    .scroll-tools .btn { width:42px; min-height:46px; padding:0; font-size:18px; }
     footer { display:flex; justify-content:space-between; gap:12px; padding:10px 14px; border-top:1px solid var(--line); color:#6e7d6e; font:11px/1.3 Consolas,'Courier New',monospace; }
     @media(max-width:820px) {
       body { padding:0; }
@@ -92,6 +95,10 @@
   </style>
 </head>
 <body>
+  <nav class="scroll-tools" aria-label="Page scroll controls">
+    <button class="btn secondary" id="scroll-up" type="button" aria-label="Scroll up">&#9650;</button>
+    <button class="btn secondary" id="scroll-down" type="button" aria-label="Scroll down">&#9660;</button>
+  </nav>
   <div class="shell" data-ogx-afk-app data-gateway="https://meatman-ms-7b61.tail5ebf20.ts.net:10000">
     <div class="system-bar">
       <span class="brand">MEATMAN MODS // OGX-MINI AFK</span>
@@ -114,6 +121,7 @@
         <h2>Sign in to continue</h2>
         <p>Discord identifies you to Hamuel. It does not give this page your Discord password or access to your messages.</p>
         <button class="btn primary" id="signin" type="button">Sign in with Discord</button>
+        <a class="btn secondary" href="https://discord.com/channels/1442594430895915020/1549523754843902024/1549532029870276621" target="_blank" rel="noopener">Enable DMs with Hamuel</a>
         <p class="mode-note">Need access to somebody else's dongle? Sign in, enter the short code printed on it, and MeatMan can approve the request.</p>
       </section>
 
@@ -127,9 +135,15 @@
               <dl class="status-row">
                 <dt>Connection</dt><dd id="device-online"><span class="dot"></span>Offline</dd>
                 <dt>Remote control</dt><dd id="remote-enabled">Unknown</dd>
+                <dt>Game profile</dt><dd id="game-profile">Unknown</dd>
                 <dt>Firmware</dt><dd id="firmware-version">Unknown</dd>
                 <dt>Last report</dt><dd id="last-seen">Never</dd>
               </dl>
+            </div>
+            <div class="panel">
+              <h3>Hamuel on Discord</h3>
+              <p class="mode-note">Open the AFK setup post, then press Enable AFK Controls for private map cards.</p>
+              <a class="btn secondary" href="https://discord.com/channels/1442594430895915020/1549523754843902024/1549532029870276621" target="_blank" rel="noopener">Open AFK setup post</a>
             </div>
             <div class="panel">
               <h3>Request access</h3>
@@ -142,12 +156,13 @@
           </aside>
 
           <section class="panel">
-            <p class="instruction"><strong>Before changing maps:</strong> the saved order must match the Xbox map list exactly, and the in-game cursor must be on <strong>Statistics</strong>.</p>
+            <p class="instruction" id="xbox-instruction"><strong>Before changing maps or launching:</strong> the saved order must match the Xbox map list exactly, and the in-game cursor must be on <strong>Statistics</strong>.</p>
             <div id="map-empty" class="empty">Choose an authorized dongle to load its maps.</div>
             <div id="map-controls" class="hidden">
               <div class="map-grid" id="map-grid" aria-label="Rainbow Six 3 map list"></div>
               <div class="action-tray">
                 <button class="btn primary" id="change-map" type="button" disabled>Select a map</button>
+                <button class="btn launch" id="launch-game" type="button">Launch game</button>
                 <button class="btn secondary" id="correct-current" type="button">Correct current map</button>
               </div>
               <p class="mode-note" id="mode-note">Current map is green. Choose another map, then press Change Map. There is no extra confirmation popup.</p>

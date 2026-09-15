@@ -16,6 +16,8 @@
     deviceSelect: $('device-select'),
     deviceOnline: $('device-online'),
     remoteEnabled: $('remote-enabled'),
+    gameProfile: $('game-profile'),
+    xboxInstruction: $('xbox-instruction'),
     firmware: $('firmware-version'),
     lastSeen: $('last-seen'),
     requestForm: $('request-form'),
@@ -24,8 +26,11 @@
     mapControls: $('map-controls'),
     mapGrid: $('map-grid'),
     changeMap: $('change-map'),
+    launchGame: $('launch-game'),
     correctCurrent: $('correct-current'),
-    modeNote: $('mode-note')
+    modeNote: $('mode-note'),
+    scrollUp: $('scroll-up'),
+    scrollDown: $('scroll-down')
   };
 
   const demo = new URLSearchParams(location.search).get('demo') === '1';
@@ -46,6 +51,7 @@
     online: true,
     remote_enabled: true,
     busy: false,
+    game_profile: 'rs3',
     firmware_version: 'AFK Internet Preview',
     last_seen_at: new Date().toISOString(),
     current_map: 'Peaks',
@@ -137,6 +143,7 @@
 
   function setButtonBusy(busy) {
     els.changeMap.disabled = busy || !selectedMap || !device || !device.online || !device.remote_enabled;
+    els.launchGame.disabled = busy || correctionMode || !device || !device.online || !device.remote_enabled;
     els.correctCurrent.disabled = busy || !device;
     els.deviceSelect.disabled = busy || !devices.length;
     [...els.mapGrid.querySelectorAll('button')].forEach((button) => {
@@ -185,13 +192,25 @@
     selectedMap = '';
     correctionMode = false;
     const online = Boolean(device && device.online);
+    const isBlackArrow = Boolean(device && device.game_profile === 'rsba');
     els.deviceOnline.innerHTML = '<span class="dot' + (online ? ' online' : '') + '"></span>' + (online ? 'Online' : 'Offline');
     els.remoteEnabled.textContent = device ? (device.remote_enabled ? 'Enabled locally' : 'Disabled locally') : 'Unknown';
+    els.gameProfile.textContent = device
+      ? (isBlackArrow ? 'Rainbow Six 3: Black Arrow' : 'Rainbow Six 3')
+      : 'Unknown';
+    els.xboxInstruction.innerHTML = '<strong>Before changing maps or launching:</strong> '
+      + 'the saved order must match the Xbox map list exactly, and the in-game cursor must be on <strong>'
+      + (isBlackArrow ? 'Setup Options' : 'Statistics') + '</strong>.';
     els.firmware.textContent = device && device.firmware_version ? device.firmware_version : 'Unknown';
     els.lastSeen.textContent = device ? formatTime(device.last_seen_at) : 'Never';
     renderMaps();
     if (device && device.active_command) {
-      showNotice('Changing to ' + device.active_command.target_map + '. The dongle has the command now.', 'busy');
+      showNotice(
+        device.active_command.action === 'launch_game'
+          ? 'Launching the game. The dongle has the command now.'
+          : 'Changing to ' + device.active_command.target_map + '. The dongle has the command now.',
+        'busy'
+      );
       setButtonBusy(true);
     } else if (
       device &&
@@ -201,7 +220,11 @@
     ) {
       if (device.last_command.status === 'succeeded') {
         showNotice(
-          'Dongle completed the sequence. Recorded current map: ' + device.current_map + '.',
+          device.last_command.action === 'launch_game'
+            ? (isBlackArrow
+              ? 'Dongle initiated the Black Arrow round. Setup Options returns when the round ends.'
+              : 'Dongle completed the launch sequence and returned the cursor to Statistics.')
+            : 'Dongle completed the sequence. Recorded current map: ' + device.current_map + '.',
           'success'
         );
       } else {
@@ -344,6 +367,27 @@
     renderMaps();
   });
 
+  els.launchGame.addEventListener('click', async () => {
+    if (!device || device.active_command || correctionMode) return;
+    if (demo) {
+      showNotice('Demo: dongle completed the launch sequence and returned to Statistics.', 'success');
+      return;
+    }
+    setButtonBusy(true);
+    try {
+      await api('/v1/web/commands/queue', {
+        device_id: device.device_id,
+        action: 'launch_game',
+        target_map: ''
+      });
+      showNotice('Launch command queued. Waiting for the dongle.', 'busy');
+      await loadDevice(device.device_id);
+    } catch (error) {
+      showNotice(error.message || 'Could not queue the launch command.', 'error');
+      setButtonBusy(false);
+    }
+  });
+
   els.changeMap.addEventListener('click', async () => {
     if (!device || !selectedMap || device.active_command) return;
     if (demo) {
@@ -381,6 +425,13 @@
       showNotice(error.message || 'Could not queue the map command.', 'error');
       setButtonBusy(false);
     }
+  });
+
+  els.scrollUp.addEventListener('click', () => {
+    window.scrollBy({top: -Math.max(260, window.innerHeight * 0.72), behavior: 'smooth'});
+  });
+  els.scrollDown.addEventListener('click', () => {
+    window.scrollBy({top: Math.max(260, window.innerHeight * 0.72), behavior: 'smooth'});
   });
 
   takeSessionFromFragment();
