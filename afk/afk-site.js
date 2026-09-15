@@ -28,7 +28,9 @@
     changeMap: $('change-map'),
     launchGame: $('launch-game'),
     correctCurrent: $('correct-current'),
-    modeNote: $('mode-note')
+    modeNote: $('mode-note'),
+    scrollUp: $('scroll-up'),
+    scrollDown: $('scroll-down')
   };
 
   const demo = new URLSearchParams(location.search).get('demo') === '1';
@@ -423,6 +425,13 @@
       showNotice(error.message || 'Could not queue the map command.', 'error');
       setButtonBusy(false);
     }
+  });
+
+  els.scrollUp.addEventListener('click', () => {
+    window.scrollBy({top: -Math.max(260, window.innerHeight * 0.72), behavior: 'smooth'});
+  });
+  els.scrollDown.addEventListener('click', () => {
+    window.scrollBy({top: Math.max(260, window.innerHeight * 0.72), behavior: 'smooth'});
   });
 
   takeSessionFromFragment();
