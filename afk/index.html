@@ -58,6 +58,19 @@
     select,input { width:100%; min-height:44px; border:1px solid #3b573c; background:#070b07; color:var(--text); padding:10px; }
     .request-form { display:flex; gap:8px; }
     .request-form input { flex:1; }
+    .manager-panel { margin-top:16px; }
+    .manager-heading { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+    .manager-heading p { margin-bottom:0; color:var(--muted); }
+    .manager-device { color:var(--green); font:13px/1.3 Consolas,'Courier New',monospace; white-space:nowrap; }
+    .grant-form { display:grid; grid-template-columns:minmax(220px,1fr) 190px auto; gap:10px; align-items:end; margin:18px 0; padding:16px; border:1px solid #263c27; background:#070c07; }
+    .grant-form label { font-size:13px; }
+    .grant-form .btn { min-width:130px; }
+    .access-list { display:grid; gap:8px; }
+    .access-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(170px,.65fr) auto; gap:12px; align-items:center; padding:12px; border:1px solid #263c27; background:#0b120b; }
+    .access-user { min-width:0; overflow-wrap:anywhere; font:14px/1.35 Consolas,'Courier New',monospace; color:#edf5ea; }
+    .access-detail { color:var(--muted); font-size:13px; line-height:1.4; }
+    .access-role { display:inline-block; margin-left:7px; padding:2px 6px; border:1px solid #47734a; color:var(--green2); font:10px/1.3 Consolas,'Courier New',monospace; text-transform:uppercase; }
+    .access-empty { padding:18px; border:1px dashed #314832; color:var(--muted); text-align:center; }
     .instruction { margin:0 0 16px; padding:12px 14px; border-left:3px solid var(--amber); background:#171207; color:#e7d29b; line-height:1.5; }
     .map-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
     .map { position:relative; min-height:64px; border:1px solid #385339; background:#0c140c; color:#d8e5d5; padding:10px 12px; text-align:left; cursor:pointer; }
@@ -85,12 +98,19 @@
       .dashboard { grid-template-columns:1fr; }
       .map-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .identity { width:100%; }
+      .grant-form { grid-template-columns:1fr 1fr; }
+      .grant-form .btn { grid-column:1/-1; }
+      .access-row { grid-template-columns:minmax(0,1fr) auto; }
+      .access-detail { grid-column:1/2; }
+      .access-row .btn { grid-column:2/3; grid-row:1/3; }
     }
     @media(max-width:460px) {
       .system-bar,footer { flex-direction:column; align-items:flex-start; }
       .meta { text-align:left; }
       .map-grid { grid-template-columns:1fr; }
       .request-form { flex-direction:column; }
+      .manager-heading { flex-direction:column; }
+      .grant-form { grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -147,7 +167,7 @@
             </div>
             <div class="panel">
               <h3>Request access</h3>
-              <p class="mode-note">Enter the code printed on a dongle. Hamuel will send MeatMan an approval request.</p>
+              <p class="mode-note">Enter the code printed on a dongle. Hamuel will send its manager and owner an approval request.</p>
               <form class="request-form" id="request-form">
                 <input id="request-code" maxlength="7" placeholder="AFK-001" aria-label="Dongle code">
                 <button class="btn secondary" type="submit">Request</button>
@@ -169,6 +189,36 @@
             </div>
           </section>
         </div>
+
+        <section class="panel manager-panel hidden" id="manager-panel">
+          <div class="manager-heading">
+            <div>
+              <h2>Manage Access</h2>
+              <p>Grant or remove remote control access for this dongle.</p>
+            </div>
+            <span class="manager-device" id="manager-device">AFK----</span>
+          </div>
+
+          <form class="grant-form" id="grant-form">
+            <div>
+              <label for="grant-user-id">Discord user ID</label>
+              <input id="grant-user-id" inputmode="numeric" autocomplete="off" maxlength="22" pattern="[0-9]{15,22}" placeholder="123456789012345678" required>
+            </div>
+            <div>
+              <label for="grant-kind">Access duration</label>
+              <select id="grant-kind">
+                <option value="permanent">Permanent</option>
+                <option value="30 days">30 days</option>
+                <option value="once">One use</option>
+              </select>
+            </div>
+            <button class="btn primary" id="grant-submit" type="submit">Grant access</button>
+          </form>
+
+          <div class="access-list" id="access-list" aria-live="polite">
+            <div class="access-empty">Loading authorized users…</div>
+          </div>
+        </section>
       </section>
     </main>
     <footer><span>CREATED BY MEATMAN AND SHREK</span><a href="../index.html">Back to MeatMan Mods</a></footer>
