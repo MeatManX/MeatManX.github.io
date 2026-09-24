@@ -22,6 +22,13 @@
     lastSeen: $('last-seen'),
     requestForm: $('request-form'),
     requestCode: $('request-code'),
+    managerPanel: $('manager-panel'),
+    managerDevice: $('manager-device'),
+    grantForm: $('grant-form'),
+    grantUserId: $('grant-user-id'),
+    grantKind: $('grant-kind'),
+    grantSubmit: $('grant-submit'),
+    accessList: $('access-list'),
     mapEmpty: $('map-empty'),
     mapControls: $('map-controls'),
     mapGrid: $('map-grid'),
@@ -40,6 +47,7 @@
   let token = sessionStorage.getItem(sessionKey) || '';
   let user = null;
   let devices = [];
+  let managedDeviceIds = new Set();
   let device = null;
   let selectedMap = '';
   let correctionMode = false;
@@ -115,6 +123,117 @@
     const time = new Date(value);
     if (Number.isNaN(time.getTime())) return 'Unknown';
     return time.toLocaleString();
+  }
+
+  function accessDetail(item) {
+    if (item.grant_kind === 'temporary') {
+      return '30-day access · expires ' + formatTime(item.expires_at);
+    }
+    if (item.grant_kind === 'once') {
+      const uses = Number(item.uses_remaining || 0);
+      return uses + (uses === 1 ? ' use remaining' : ' uses remaining');
+    }
+    return 'Permanent access';
+  }
+
+  function renderAccessList(grants) {
+    els.accessList.replaceChildren();
+    if (!grants.length) {
+      const empty = document.createElement('div');
+      empty.className = 'access-empty';
+      empty.textContent = 'No active access grants.';
+      els.accessList.appendChild(empty);
+      return;
+    }
+    grants.forEach((item) => {
+      const row = document.createElement('div');
+      row.className = 'access-row';
+
+      const identity = document.createElement('div');
+      identity.className = 'access-user';
+      identity.textContent = item.user_id;
+      if (item.is_manager) {
+        const role = document.createElement('span');
+        role.className = 'access-role';
+        role.textContent = 'Manager';
+        identity.appendChild(role);
+      }
+
+      const detail = document.createElement('div');
+      detail.className = 'access-detail';
+      detail.textContent = accessDetail(item);
+      row.append(identity, detail);
+
+      if (!item.is_manager) {
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'btn danger';
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', async () => {
+          if (!device || !window.confirm('Remove access for Discord user ' + item.user_id + '?')) return;
+          remove.disabled = true;
+          try {
+            await api('/v1/web/access/revoke', {
+              device_id: device.device_id,
+              user_id: item.user_id
+            });
+            showNotice('Access removed for Discord user ' + item.user_id + '.', 'success');
+            await loadManagerAccess();
+          } catch (error) {
+            showNotice(error.message || 'Could not remove access.', 'error');
+            remove.disabled = false;
+          }
+        });
+        row.appendChild(remove);
+      }
+
+      els.accessList.appendChild(row);
+    });
+  }
+
+  async function loadManagerAccess() {
+    const deviceId = device && device.device_id;
+    const canManage = Boolean(deviceId && managedDeviceIds.has(deviceId));
+    els.managerPanel.classList.toggle('hidden', !canManage);
+    if (!canManage) return;
+
+    els.managerDevice.textContent = deviceId;
+    const loading = document.createElement('div');
+    loading.className = 'access-empty';
+    loading.textContent = 'Loading authorized users…';
+    els.accessList.replaceChildren(loading);
+
+    if (demo) {
+      renderAccessList([
+        {
+          user_id: '123456789012345678',
+          grant_kind: 'permanent',
+          uses_remaining: null,
+          expires_at: null,
+          is_manager: 1
+        },
+        {
+          user_id: '987654321098765432',
+          grant_kind: 'temporary',
+          uses_remaining: null,
+          expires_at: new Date(Date.now() + 14 * 86400000).toISOString(),
+          is_manager: 0
+        }
+      ]);
+      return;
+    }
+
+    try {
+      const result = await api('/v1/web/access/list', {device_id: deviceId});
+      if (!device || device.device_id !== deviceId) return;
+      renderAccessList(result.grants || []);
+    } catch (error) {
+      if (!device || device.device_id !== deviceId) return;
+      const failure = document.createElement('div');
+      failure.className = 'access-empty';
+      failure.textContent = error.message || 'Could not load authorized users.';
+      els.accessList.replaceChildren(failure);
+    }
   }
 
   function renderDeviceList() {
@@ -204,6 +323,7 @@
     els.firmware.textContent = device && device.firmware_version ? device.firmware_version : 'Unknown';
     els.lastSeen.textContent = device ? formatTime(device.last_seen_at) : 'Never';
     renderMaps();
+    loadManagerAccess();
     if (device && device.active_command) {
       showNotice(
         device.active_command.action === 'launch_game'
@@ -280,6 +400,7 @@
     if (demo) {
       user = {user_id: 'demo', username: 'Demo Operator'};
       devices = [{...demoDevice}];
+      managedDeviceIds = new Set(['AFK-001']);
       signedIn(true);
       els.username.textContent = user.username.toUpperCase();
       els.relay.textContent = 'REMOTE RELAY // DEMO DATA';
@@ -295,6 +416,7 @@
       const session = await api('/v1/web/session');
       user = session.user;
       devices = session.devices || [];
+      managedDeviceIds = new Set(session.managed_device_ids || []);
       signedIn(true);
       els.username.textContent = user.username.toUpperCase();
       els.relay.textContent = 'REMOTE RELAY // AUTHENTICATED';
@@ -343,7 +465,7 @@
       return;
     }
     if (demo) {
-      showNotice('Demo request created. In the live system, Hamuel sends MeatMan an approval card.', 'success');
+      showNotice('Demo request created. In the live system, Hamuel sends the dongle manager and owner an approval card.', 'success');
       return;
     }
     try {
@@ -352,12 +474,54 @@
       showNotice(
         result.status === 'already_authorized'
           ? 'You already have access to that dongle.'
-          : 'Access request sent. Hamuel will notify MeatMan.',
+          : 'Access request sent. Hamuel will notify the dongle manager and owner.',
         'success'
       );
       await refresh(true);
     } catch (error) {
       showNotice(error.message || 'Could not request access.', 'error');
+    }
+  });
+
+  els.grantForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!device || !managedDeviceIds.has(device.device_id)) return;
+    const targetUserId = els.grantUserId.value.trim();
+    if (!/^\d{15,22}$/.test(targetUserId)) {
+      showNotice('Enter a valid Discord user ID.', 'error');
+      return;
+    }
+    if (demo) {
+      els.grantUserId.value = '';
+      showNotice(
+        'Demo: ' + els.grantKind.options[els.grantKind.selectedIndex].text
+          + ' access granted to ' + targetUserId + '.',
+        'success'
+      );
+      return;
+    }
+
+    els.grantSubmit.disabled = true;
+    try {
+      const result = await api('/v1/web/access/grant', {
+        device_id: device.device_id,
+        user_id: targetUserId,
+        grant_kind: els.grantKind.value
+      });
+      const label = result.grant_kind === 'temporary'
+        ? '30-day'
+        : (result.grant_kind === 'once' ? 'one-use' : 'permanent');
+      els.grantUserId.value = '';
+      showNotice(
+        label.charAt(0).toUpperCase() + label.slice(1)
+          + ' access granted to Discord user ' + targetUserId + '.',
+        'success'
+      );
+      await loadManagerAccess();
+    } catch (error) {
+      showNotice(error.message || 'Could not grant access.', 'error');
+    } finally {
+      els.grantSubmit.disabled = false;
     }
   });
 
