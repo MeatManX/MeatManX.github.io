@@ -284,10 +284,10 @@
       </div>
 
       <!--
-        THE FORM — do not change action="..." (your Formspree address)
+        THE FORM — do not change action="..." (the Apps Script endpoint)
         and do not change id="adoptionForm" (the script below needs it).
       -->
-      <form id="adoptionForm" action="https://script.google.com/macros/s/AKfycbys7z6df2QAapkJLf6_9-_mU4djUhgh_LQT3ua5V7YJeL7CjnVg5eoMpLNqJ_aFtdg-bw/exec" method="POST" data-fallback-action="https://formspree.io/f/xdaykrwd">
+      <form id="adoptionForm" action="https://script.google.com/macros/s/AKfycbys7z6df2QAapkJLf6_9-_mU4djUhgh_LQT3ua5V7YJeL7CjnVg5eoMpLNqJ_aFtdg-bw/exec" method="POST">
         <input type="hidden" name="_subject" value="New Meat Man Xbox Adoption Application">
         <input type="hidden" name="_format" value="plain">
 
@@ -745,6 +745,7 @@
         </div>
 
         <!-- Hidden metadata fields — do not touch these -->
+        <input type="hidden" name="form_started_at" id="form_started_at">
         <input type="hidden" name="submitted_at" id="submitted_at">
         <input type="hidden" name="browser_user_agent" id="browser_user_agent">
         <input type="hidden" name="screen_resolution" id="screen_resolution">
@@ -809,14 +810,14 @@
 
   <!--
     FORM SUBMISSION SCRIPT — handles what happens when someone clicks submit.
-    Sends data to Formspree and shows a message to the visitor.
+    Sends data to the validated Apps Script endpoint and shows a result.
 
     The two lines you might want to edit are marked below.
     Do not change anything else in here.
   -->
 
   <script>
-    document.getElementById('submitted_at').value = new Date().toISOString();
+    document.getElementById('form_started_at').value = new Date().toISOString();
     document.getElementById('browser_user_agent').value = navigator.userAgent;
     document.getElementById('screen_resolution').value = window.screen.width + 'x' + window.screen.height;
     document.getElementById('timezone').value = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
@@ -869,6 +870,7 @@
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
       status.textContent = 'Submitting application...';
+      document.getElementById('submitted_at').value = new Date().toISOString();
 
       const data = new FormData(form);
 
@@ -890,19 +892,15 @@
         });
         if (!response.ok) return false;
         try {
-          const result = await response.clone().json();
-          if (result && result.result === 'error') return false;
+          const result = await response.json();
+          return Boolean(result && result.result === 'success');
         } catch (_) {
-          // Fallback providers may return a different success body.
+          return false;
         }
-        return true;
       }
 
       try {
-        let submitted = await submitFormData(form.action);
-        if (!submitted && form.dataset.fallbackAction) {
-          submitted = await submitFormData(form.dataset.fallbackAction);
-        }
+        const submitted = await submitFormData(form.action);
 
         status.textContent = '';
         if (submitted) {
