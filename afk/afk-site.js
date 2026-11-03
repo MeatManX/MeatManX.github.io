@@ -24,6 +24,12 @@
     requestCode: $('request-code'),
     managerPanel: $('manager-panel'),
     managerDevice: $('manager-device'),
+    mapDisplayForm: $('map-display-form'),
+    mapDisplayMode: $('map-display-mode'),
+    mapDisplayHelp: $('map-display-help'),
+    mapLabelList: $('map-label-list'),
+    mapDisplaySave: $('map-display-save'),
+    mapDisplayReset: $('map-display-reset'),
     grantForm: $('grant-form'),
     grantUserId: $('grant-user-id'),
     grantKind: $('grant-kind'),
@@ -51,6 +57,8 @@
   let device = null;
   let selectedMap = '';
   let correctionMode = false;
+  let mapDisplayDirty = false;
+  let mapDisplayEditingDevice = '';
   let pollTimer = null;
 
   const demoDevice = {
@@ -67,6 +75,12 @@
       'Airport 1', 'Presidio', 'Warehouse', 'Peaks',
       'Close Quarter', 'Garage', 'Parkade', 'Scharins V2'
     ],
+    map_display: {
+      mode: 'native',
+      configured_mode: 'native',
+      labels: [],
+      valid: true
+    },
     active_command: null
   };
 
@@ -88,6 +102,39 @@
   function clearNotice() {
     els.notice.className = 'notice hidden';
     els.notice.textContent = '';
+  }
+
+  function mapSlotsFor(value = device) {
+    if (!value) return [];
+    const maps = Array.isArray(value.map_order) ? value.map_order : [];
+    if (Array.isArray(value.map_slots) && value.map_slots.length === maps.length) {
+      return value.map_slots.map((slot, index) => ({
+        slot: Number(slot.slot || index + 1),
+        command_map: String(slot.command_map || maps[index] || ''),
+        label: String(slot.label || slot.command_map || maps[index] || '')
+      }));
+    }
+    const display = value.map_display || {};
+    const labels = Array.isArray(display.labels) && display.labels.length === maps.length
+      ? display.labels
+      : maps;
+    return maps.map((name, index) => ({
+      slot: index + 1,
+      command_map: String(name),
+      label: String(labels[index] || name)
+    }));
+  }
+
+  function mapLabelFor(commandMap) {
+    const wanted = String(commandMap || '').toLowerCase();
+    const match = mapSlotsFor().find((slot) => slot.command_map.toLowerCase() === wanted);
+    return match ? match.label : String(commandMap || '');
+  }
+
+  function mapDisplayMode(value = device) {
+    return value && value.map_display && value.map_display.mode
+      ? value.map_display.mode
+      : 'native';
   }
 
   async function api(path, body = {}) {
@@ -191,6 +238,58 @@
     });
   }
 
+  function updateMapDisplayEditor() {
+    const mode = els.mapDisplayMode.value;
+    const translated = mode !== 'native';
+    els.mapLabelList.classList.toggle('hidden', !translated);
+    els.mapDisplayReset.disabled = mode === 'native';
+    els.mapDisplayHelp.textContent = mode === 'black_arrow_live'
+      ? 'Enter the Black Arrow Xbox Live map name for each numbered OldBow firmware slot.'
+      : (mode === 'custom'
+        ? 'Enter the custom or modded map name represented by each numbered firmware slot.'
+        : 'Use the map names reported by the dongle with no website translation.');
+  }
+
+  function renderMapDisplayEditor() {
+    if (mapDisplayDirty && device && mapDisplayEditingDevice === device.device_id) return;
+    const slots = mapSlotsFor();
+    mapDisplayEditingDevice = device ? device.device_id : '';
+    const config = device && device.map_display ? device.map_display : {};
+    const configuredMode = ['native', 'black_arrow_live', 'custom'].includes(config.configured_mode)
+      ? config.configured_mode
+      : (['native', 'black_arrow_live', 'custom'].includes(config.mode) ? config.mode : 'native');
+    els.mapDisplayMode.value = configuredMode;
+    els.mapLabelList.replaceChildren();
+
+    slots.forEach((slot) => {
+      const row = document.createElement('div');
+      row.className = 'map-label-row';
+
+      const number = document.createElement('span');
+      number.className = 'map-label-slot';
+      number.textContent = 'SLOT ' + String(slot.slot).padStart(2, '0');
+
+      const field = document.createElement('div');
+      const input = document.createElement('input');
+      input.className = 'map-label-input';
+      input.maxLength = 64;
+      input.required = true;
+      input.value = slot.label;
+      input.setAttribute('aria-label', 'Display name for map slot ' + slot.slot);
+
+      const source = document.createElement('small');
+      source.className = 'map-label-source';
+      source.textContent = 'Firmware: ' + slot.command_map;
+
+      field.append(input, source);
+      row.append(number, field);
+      els.mapLabelList.appendChild(row);
+    });
+
+    els.mapDisplaySave.disabled = !slots.length;
+    updateMapDisplayEditor();
+  }
+
   async function loadManagerAccess() {
     const deviceId = device && device.device_id;
     const canManage = Boolean(deviceId && managedDeviceIds.has(deviceId));
@@ -198,6 +297,7 @@
     if (!canManage) return;
 
     els.managerDevice.textContent = deviceId;
+    renderMapDisplayEditor();
     const loading = document.createElement('div');
     loading.className = 'access-empty';
     loading.textContent = 'Loading authorized users…';
@@ -272,7 +372,8 @@
 
   function renderMaps() {
     els.mapGrid.replaceChildren();
-    if (!device || !Array.isArray(device.map_order) || !device.map_order.length) {
+    const slots = mapSlotsFor();
+    if (!device || !slots.length) {
       els.mapEmpty.textContent = device
         ? 'This dongle has not reported a saved map list yet.'
         : 'Choose an authorized dongle to load its maps.';
@@ -282,22 +383,23 @@
     }
     els.mapEmpty.classList.add('hidden');
     els.mapControls.classList.remove('hidden');
-    device.map_order.forEach((name, index) => {
+    slots.forEach((slot) => {
+      const commandMap = slot.command_map;
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'map';
-      button.dataset.map = name;
-      const isCurrent = name === device.current_map;
-      const isSelected = name === selectedMap;
+      button.dataset.map = commandMap;
+      const isCurrent = commandMap.toLowerCase() === String(device.current_map || '').toLowerCase();
+      const isSelected = commandMap === selectedMap;
       if (isCurrent) button.classList.add('current');
       else if (isSelected) button.classList.add('selected');
       const strong = document.createElement('strong');
-      strong.textContent = (index + 1) + '. ' + name;
+      strong.textContent = slot.slot + '. ' + slot.label;
       const small = document.createElement('small');
       small.textContent = isCurrent ? 'Current map' : (isSelected ? (correctionMode ? 'Record as current' : 'Selected') : 'Available');
       button.append(strong, small);
       button.disabled = Boolean(device.active_command) || isCurrent;
-      button.addEventListener('click', () => selectMap(name));
+      button.addEventListener('click', () => selectMap(commandMap));
       els.mapGrid.appendChild(button);
     });
     updateAction();
@@ -311,15 +413,20 @@
     selectedMap = '';
     correctionMode = false;
     const online = Boolean(device && device.online);
-    const isBlackArrow = Boolean(device && device.game_profile === 'rsba');
+    const controlIsBlackArrow = Boolean(device && device.game_profile === 'rsba');
+    const displayMode = mapDisplayMode();
+    const displayName = displayMode === 'black_arrow_live'
+      ? 'Rainbow Six 3: Black Arrow (Xbox Live)'
+      : (displayMode === 'custom'
+        ? 'Custom / Modded Map List'
+        : (controlIsBlackArrow ? 'Rainbow Six 3: Black Arrow' : 'Rainbow Six 3'));
+    const cursorName = controlIsBlackArrow ? 'Setup Options' : 'Statistics';
     els.deviceOnline.innerHTML = '<span class="dot' + (online ? ' online' : '') + '"></span>' + (online ? 'Online' : 'Offline');
     els.remoteEnabled.textContent = device ? (device.remote_enabled ? 'Enabled locally' : 'Disabled locally') : 'Unknown';
-    els.gameProfile.textContent = device
-      ? (isBlackArrow ? 'Rainbow Six 3: Black Arrow' : 'Rainbow Six 3')
-      : 'Unknown';
+    els.gameProfile.textContent = device ? displayName : 'Unknown';
     els.xboxInstruction.innerHTML = '<strong>Before changing maps or launching:</strong> '
-      + 'the saved order must match the Xbox map list exactly, and the in-game cursor must be on <strong>'
-      + (isBlackArrow ? 'Setup Options' : 'Statistics') + '</strong>.';
+      + 'the displayed map order must match the Xbox map list exactly, and the in-game cursor must be on <strong>'
+      + cursorName + '</strong>.';
     els.firmware.textContent = device && device.firmware_version ? device.firmware_version : 'Unknown';
     els.lastSeen.textContent = device ? formatTime(device.last_seen_at) : 'Never';
     renderMaps();
@@ -328,7 +435,7 @@
       showNotice(
         device.active_command.action === 'launch_game'
           ? 'Launching the game. The dongle has the command now.'
-          : 'Changing to ' + device.active_command.target_map + '. The dongle has the command now.',
+          : 'Changing to ' + mapLabelFor(device.active_command.target_map) + '. The dongle has the command now.',
         'busy'
       );
       setButtonBusy(true);
@@ -341,10 +448,11 @@
       if (device.last_command.status === 'succeeded') {
         showNotice(
           device.last_command.action === 'launch_game'
-            ? (isBlackArrow
+            ? (controlIsBlackArrow
               ? 'Dongle initiated the Black Arrow round. Setup Options returns when the round ends.'
               : 'Dongle completed the launch sequence and returned the cursor to Statistics.')
-            : 'Dongle completed the sequence. Recorded current map: ' + device.current_map + '.',
+            : 'Dongle completed the sequence. Recorded current map: '
+              + (device.current_map_display || mapLabelFor(device.current_map)) + '.',
           'success'
         );
       } else {
@@ -366,9 +474,10 @@
     if (!selectedMap) {
       els.changeMap.textContent = correctionMode ? 'Select the actual current map' : 'Select a map';
     } else {
+      const selectedLabel = mapLabelFor(selectedMap);
       els.changeMap.textContent = correctionMode
-        ? 'Set current map to ' + selectedMap
-        : 'Change to ' + selectedMap;
+        ? 'Set current map to ' + selectedLabel
+        : 'Change to ' + selectedLabel;
     }
     els.correctCurrent.textContent = correctionMode ? 'Cancel correction' : 'Correct current map';
     els.modeNote.textContent = correctionMode
@@ -454,6 +563,8 @@
 
   els.deviceSelect.addEventListener('change', () => {
     clearNotice();
+    mapDisplayDirty = false;
+    mapDisplayEditingDevice = els.deviceSelect.value;
     loadDevice(els.deviceSelect.value);
   });
 
@@ -480,6 +591,77 @@
       await refresh(true);
     } catch (error) {
       showNotice(error.message || 'Could not request access.', 'error');
+    }
+  });
+
+  els.mapDisplayMode.addEventListener('change', () => {
+    mapDisplayDirty = true;
+    mapDisplayEditingDevice = device ? device.device_id : '';
+    updateMapDisplayEditor();
+  });
+
+  els.mapLabelList.addEventListener('input', () => {
+    mapDisplayDirty = true;
+    mapDisplayEditingDevice = device ? device.device_id : '';
+  });
+
+  els.mapDisplayReset.addEventListener('click', () => {
+    mapDisplayDirty = true;
+    els.mapDisplayMode.value = 'native';
+    updateMapDisplayEditor();
+    els.mapDisplayForm.requestSubmit();
+  });
+
+  els.mapDisplayForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!device || !managedDeviceIds.has(device.device_id)) return;
+    const mode = els.mapDisplayMode.value;
+    const labels = mode === 'native'
+      ? []
+      : [...els.mapLabelList.querySelectorAll('.map-label-input')].map((input) => input.value.trim());
+    if (mode !== 'native' && labels.some((label) => !label)) {
+      showNotice('Every numbered map slot needs a display name.', 'error');
+      return;
+    }
+
+    els.mapDisplaySave.disabled = true;
+    els.mapDisplayReset.disabled = true;
+    if (demo) {
+      demoDevice.map_display = {
+        mode,
+        configured_mode: mode,
+        labels,
+        valid: true
+      };
+      showNotice(
+        mode === 'native'
+          ? 'Demo: restored the names reported by the dongle.'
+          : 'Demo: saved the website map names without changing firmware commands.',
+        'success'
+      );
+      mapDisplayDirty = false;
+      renderDevice({...demoDevice});
+      return;
+    }
+
+    try {
+      await api('/v1/web/map-display/save', {
+        device_id: device.device_id,
+        mode,
+        labels
+      });
+      showNotice(
+        mode === 'native'
+          ? 'Restored the names reported by the dongle.'
+          : 'Saved the online map names. Firmware commands are unchanged.',
+        'success'
+      );
+      mapDisplayDirty = false;
+      await loadDevice(device.device_id);
+    } catch (error) {
+      showNotice(error.message || 'Could not save the map names.', 'error');
+      els.mapDisplaySave.disabled = false;
+      els.mapDisplayReset.disabled = mode === 'native';
     }
   });
 
@@ -578,7 +760,7 @@
       });
       showNotice(
         action === 'change_map'
-          ? 'Command queued for ' + result.target_map + '. Waiting for the dongle.'
+          ? 'Command queued for ' + mapLabelFor(result.target_map) + '. Waiting for the dongle.'
           : 'Current-map correction queued.',
         'busy'
       );
