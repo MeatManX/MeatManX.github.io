@@ -42,6 +42,19 @@
     launchGame: $('launch-game'),
     correctCurrent: $('correct-current'),
     modeNote: $('mode-note'),
+    videoPlaceholder: $('video-placeholder'),
+    videoView: $('video-view'),
+    broadcastPreview: $('broadcast-preview'),
+    broadcastCanvas: $('broadcast-canvas'),
+    startCamera: $('start-camera'),
+    startScreen: $('start-screen'),
+    stopBroadcast: $('stop-broadcast'),
+    videoLive: $('video-live'),
+    manualStatus: $('manual-status'),
+    manualRequest: $('manual-request'),
+    manualRevoke: $('manual-revoke'),
+    manualRequests: $('manual-requests'),
+    remotePad: $('remote-pad'),
     scrollUp: $('scroll-up'),
     scrollDown: $('scroll-down')
   };
@@ -60,6 +73,14 @@
   let mapDisplayDirty = false;
   let mapDisplayEditingDevice = '';
   let pollTimer = null;
+  let manualSessions = [];
+  let manualIsOwner = false;
+  let manualTapLocked = false;
+  let captureStream = null;
+  let captureTimer = null;
+  let captureBusy = false;
+  let broadcastDeviceId = '';
+  let videoObjectUrl = '';
 
   const demoDevice = {
     device_id: 'AFK-001',
@@ -157,6 +178,260 @@
       throw error;
     }
     return payload;
+  }
+
+  function activeManualSession() {
+    return manualSessions.find((item) => item.status === 'active' && item.can_control) || null;
+  }
+
+  function liveManualSession() {
+    return manualSessions.find((item) => ['pending', 'active'].includes(item.status)
+      && user && item.operator_user_id === user.user_id) || null;
+  }
+
+  function renderManualState() {
+    const active = activeManualSession();
+    const mine = liveManualSession();
+    const anyLive = manualSessions.find((item) => ['pending', 'active'].includes(item.status));
+    const revocable = manualSessions.find((item) => item.can_revoke);
+    const usable = Boolean(
+      active && device && device.online && device.remote_enabled
+      && !device.active_command && !manualTapLocked
+    );
+    els.manualRequests.replaceChildren();
+
+    if (!device) {
+      els.manualStatus.textContent = 'Choose an authorized dongle first.';
+    } else if (active) {
+      els.manualStatus.textContent = 'Manual control approved until '
+        + formatTime(active.expires_at) + '. Each button is one atomic tap.';
+    } else if (mine && mine.status === 'pending') {
+      els.manualStatus.textContent = 'Waiting for the dongle owner to approve this request.';
+    } else {
+      els.manualStatus.textContent = 'No temporary manual-control session is active.';
+    }
+
+    els.manualRequest.classList.toggle('hidden', Boolean(anyLive));
+    els.manualRequest.disabled = !device;
+    els.manualRevoke.classList.toggle('hidden', !revocable && !(mine && mine.status === 'pending'));
+    els.remotePad.classList.toggle('hidden', !active);
+    [...els.remotePad.querySelectorAll('[data-manual-button]')].forEach((button) => {
+      button.disabled = !usable;
+    });
+
+    if (!manualIsOwner) return;
+    manualSessions.filter((item) => item.status === 'pending').forEach((item) => {
+      const row = document.createElement('div');
+      row.className = 'manual-request';
+      const detail = document.createElement('div');
+      detail.textContent = (item.operator_name || item.operator_user_id)
+        + ' requests temporary manual control.';
+      const actions = document.createElement('div');
+      actions.className = 'assist-actions';
+      const approve = document.createElement('button');
+      approve.type = 'button';
+      approve.className = 'btn primary';
+      approve.textContent = 'Approve 10 min';
+      approve.addEventListener('click', () => decideManual(item.session_id, 'approve'));
+      const deny = document.createElement('button');
+      deny.type = 'button';
+      deny.className = 'btn danger';
+      deny.textContent = 'Deny';
+      deny.addEventListener('click', () => decideManual(item.session_id, 'deny'));
+      actions.append(approve, deny);
+      row.append(detail, actions);
+      els.manualRequests.appendChild(row);
+    });
+  }
+
+  async function loadManualState() {
+    const deviceId = device && device.device_id;
+    if (!deviceId || demo) {
+      manualSessions = demo ? [{
+        session_id: 'AFKM-DEMO0001',
+        device_id: 'AFK-001',
+        operator_user_id: 'demo',
+        operator_name: 'Demo Operator',
+        status: 'active',
+        expires_at: new Date(Date.now() + 600000).toISOString(),
+        can_control: true,
+        can_revoke: true
+      }] : [];
+      manualIsOwner = demo;
+      renderManualState();
+      return;
+    }
+    try {
+      const result = await api('/v1/web/manual/list', {device_id: deviceId});
+      if (!device || device.device_id !== deviceId) return;
+      manualSessions = result.sessions || [];
+      manualIsOwner = Boolean(result.is_owner);
+      renderManualState();
+    } catch (error) {
+      if (!device || device.device_id !== deviceId) return;
+      manualSessions = [];
+      manualIsOwner = false;
+      renderManualState();
+      els.manualStatus.textContent = error.message || 'Manual-control status is unavailable.';
+    }
+  }
+
+  async function decideManual(sessionId, decision) {
+    try {
+      await api('/v1/web/manual/decide', {
+        session_id: sessionId,
+        decision,
+        duration_minutes: 10
+      });
+      showNotice(
+        decision === 'approve'
+          ? 'Manual control approved for 10 minutes.'
+          : 'Manual-control request denied.',
+        decision === 'approve' ? 'success' : ''
+      );
+      await loadManualState();
+    } catch (error) {
+      showNotice(error.message || 'Could not decide the manual-control request.', 'error');
+    }
+  }
+
+  function releaseVideoObjectUrl() {
+    if (videoObjectUrl) URL.revokeObjectURL(videoObjectUrl);
+    videoObjectUrl = '';
+  }
+
+  function renderVideoOffline(message = 'No live AFK video is available for this dongle.') {
+    if (captureStream && broadcastDeviceId === (device && device.device_id)) return;
+    releaseVideoObjectUrl();
+    els.videoView.classList.add('hidden');
+    els.videoPlaceholder.classList.remove('hidden');
+    els.videoPlaceholder.textContent = message;
+    els.videoLive.textContent = 'VIDEO OFFLINE';
+  }
+
+  async function loadVideoFrame() {
+    const deviceId = device && device.device_id;
+    if (!deviceId || demo || (captureStream && broadcastDeviceId === deviceId)) {
+      if (demo) renderVideoOffline('Demo mode does not transmit camera frames.');
+      return;
+    }
+    try {
+      const status = await api('/v1/web/video/status', {device_id: deviceId});
+      if (!device || device.device_id !== deviceId) return;
+      if (!status.live) {
+        renderVideoOffline();
+        return;
+      }
+      const response = await fetch(
+        gateway + '/v1/web/video/frame?device_id=' + encodeURIComponent(deviceId),
+        {
+          headers: {'Authorization': 'Bearer ' + token},
+          cache: 'no-store'
+        }
+      );
+      if (!response.ok) {
+        renderVideoOffline();
+        return;
+      }
+      const blob = await response.blob();
+      if (!device || device.device_id !== deviceId) return;
+      releaseVideoObjectUrl();
+      videoObjectUrl = URL.createObjectURL(blob);
+      els.videoView.src = videoObjectUrl;
+      els.videoView.classList.remove('hidden');
+      els.videoPlaceholder.classList.add('hidden');
+      els.videoLive.textContent = 'LIVE · ' + Math.max(0, Math.round(Number(status.age_seconds || 0))) + 's';
+    } catch (_) {
+      renderVideoOffline('The private video relay is unavailable.');
+    }
+  }
+
+  function stopBroadcast() {
+    clearInterval(captureTimer);
+    captureTimer = null;
+    captureBusy = false;
+    if (captureStream) captureStream.getTracks().forEach((track) => track.stop());
+    captureStream = null;
+    broadcastDeviceId = '';
+    els.broadcastPreview.srcObject = null;
+    els.broadcastPreview.classList.add('hidden');
+    els.stopBroadcast.classList.add('hidden');
+    els.startCamera.classList.remove('hidden');
+    els.startScreen.classList.remove('hidden');
+    renderVideoOffline();
+  }
+
+  async function uploadVideoFrame() {
+    if (!captureStream || captureBusy || !broadcastDeviceId || !token) return;
+    const video = els.broadcastPreview;
+    if (!video.videoWidth || !video.videoHeight) return;
+    captureBusy = true;
+    try {
+      const maxWidth = 960;
+      const scale = Math.min(1, maxWidth / video.videoWidth);
+      const canvas = els.broadcastCanvas;
+      canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
+      canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.72));
+      if (!blob) throw new Error('Could not encode the video frame.');
+      const response = await fetch(gateway + '/v1/web/video/frame', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'image/jpeg',
+          'X-OGX-AFK-Device-ID': broadcastDeviceId
+        },
+        body: blob,
+        cache: 'no-store'
+      });
+      if (!response.ok) {
+        let payload = {};
+        try { payload = await response.json(); } catch (_) {}
+        throw new Error(payload.message || payload.error || ('HTTP ' + response.status));
+      }
+      els.videoLive.textContent = 'BROADCASTING';
+    } catch (error) {
+      showNotice(error.message || 'Could not upload the private video frame.', 'error');
+      stopBroadcast();
+    } finally {
+      captureBusy = false;
+    }
+  }
+
+  async function startBroadcast(kind) {
+    if (!device) {
+      showNotice('Choose an authorized dongle before starting video.', 'error');
+      return;
+    }
+    stopBroadcast();
+    try {
+      captureStream = kind === 'screen'
+        ? await navigator.mediaDevices.getDisplayMedia({video: true, audio: false})
+        : await navigator.mediaDevices.getUserMedia({
+          video: {width: {ideal: 1280}, height: {ideal: 720}},
+          audio: false
+        });
+      broadcastDeviceId = device.device_id;
+      els.broadcastPreview.srcObject = captureStream;
+      els.broadcastPreview.classList.remove('hidden');
+      els.videoView.classList.add('hidden');
+      els.videoPlaceholder.classList.add('hidden');
+      els.startCamera.classList.add('hidden');
+      els.startScreen.classList.add('hidden');
+      els.stopBroadcast.classList.remove('hidden');
+      els.videoLive.textContent = 'STARTING…';
+      const track = captureStream.getVideoTracks()[0];
+      if (track) track.addEventListener('ended', stopBroadcast, {once: true});
+      await els.broadcastPreview.play();
+      await uploadVideoFrame();
+      captureTimer = window.setInterval(uploadVideoFrame, 1200);
+    } catch (error) {
+      stopBroadcast();
+      if (error && error.name !== 'NotAllowedError') {
+        showNotice(error.message || 'Could not start video capture.', 'error');
+      }
+    }
   }
 
   function signedIn(value) {
@@ -420,7 +695,7 @@
       : (displayMode === 'custom'
         ? 'Custom / Modded Map List'
         : (controlIsBlackArrow ? 'Rainbow Six 3: Black Arrow' : 'Rainbow Six 3'));
-    const cursorName = controlIsBlackArrow ? 'Setup Options' : 'Statistics';
+    const cursorName = 'Statistics';
     els.deviceOnline.innerHTML = '<span class="dot' + (online ? ' online' : '') + '"></span>' + (online ? 'Online' : 'Offline');
     els.remoteEnabled.textContent = device ? (device.remote_enabled ? 'Enabled locally' : 'Disabled locally') : 'Unknown';
     els.gameProfile.textContent = device ? displayName : 'Unknown';
@@ -431,11 +706,18 @@
     els.lastSeen.textContent = device ? formatTime(device.last_seen_at) : 'Never';
     renderMaps();
     loadManagerAccess();
+    loadManualState();
+    loadVideoFrame();
     if (device && device.active_command) {
+      const activeAction = device.active_command.action;
       showNotice(
-        device.active_command.action === 'launch_game'
+        activeAction === 'launch_game'
           ? 'Launching the game. The dongle has the command now.'
-          : 'Changing to ' + mapLabelFor(device.active_command.target_map) + '. The dongle has the command now.',
+          : (activeAction === 'tap_button'
+            ? 'Manual ' + String(device.active_command.target_map || '').toUpperCase()
+              + ' tap queued. Waiting for the dongle.'
+            : 'Changing to ' + mapLabelFor(device.active_command.target_map)
+              + '. The dongle has the command now.'),
         'busy'
       );
       setButtonBusy(true);
@@ -448,11 +730,12 @@
       if (device.last_command.status === 'succeeded') {
         showNotice(
           device.last_command.action === 'launch_game'
-            ? (controlIsBlackArrow
-              ? 'Dongle initiated the Black Arrow round. Setup Options returns when the round ends.'
-              : 'Dongle completed the launch sequence and returned the cursor to Statistics.')
-            : 'Dongle completed the sequence. Recorded current map: '
-              + (device.current_map_display || mapLabelFor(device.current_map)) + '.',
+            ? 'Dongle completed the launch sequence and returned the cursor to Statistics.'
+            : (device.last_command.action === 'tap_button'
+              ? 'Dongle completed the manual '
+                + String(device.last_command.target_map || '').toUpperCase() + ' tap.'
+              : 'Dongle completed the sequence. Recorded current map: '
+                + (device.current_map_display || mapLabelFor(device.current_map)) + '.'),
           'success'
         );
       } else {
@@ -554,6 +837,7 @@
   });
 
   els.signout.addEventListener('click', async () => {
+    stopBroadcast();
     try { if (!demo && token) await api('/v1/web/logout'); } catch (_) {}
     token = '';
     sessionStorage.removeItem(sessionKey);
@@ -562,6 +846,10 @@
   });
 
   els.deviceSelect.addEventListener('change', () => {
+    stopBroadcast();
+    releaseVideoObjectUrl();
+    manualSessions = [];
+    manualIsOwner = false;
     clearNotice();
     mapDisplayDirty = false;
     mapDisplayEditingDevice = els.deviceSelect.value;
@@ -773,11 +1061,88 @@
     }
   });
 
+  els.manualRequest.addEventListener('click', async () => {
+    if (!device) return;
+    if (demo) {
+      showNotice('Demo: manual control approved for 10 minutes.', 'success');
+      return;
+    }
+    els.manualRequest.disabled = true;
+    try {
+      const result = await api('/v1/web/manual/request', {device_id: device.device_id});
+      showNotice(
+        result.status === 'active'
+          ? 'Manual control is already active.'
+          : 'Manual-control request sent to the dongle owner.',
+        result.status === 'active' ? 'success' : 'busy'
+      );
+      await loadManualState();
+    } catch (error) {
+      showNotice(error.message || 'Could not request manual control.', 'error');
+    } finally {
+      els.manualRequest.disabled = false;
+    }
+  });
+
+  els.manualRevoke.addEventListener('click', async () => {
+    const session = manualSessions.find((item) => item.can_revoke) || liveManualSession();
+    if (!session) return;
+    if (demo) {
+      manualSessions = [];
+      renderManualState();
+      showNotice('Demo: manual-control session ended.', 'success');
+      return;
+    }
+    try {
+      await api('/v1/web/manual/revoke', {session_id: session.session_id});
+      showNotice('Manual-control session ended immediately.', 'success');
+      await loadManualState();
+    } catch (error) {
+      showNotice(error.message || 'Could not end the manual-control session.', 'error');
+    }
+  });
+
+  els.remotePad.addEventListener('click', async (event) => {
+    const button = event.target.closest('[data-manual-button]');
+    if (!button || !device || manualTapLocked || !activeManualSession()) return;
+    const control = button.dataset.manualButton;
+    if (demo) {
+      showNotice('Demo: ' + control.toUpperCase() + ' tapped.', 'success');
+      return;
+    }
+    manualTapLocked = true;
+    renderManualState();
+    try {
+      await api('/v1/web/manual/tap', {
+        device_id: device.device_id,
+        button: control
+      });
+      showNotice('Manual ' + control.toUpperCase() + ' tap queued.', 'busy');
+      await loadDevice(device.device_id);
+    } catch (error) {
+      showNotice(error.message || 'Could not queue the manual button tap.', 'error');
+    } finally {
+      window.setTimeout(() => {
+        manualTapLocked = false;
+        renderManualState();
+      }, 1000);
+    }
+  });
+
+  els.startCamera.addEventListener('click', () => startBroadcast('camera'));
+  els.startScreen.addEventListener('click', () => startBroadcast('screen'));
+  els.stopBroadcast.addEventListener('click', stopBroadcast);
+
   els.scrollUp.addEventListener('click', () => {
     window.scrollBy({top: -Math.max(260, window.innerHeight * 0.72), behavior: 'smooth'});
   });
   els.scrollDown.addEventListener('click', () => {
     window.scrollBy({top: Math.max(260, window.innerHeight * 0.72), behavior: 'smooth'});
+  });
+
+  window.addEventListener('beforeunload', () => {
+    stopBroadcast();
+    releaseVideoObjectUrl();
   });
 
   takeSessionFromFragment();

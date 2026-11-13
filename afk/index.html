@@ -92,6 +92,23 @@
     .action-tray { display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin-top:16px; padding-top:16px; border-top:1px solid #253826; }
     .action-tray .primary { flex:1; min-width:220px; }
     .mode-note { color:var(--muted); font-size:13px; margin:10px 0 0; }
+    .assist-grid { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr); gap:16px; margin-top:16px; }
+    .assist-panel h2 { margin-bottom:6px; }
+    .assist-panel > p { color:var(--muted); }
+    .video-stage { min-height:260px; display:grid; place-items:center; border:1px solid #263c27; background:#020402; overflow:hidden; position:relative; }
+    .video-stage img,.video-stage video { display:block; width:100%; max-height:480px; object-fit:contain; background:#000; }
+    .video-placeholder { color:var(--muted); text-align:center; padding:30px; line-height:1.5; }
+    .assist-actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:12px; }
+    .manual-status { padding:12px; border:1px solid #2b432c; background:#070c07; color:var(--muted); line-height:1.45; }
+    .manual-requests { display:grid; gap:8px; margin-top:12px; }
+    .manual-request { padding:12px; border:1px solid #3d573e; background:#0b120b; }
+    .manual-request strong { color:var(--green2); }
+    .manual-request .assist-actions { margin-top:8px; }
+    .remote-pad { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:14px; }
+    .remote-pad button { min-height:48px; }
+    .remote-pad .wide { grid-column:span 2; }
+    .live-badge { color:var(--red); font:12px/1.3 Consolas,'Courier New',monospace; letter-spacing:.08em; }
+    .live-badge.on { color:var(--green); }
     .notice { margin-bottom:16px; padding:12px 14px; border:1px solid #39543a; background:#0c150d; color:#c7d8c4; line-height:1.45; }
     .notice.error { border-color:#743d38; background:#1b0d0c; color:#ffc4bf; }
     .notice.success { border-color:#438148; color:#b8ffc5; }
@@ -106,6 +123,7 @@
       main { padding:22px 16px; }
       .topline { flex-direction:column; }
       .dashboard { grid-template-columns:1fr; }
+      .assist-grid { grid-template-columns:1fr; }
       .map-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .identity { width:100%; }
       .grant-form { grid-template-columns:1fr 1fr; }
@@ -119,6 +137,7 @@
       .system-bar,footer { flex-direction:column; align-items:flex-start; }
       .meta { text-align:left; }
       .map-grid { grid-template-columns:1fr; }
+      .remote-pad { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .request-form { flex-direction:column; }
       .manager-heading { flex-direction:column; }
       .grant-form { grid-template-columns:1fr; }
@@ -197,6 +216,55 @@
                 <button class="btn secondary" id="correct-current" type="button">Correct current map</button>
               </div>
               <p class="mode-note" id="mode-note">Current map is green. Choose another map, then press Change Map. There is no extra confirmation popup.</p>
+            </div>
+          </section>
+        </div>
+
+        <div class="assist-grid">
+          <section class="panel assist-panel" id="video-panel">
+            <h2>Optional AFK Video</h2>
+            <p>Broadcast a low-rate private view from a webcam, capture card, or shared screen. Frames are held only in memory and expire when broadcasting stops.</p>
+            <div class="video-stage">
+              <div class="video-placeholder" id="video-placeholder">No live AFK video is available for this dongle.</div>
+              <img class="hidden" id="video-view" alt="Authorized live AFK video">
+              <video class="hidden" id="broadcast-preview" autoplay playsinline muted></video>
+            </div>
+            <canvas class="hidden" id="broadcast-canvas"></canvas>
+            <div class="assist-actions">
+              <button class="btn secondary" id="start-camera" type="button">Broadcast camera</button>
+              <button class="btn secondary" id="start-screen" type="button">Broadcast screen</button>
+              <button class="btn danger hidden" id="stop-broadcast" type="button">Stop broadcast</button>
+              <span class="live-badge" id="video-live">VIDEO OFFLINE</span>
+            </div>
+            <p class="mode-note">Only people authorized for this dongle can upload or view its frames. Nothing is recorded by default.</p>
+          </section>
+
+          <section class="panel assist-panel" id="manual-panel">
+            <h2>Owner-Approved Manual Control</h2>
+            <p>Manual button taps are separate from deterministic map controls. The dongle owner must approve every temporary session.</p>
+            <div class="manual-status" id="manual-status">Loading manual-control status…</div>
+            <div class="assist-actions">
+              <button class="btn secondary" id="manual-request" type="button">Request manual control</button>
+              <button class="btn danger hidden" id="manual-revoke" type="button">End manual session</button>
+            </div>
+            <div class="manual-requests" id="manual-requests"></div>
+            <div class="remote-pad hidden" id="remote-pad" aria-label="Temporary Xbox remote control">
+              <button class="btn secondary" data-manual-button="up" type="button">UP</button>
+              <button class="btn secondary" data-manual-button="a" type="button">A</button>
+              <button class="btn secondary" data-manual-button="y" type="button">Y</button>
+              <button class="btn secondary" data-manual-button="start" type="button">START</button>
+              <button class="btn secondary" data-manual-button="left" type="button">LEFT</button>
+              <button class="btn secondary" data-manual-button="down" type="button">DOWN</button>
+              <button class="btn secondary" data-manual-button="right" type="button">RIGHT</button>
+              <button class="btn secondary" data-manual-button="back" type="button">BACK</button>
+              <button class="btn secondary" data-manual-button="white" type="button">WHITE</button>
+              <button class="btn secondary" data-manual-button="black" type="button">BLACK</button>
+              <button class="btn secondary" data-manual-button="x" type="button">X</button>
+              <button class="btn secondary" data-manual-button="b" type="button">B</button>
+              <button class="btn secondary" data-manual-button="lt" type="button">LT</button>
+              <button class="btn secondary" data-manual-button="rt" type="button">RT</button>
+              <button class="btn secondary" data-manual-button="l3" type="button">L3</button>
+              <button class="btn secondary" data-manual-button="r3" type="button">R3</button>
             </div>
           </section>
         </div>
