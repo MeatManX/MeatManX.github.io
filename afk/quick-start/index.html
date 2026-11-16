@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Quick-start guide for using the OGX-Mini AFK website and Hamuel Discord controls.">
+  <title>OGX-Mini AFK Quick Start // MeatMan Mods</title>
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="./guide.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="system-bar">
+      <a class="brand" href="../">MEATMAN MODS // OGX-MINI AFK</a>
+      <span class="meta">REMOTE OPERATOR QUICK START</span>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="guide-title">
+        <div>
+          <p class="eyebrow">Rainbow Six 3: Black Arrow // AFK-005</p>
+          <h1 id="guide-title">Control the dedicated server without touching the Xbox.</h1>
+          <p class="lede">This guide is for players using an already configured AFK dongle. You will sign in, request access, verify the Xbox cursor, and run safe map or launch commands.</p>
+        </div>
+        <aside class="critical">
+          <strong>Before every command</strong>
+          <span>Check the video feed. The saved map and cursor position must match the real Xbox screen.</span>
+        </aside>
+      </section>
+
+      <section class="deck" aria-label="OGX-Mini AFK quick-start slideshow">
+        <div class="slides" id="slides">
+          <article class="slide is-active" data-title="Sign in">
+            <div class="copy">
+              <span class="step">Step 1</span>
+              <h2>Sign in with Discord</h2>
+              <p>Open <a href="https://meatmanmods.com/afk/">meatmanmods.com/afk</a> and choose <strong>Sign in with Discord</strong>. Discord identifies you to Hamuel; the AFK page never receives your Discord password or private messages.</p>
+            </div>
+            <figure><img src="./images/01-sign-in.png" alt="OGX-Mini AFK sign-in page with the Sign in with Discord button highlighted"><figcaption>Start at the public AFK page.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Authorize">
+            <div class="copy">
+              <span class="step">Step 2</span>
+              <h2>Authorize Hamuel</h2>
+              <p>Confirm you are signed into the correct Discord account, then press <strong>Authorize</strong>. The permission is limited to basic account identity; Hamuel cannot read your messages or send messages as you.</p>
+            </div>
+            <figure class="auth-shot"><img src="./images/02-discord-authorize-redacted.png" alt="Discord authorization screen for Hamuel with the test account name hidden"><figcaption>Review the permissions, then authorize.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Request access">
+            <div class="copy">
+              <span class="step">Step 3</span>
+              <h2>Request access to AFK-005</h2>
+              <p>Under <strong>Request access</strong>, enter <strong>AFK-005</strong> and press <strong>Request</strong>. Hamuel sends the dongle manager and owner an approval request. You cannot control the device until one of them approves you.</p>
+            </div>
+            <figure><img src="./images/03-request-access.png" alt="AFK-005 entered into the Request access field"><figcaption>The device code selects the specific AFK dongle.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Wait for approval">
+            <div class="copy">
+              <span class="step">Step 4</span>
+              <h2>Wait for approval, then select the dongle</h2>
+              <p>The green notice confirms the request was sent. After approval, reload if necessary and choose <strong>AFK-005 Setup Demo // AFK-005</strong> from the Dongle list.</p>
+              <p class="note">Seeing a device in the list means your Discord account has access. It does not guarantee that the Xbox or dongle is currently online.</p>
+            </div>
+            <figure><img src="./images/04-request-sent.png" alt="Access request sent notice and AFK-005 available in the dongle list"><figcaption>Approval adds AFK-005 to your authorized-device list.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Confirm connection">
+            <div class="copy">
+              <span class="step">Step 5</span>
+              <h2>Confirm AFK-005 is online</h2>
+              <p>Check for the green <strong>Online</strong> indicator and <strong>Remote control: Enabled locally</strong>. The map list should refresh to the queue saved for AFK-005, with the recorded current map shown in green.</p>
+              <p class="warning">The green map is the system's saved record—not visual proof of what the Xbox is actually showing.</p>
+            </div>
+            <figure><img src="./images/05-select-dongle.png" alt="AFK-005 selected and shown online with the map list loaded"><figcaption>Online + enabled means the relay can reach the dongle.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Verify the cursor">
+            <div class="copy">
+              <span class="step">Step 6</span>
+              <h2>Verify the real Xbox screen</h2>
+              <p>Use <strong>Optional AFK Video</strong> to confirm the current map and cursor position before running a macro. The normal map and launch path expects the cursor on <strong>Statistics</strong>.</p>
+              <p class="warning">If players launch by readying up in the lobby, the dedicated-server cursor moves to <strong>Options</strong>. Use the Options recovery action before a normal map command.</p>
+            </div>
+            <figure><img src="./images/07-video-cursor.png" alt="AFK video feed showing the Rainbow Six Black Arrow dedicated server cursor on Statistics"><figcaption>This is the safe normal starting position: Statistics.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Change a map">
+            <div class="copy">
+              <span class="step">Step 7</span>
+              <h2>Choose and change a map</h2>
+              <p>Select the destination map. It turns amber. Then press <strong>Change to…</strong> and wait for the completion notice. Do not send another command while the dongle is working.</p>
+              <ul>
+                <li>Green = recorded current map</li>
+                <li>Amber = selected destination</li>
+                <li>Unlit = available map</li>
+              </ul>
+            </div>
+            <figure><img src="./images/06-change-map.png" alt="BA Streets of Milan selected in amber with the Change to BA Streets of Milan button"><figcaption>The command moves relative to the recorded current map.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Correct a mismatch">
+            <div class="copy">
+              <span class="step">Step 8</span>
+              <h2>If the recorded map is wrong, correct it first</h2>
+              <p>Compare the green website map with the actual map shown in the video feed. If they do not match, press <strong>Correct current map</strong>.</p>
+              <p class="note">Correction mode changes only the dongle's saved position. It does not press any Xbox buttons.</p>
+            </div>
+            <figure><img src="./images/08-correct-map.png" alt="Correct current map button beside the map controls"><figcaption>Never run a relative map macro from a known mismatch.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Record the actual map">
+            <div class="copy">
+              <span class="step">Step 9</span>
+              <h2>Record the map shown on the Xbox</h2>
+              <p>In correction mode, select the map actually shown in the video and press <strong>Set current map to…</strong>. The selection turns amber and is labeled <strong>Record as current</strong>.</p>
+            </div>
+            <figure><img src="./images/09-record-current.png" alt="Correction mode with BA Nuclear Reactor selected and Set current map button"><figcaption>This synchronizes the saved position with reality.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Confirm correction">
+            <div class="copy">
+              <span class="step">Step 10</span>
+              <h2>Confirm the corrected state</h2>
+              <p>The actual map should now be green and labeled <strong>Current map</strong>. Verify the Xbox cursor again. If it is on Statistics, normal Change Map and Launch commands are safe to use.</p>
+            </div>
+            <figure><img src="./images/10-corrected.png" alt="BA Nuclear Reactor shown in green as the corrected current map"><figcaption>The website and Xbox should now agree.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Open Discord controls">
+            <div class="copy">
+              <span class="step">Optional Discord controls</span>
+              <h2>Open the AFK setup post</h2>
+              <p>For Hamuel's private interactive controls, use <strong>Open AFK setup post</strong> on the website. In Discord, press <strong>Enable AFK Controls</strong>. Hamuel will open or refresh your private setup conversation.</p>
+            </div>
+            <div class="figure-pair">
+              <figure><img src="./images/05-select-dongle.png" alt="Open AFK setup post button on the AFK website"><figcaption>Open the setup post from the website.</figcaption></figure>
+              <figure><img src="./images/11-enable-discord.png" alt="Enable AFK Controls button in the Discord AFK setup channel"><figcaption>Enable private controls in Discord.</figcaption></figure>
+            </div>
+          </article>
+
+          <article class="slide" data-title="Choose in Hamuel">
+            <div class="copy">
+              <span class="step">Discord step 2</span>
+              <h2>Choose AFK-005 in your Hamuel DM</h2>
+              <p>Open the Hamuel direct message, choose a dongle, then select <strong>AFK-005 Setup Demo</strong>. Online and offline state is shown in the list.</p>
+            </div>
+            <div class="figure-pair compact">
+              <figure><img src="./images/12-open-hamuel.png" alt="Hamuel direct message in Discord"><figcaption>Hamuel appears under Direct Messages.</figcaption></figure>
+              <figure><img src="./images/13-discord-dongle.png" alt="AFK-005 selected in Hamuel's dongle list"><figcaption>Select the authorized online device.</figcaption></figure>
+            </div>
+          </article>
+
+          <article class="slide" data-title="Use the right path">
+            <div class="copy">
+              <span class="step">Discord step 3</span>
+              <h2>Use the control that matches the cursor</h2>
+              <p>Hamuel's card reports the saved map and reminds you that completion means the dongle ran the sequence—not that the Xbox visually confirmed it.</p>
+              <ul>
+                <li><strong>Map Path: Statistics</strong> — normal map changes.</li>
+                <li><strong>Options → Statistics</strong> — recover after a player-ready launch.</li>
+                <li><strong>Launch from Options</strong> — launch when the cursor is already on Options.</li>
+              </ul>
+            </div>
+            <figure><img src="./images/14-discord-controls.png" alt="Hamuel AFK-005 control card with map and cursor recovery controls"><figcaption>Check the video first, then choose the matching deterministic path.</figcaption></figure>
+          </article>
+
+          <article class="slide" data-title="Final checklist">
+            <div class="copy">
+              <span class="step">Ready to operate</span>
+              <h2>The thirty-second safety check</h2>
+              <ol>
+                <li>AFK-005 is online and remote control is enabled.</li>
+                <li>The website map order matches the Xbox queue.</li>
+                <li>The green recorded map matches the video feed.</li>
+                <li>The cursor is on Statistics—or you deliberately use the Options recovery path.</li>
+                <li>Wait for completion before sending another command.</li>
+              </ol>
+              <div class="finish-actions">
+                <a class="button primary" href="../">Open the AFK dashboard</a>
+                <button class="button" type="button" id="restart">Restart guide</button>
+              </div>
+            </div>
+            <figure><img src="./images/07-video-cursor.png" alt="Verified Xbox video feed with cursor on Statistics"><figcaption>Verify first. Automate second. Avoid menu goblins.</figcaption></figure>
+          </article>
+        </div>
+
+        <nav class="controls" aria-label="Slideshow controls">
+          <button class="button" id="previous" type="button">← Previous</button>
+          <div class="progress-wrap">
+            <span id="counter" aria-live="polite">1 of 14</span>
+            <div class="progress" id="progress" aria-label="Guide progress"></div>
+          </div>
+          <button class="button primary" id="next" type="button">Next →</button>
+        </nav>
+      </section>
+    </main>
+
+    <footer>
+      <span>CREATED BY MEATMAN AND SHREK</span>
+      <a href="../">BACK TO OGX-MINI AFK</a>
+    </footer>
+  </div>
+  <script src="./guide.js"></script>
+</body>
+</html>
