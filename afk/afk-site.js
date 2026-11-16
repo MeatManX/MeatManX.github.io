@@ -684,9 +684,26 @@
     const previousCommand = device && device.active_command
       ? device.active_command.command_id
       : '';
+    const previousDeviceId = device && device.device_id;
+    const previousSelectedMap = selectedMap;
+    const previousCorrectionMode = correctionMode;
     device = value;
-    selectedMap = '';
-    correctionMode = false;
+    const sameDevice = Boolean(
+      device && previousDeviceId && device.device_id === previousDeviceId
+    );
+    const selectedStillExists = Boolean(
+      sameDevice && previousSelectedMap && mapSlotsFor(device).some(
+        (slot) => slot.command_map === previousSelectedMap
+      )
+    );
+    const selectedBecameCurrent = Boolean(
+      selectedStillExists &&
+      previousSelectedMap.toLowerCase() === String(device.current_map || '').toLowerCase()
+    );
+    selectedMap = selectedStillExists && !selectedBecameCurrent
+      ? previousSelectedMap
+      : '';
+    correctionMode = sameDevice ? previousCorrectionMode : false;
     const online = Boolean(device && device.online);
     const controlIsBlackArrow = Boolean(device && device.game_profile === 'rsba');
     const displayMode = mapDisplayMode();
