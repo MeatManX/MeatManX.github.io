@@ -50,6 +50,7 @@
     startScreen: $('start-screen'),
     stopBroadcast: $('stop-broadcast'),
     videoLive: $('video-live'),
+    cursorDetection: $('cursor-detection'),
     manualStatus: $('manual-status'),
     manualRequest: $('manual-request'),
     manualRevoke: $('manual-revoke'),
@@ -300,6 +301,23 @@
     videoObjectUrl = '';
   }
 
+  function renderCursorDetection(detection) {
+    const cursor = String(detection && detection.cursor || 'unknown');
+    const label = String(detection && detection.label || 'Unknown');
+    const confidence = Math.round(Number(detection && detection.confidence || 0) * 100);
+    let state = 'unknown';
+    if (cursor === 'statistics') state = 'safe';
+    else if (cursor === 'options') state = 'recovery';
+    else if (cursor !== 'unknown') state = 'unsafe';
+    els.cursorDetection.className = 'cursor-badge ' + state;
+    els.cursorDetection.textContent = cursor === 'unknown'
+      ? 'CURSOR // UNKNOWN'
+      : 'CURSOR // ' + label.toUpperCase() + ' · ' + confidence + '%';
+    els.cursorDetection.title = detection && detection.reason
+      ? 'Detector result: ' + detection.reason
+      : 'No cursor analysis is available.';
+  }
+
   function renderVideoOffline(message = 'No live AFK video is available for this dongle.') {
     if (captureStream && broadcastDeviceId === (device && device.device_id)) return;
     releaseVideoObjectUrl();
@@ -307,6 +325,9 @@
     els.videoPlaceholder.classList.remove('hidden');
     els.videoPlaceholder.textContent = message;
     els.videoLive.textContent = 'VIDEO OFFLINE';
+    els.videoLive.classList.remove('on');
+    renderCursorDetection(null);
+    els.cursorDetection.textContent = 'CURSOR // NO VIDEO';
   }
 
   async function loadVideoFrame() {
@@ -341,6 +362,8 @@
       els.videoView.classList.remove('hidden');
       els.videoPlaceholder.classList.add('hidden');
       els.videoLive.textContent = 'LIVE · ' + Math.max(0, Math.round(Number(status.age_seconds || 0))) + 's';
+      els.videoLive.classList.add('on');
+      renderCursorDetection(status.cursor_detection);
     } catch (_) {
       renderVideoOffline('The private video relay is unavailable.');
     }
@@ -390,7 +413,10 @@
         try { payload = await response.json(); } catch (_) {}
         throw new Error(payload.message || payload.error || ('HTTP ' + response.status));
       }
+      const payload = await response.json();
       els.videoLive.textContent = 'BROADCASTING';
+      els.videoLive.classList.add('on');
+      renderCursorDetection(payload.cursor_detection);
     } catch (error) {
       showNotice(error.message || 'Could not upload the private video frame.', 'error');
       stopBroadcast();
