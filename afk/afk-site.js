@@ -86,6 +86,7 @@
   let broadcastDeviceId = '';
   let videoObjectUrl = '';
   let videoAssistReady = false;
+  let videoAssistBlocked = false;
   let manualCursorStart = 'statistics';
 
   const demoDevice = {
@@ -307,17 +308,23 @@
   }
 
   function updateCursorAssistUi(cursor = 'unknown', confidence = 0, ageSeconds = Infinity) {
-    videoAssistReady = ageSeconds <= 3 && confidence >= 90
+    const live = ageSeconds <= 15;
+    videoAssistReady = live && ageSeconds <= 3 && confidence >= 90
       && (cursor === 'statistics' || cursor === 'options');
-    els.cursorFallback.classList.toggle('hidden', videoAssistReady);
+    videoAssistBlocked = live && !videoAssistReady;
+    els.cursorFallback.classList.toggle('hidden', live);
     if (videoAssistReady) {
-      const label = cursor === 'options' ? 'Options recovery' : 'Statistics';
-      els.xboxInstruction.innerHTML = '<strong>VIDEO ASSIST ACTIVE:</strong> verified cursor on <strong>'
-        + label + '</strong>. Change Map and Launch Game will select the correct macro automatically.';
+      const label = cursor === 'options' ? 'Options' : 'Statistics';
+      els.xboxInstruction.innerHTML = '<strong>VIDEO ASSIST ACTIVE:</strong> cursor detected on <strong>'
+        + label + '</strong>. Change Map and Launch Game select the matching starting macro.';
+    } else if (live) {
+      els.xboxInstruction.innerHTML = '<strong>WAITING FOR VIDEO:</strong> the live frame is stale or the cursor is uncertain. '
+        + 'Adjust the view or stop broadcasting to choose the starting cursor manually.';
     } else {
-      els.xboxInstruction.innerHTML = '<strong>MANUAL CURSOR MODE:</strong> no fresh 90%+ Statistics/Options result is available. '
-        + 'Select the actual Xbox cursor position below before changing maps or launching.';
+      els.xboxInstruction.innerHTML = '<strong>MANUAL CURSOR MODE:</strong> select the actual Xbox cursor position below '
+        + 'before changing maps or launching.';
     }
+    if (device) setButtonBusy(Boolean(device.active_command));
   }
 
   function setManualCursorStart(value) {
@@ -693,8 +700,8 @@
   }
 
   function setButtonBusy(busy) {
-    els.changeMap.disabled = busy || !selectedMap || !device || !device.online || !device.remote_enabled;
-    els.launchGame.disabled = busy || correctionMode || !device || !device.online || !device.remote_enabled;
+    els.changeMap.disabled = busy || (videoAssistBlocked && !correctionMode) || !selectedMap || !device || !device.online || !device.remote_enabled;
+    els.launchGame.disabled = busy || videoAssistBlocked || correctionMode || !device || !device.online || !device.remote_enabled;
     els.correctCurrent.disabled = busy || !device;
     els.deviceSelect.disabled = busy || !devices.length;
     [...els.mapGrid.querySelectorAll('button')].forEach((button) => {
