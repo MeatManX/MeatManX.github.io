@@ -311,13 +311,18 @@
   function updateCursorAssistUi(cursor = 'unknown', confidence = 0, ageSeconds = Infinity) {
     const live = ageSeconds <= 15;
     videoAssistReady = live && ageSeconds <= 3 && confidence >= 90
-      && (cursor === 'statistics' || cursor === 'options');
+      && ['statistics', 'map_list', 'setup', 'options', 'community', 'launch'].includes(cursor);
     videoAssistBlocked = live && !videoAssistReady;
     els.cursorFallback.classList.toggle('hidden', live);
     if (videoAssistReady) {
-      const label = cursor === 'options' ? 'Options' : 'Statistics';
+      const label = cursor.replace('_', ' ');
+      const needsUpdate = !['statistics', 'options'].includes(cursor)
+        && !String(device && device.firmware_version || '').includes('menu1');
+      videoAssistBlocked = needsUpdate;
       els.xboxInstruction.innerHTML = '<strong>VIDEO ASSIST ACTIVE:</strong> cursor detected on <strong>'
-        + label + '</strong>. Change Map and Launch Game select the matching starting macro.';
+        + label + '</strong>. ' + (needsUpdate
+          ? 'Update the dongle to the menu-position firmware before using this starting position.'
+          : 'Change Map and Launch Game select the matching starting macro.');
     } else if (live) {
       els.xboxInstruction.innerHTML = '<strong>WAITING FOR VIDEO:</strong> the live frame is stale or the cursor is uncertain. '
         + 'Adjust the view or stop broadcasting to choose the starting cursor manually.';
