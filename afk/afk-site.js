@@ -361,8 +361,11 @@
     const map = ageSeconds <= 3 && detection && detection.map;
     if (!map) {
       els.mapDetection.className = 'cursor-badge unknown';
-      els.mapDetection.textContent = ageSeconds <= 15 ? 'SCREEN MAP // UNREADABLE' : 'SCREEN MAP // NO VIDEO';
-      els.mapDetection.title = detection && detection.reason ? detection.reason : '';
+      const detail = detection && (detection.raw_text || detection.reason) || '';
+      els.mapDetection.textContent = ageSeconds <= 15
+        ? 'SCREEN MAP // UNREADABLE' + (detail ? ' · OCR: ' + String(detail).slice(0, 70) : '')
+        : 'SCREEN MAP // NO VIDEO';
+      els.mapDetection.title = detail;
       return;
     }
     const saved = String(device && device.current_map || '');
