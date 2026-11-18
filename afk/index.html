@@ -92,6 +92,10 @@
     .action-tray { display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin-top:16px; padding-top:16px; border-top:1px solid #253826; }
     .action-tray .primary { flex:1; min-width:220px; }
     .mode-note { color:var(--muted); font-size:13px; margin:10px 0 0; }
+    .cursor-fallback { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:0 0 14px; padding:10px; border:1px solid #735b23; background:#171207; }
+    .cursor-fallback span { color:#e7d29b; font:12px/1.35 Consolas,'Courier New',monospace; margin-right:auto; }
+    .cursor-fallback .btn { min-height:36px; padding:7px 10px; font-size:12px; }
+    .cursor-fallback .selected { color:#061007; background:var(--green); border-color:var(--green); }
     .assist-grid { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr); gap:16px; margin-top:16px; }
     .assist-panel h2 { margin-bottom:6px; }
     .assist-panel > p { color:var(--muted); }
@@ -213,7 +217,12 @@
           </aside>
 
           <section class="panel">
-            <p class="instruction" id="xbox-instruction"><strong>Before changing maps or launching:</strong> the saved order must match the Xbox map list exactly, and the in-game cursor must be on <strong>Statistics</strong>.</p>
+            <p class="instruction" id="xbox-instruction"><strong>Before changing maps or launching:</strong> the saved order must match the Xbox map list exactly. A verified live video feed selects the correct macro automatically.</p>
+            <div class="cursor-fallback" id="cursor-fallback">
+              <span>NO VERIFIED VIDEO // SELECT THE XBOX CURSOR POSITION</span>
+              <button class="btn secondary selected" id="cursor-start-statistics" type="button">Statistics</button>
+              <button class="btn secondary" id="cursor-start-options" type="button">Options / after player launch</button>
+            </div>
             <div id="map-empty" class="empty">Choose an authorized dongle to load its maps.</div>
             <div id="map-controls" class="hidden">
               <div class="map-grid" id="map-grid" aria-label="Rainbow Six 3 map list"></div>
@@ -244,7 +253,7 @@
               <span class="live-badge" id="video-live">VIDEO OFFLINE</span>
               <span class="cursor-badge unknown" id="cursor-detection">CURSOR // NO VIDEO</span>
             </div>
-            <p class="mode-note">Cursor detection checks fixed menu regions and is advisory for now. Only people authorized for this dongle can upload or view its frames. Nothing is recorded by default.</p>
+            <p class="mode-note">At 90% confidence or higher, a fresh cursor result automatically selects the correct Statistics or Options macro. Without verified video, choose the starting cursor manually above. Only authorized users can upload or view frames. Nothing is recorded by default.</p>
           </section>
 
           <section class="panel assist-panel" id="manual-panel">

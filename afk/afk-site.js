@@ -18,6 +18,9 @@
     remoteEnabled: $('remote-enabled'),
     gameProfile: $('game-profile'),
     xboxInstruction: $('xbox-instruction'),
+    cursorFallback: $('cursor-fallback'),
+    cursorStartStatistics: $('cursor-start-statistics'),
+    cursorStartOptions: $('cursor-start-options'),
     firmware: $('firmware-version'),
     lastSeen: $('last-seen'),
     requestForm: $('request-form'),
@@ -82,6 +85,8 @@
   let captureBusy = false;
   let broadcastDeviceId = '';
   let videoObjectUrl = '';
+  let videoAssistReady = false;
+  let manualCursorStart = 'statistics';
 
   const demoDevice = {
     device_id: 'AFK-001',
@@ -301,7 +306,32 @@
     videoObjectUrl = '';
   }
 
-  function renderCursorDetection(detection) {
+  function updateCursorAssistUi(cursor = 'unknown', confidence = 0, ageSeconds = Infinity) {
+    videoAssistReady = ageSeconds <= 3 && confidence >= 90
+      && (cursor === 'statistics' || cursor === 'options');
+    els.cursorFallback.classList.toggle('hidden', videoAssistReady);
+    if (videoAssistReady) {
+      const label = cursor === 'options' ? 'Options recovery' : 'Statistics';
+      els.xboxInstruction.innerHTML = '<strong>VIDEO ASSIST ACTIVE:</strong> verified cursor on <strong>'
+        + label + '</strong>. Change Map and Launch Game will select the correct macro automatically.';
+    } else {
+      els.xboxInstruction.innerHTML = '<strong>MANUAL CURSOR MODE:</strong> no fresh 90%+ Statistics/Options result is available. '
+        + 'Select the actual Xbox cursor position below before changing maps or launching.';
+    }
+  }
+
+  function setManualCursorStart(value) {
+    manualCursorStart = value === 'options' ? 'options' : 'statistics';
+    els.cursorStartStatistics.classList.toggle('selected', manualCursorStart === 'statistics');
+    els.cursorStartOptions.classList.toggle('selected', manualCursorStart === 'options');
+  }
+
+  function commandAction(base) {
+    if (videoAssistReady || manualCursorStart === 'statistics') return base;
+    return base + '_from_options';
+  }
+
+  function renderCursorDetection(detection, ageSeconds = Infinity) {
     const cursor = String(detection && detection.cursor || 'unknown');
     const label = String(detection && detection.label || 'Unknown');
     const confidence = Math.round(Number(detection && detection.confidence || 0) * 100);
@@ -316,6 +346,7 @@
     els.cursorDetection.title = detection && detection.reason
       ? 'Detector result: ' + detection.reason
       : 'No cursor analysis is available.';
+    updateCursorAssistUi(cursor, confidence, Number(ageSeconds));
   }
 
   function renderVideoOffline(message = 'No live AFK video is available for this dongle.') {
@@ -363,7 +394,7 @@
       els.videoPlaceholder.classList.add('hidden');
       els.videoLive.textContent = 'LIVE · ' + Math.max(0, Math.round(Number(status.age_seconds || 0))) + 's';
       els.videoLive.classList.add('on');
-      renderCursorDetection(status.cursor_detection);
+      renderCursorDetection(status.cursor_detection, Number(status.age_seconds || 0));
     } catch (_) {
       renderVideoOffline('The private video relay is unavailable.');
     }
@@ -416,7 +447,7 @@
       const payload = await response.json();
       els.videoLive.textContent = 'BROADCASTING';
       els.videoLive.classList.add('on');
-      renderCursorDetection(payload.cursor_detection);
+      renderCursorDetection(payload.cursor_detection, 0);
     } catch (error) {
       showNotice(error.message || 'Could not upload the private video frame.', 'error');
       stopBroadcast();
@@ -1038,6 +1069,9 @@
     }
   });
 
+  els.cursorStartStatistics.addEventListener('click', () => setManualCursorStart('statistics'));
+  els.cursorStartOptions.addEventListener('click', () => setManualCursorStart('options'));
+
   els.correctCurrent.addEventListener('click', () => {
     correctionMode = !correctionMode;
     selectedMap = '';
@@ -1052,12 +1086,18 @@
     }
     setButtonBusy(true);
     try {
-      await api('/v1/web/commands/queue', {
+      const result = await api('/v1/web/commands/queue', {
         device_id: device.device_id,
-        action: 'launch_game',
+        action: commandAction('launch_game'),
         target_map: ''
       });
-      showNotice('Launch command queued. Waiting for the dongle.', 'busy');
+      const assist = result.video_assist || {};
+      showNotice(
+        assist.mode === 'automatic'
+          ? 'Video verified ' + String(assist.cursor || '').replace('_', ' ') + '; the correct launch macro was queued.'
+          : 'Launch command queued using the selected manual cursor position.',
+        'busy'
+      );
       await loadDevice(device.device_id);
     } catch (error) {
       showNotice(error.message || 'Could not queue the launch command.', 'error');
@@ -1081,7 +1121,7 @@
       renderDevice({...device});
       return;
     }
-    const action = correctionMode ? 'correct_current_map' : 'change_map';
+    const action = correctionMode ? 'correct_current_map' : commandAction('change_map');
     setButtonBusy(true);
     try {
       const result = await api('/v1/web/commands/queue', {
@@ -1090,8 +1130,10 @@
         target_map: selectedMap
       });
       showNotice(
-        action === 'change_map'
-          ? 'Command queued for ' + mapLabelFor(result.target_map) + '. Waiting for the dongle.'
+        !correctionMode
+          ? ((result.video_assist || {}).mode === 'automatic'
+            ? 'Video verified ' + String(result.video_assist.cursor || '').replace('_', ' ') + '; the correct map macro was queued for ' + mapLabelFor(result.target_map) + '.'
+            : 'Map command queued using the selected manual cursor position for ' + mapLabelFor(result.target_map) + '.')
           : 'Current-map correction queued.',
         'busy'
       );
