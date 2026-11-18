@@ -54,6 +54,7 @@
     stopBroadcast: $('stop-broadcast'),
     videoLive: $('video-live'),
     cursorDetection: $('cursor-detection'),
+    mapDetection: $('map-detection'),
     manualStatus: $('manual-status'),
     manualRequest: $('manual-request'),
     manualRevoke: $('manual-revoke'),
@@ -356,6 +357,23 @@
     updateCursorAssistUi(cursor, confidence, Number(ageSeconds));
   }
 
+  function renderMapDetection(detection, ageSeconds = Infinity) {
+    const map = ageSeconds <= 3 && detection && detection.map;
+    if (!map) {
+      els.mapDetection.className = 'cursor-badge unknown';
+      els.mapDetection.textContent = ageSeconds <= 15 ? 'SCREEN MAP // UNREADABLE' : 'SCREEN MAP // NO VIDEO';
+      els.mapDetection.title = detection && detection.reason ? detection.reason : '';
+      return;
+    }
+    const saved = String(device && device.current_map || '');
+    const same = saved.toLowerCase() === String(map).toLowerCase();
+    els.mapDetection.className = 'cursor-badge ' + (same ? 'safe' : 'recovery');
+    els.mapDetection.textContent = 'SCREEN MAP // ' + (detection.label || map)
+      + (same ? ' · matches saved' : ' · differs from saved');
+    els.mapDetection.title = 'OCR: ' + (detection.raw_text || '')
+      + ' · match quality ' + Math.round(Number(detection.match_quality || 0) * 100) + '%';
+  }
+
   function renderVideoOffline(message = 'No live AFK video is available for this dongle.') {
     if (captureStream && broadcastDeviceId === (device && device.device_id)) return;
     releaseVideoObjectUrl();
@@ -365,6 +383,7 @@
     els.videoLive.textContent = 'VIDEO OFFLINE';
     els.videoLive.classList.remove('on');
     renderCursorDetection(null);
+    renderMapDetection(null);
     els.cursorDetection.textContent = 'CURSOR // NO VIDEO';
   }
 
@@ -402,6 +421,7 @@
       els.videoLive.textContent = 'LIVE · ' + Math.max(0, Math.round(Number(status.age_seconds || 0))) + 's';
       els.videoLive.classList.add('on');
       renderCursorDetection(status.cursor_detection, Number(status.age_seconds || 0));
+      renderMapDetection(status.map_detection, Number(status.age_seconds || 0));
     } catch (_) {
       renderVideoOffline('The private video relay is unavailable.');
     }
@@ -455,6 +475,7 @@
       els.videoLive.textContent = 'BROADCASTING';
       els.videoLive.classList.add('on');
       renderCursorDetection(payload.cursor_detection, 0);
+      renderMapDetection(payload.map_detection, 0);
     } catch (error) {
       showNotice(error.message || 'Could not upload the private video frame.', 'error');
       stopBroadcast();
