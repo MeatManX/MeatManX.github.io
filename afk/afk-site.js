@@ -19,8 +19,9 @@
     gameProfile: $('game-profile'),
     xboxInstruction: $('xbox-instruction'),
     cursorFallback: $('cursor-fallback'),
-    cursorStartStatistics: $('cursor-start-statistics'),
-    cursorStartOptions: $('cursor-start-options'),
+    contextHelp: $('context-help'),
+    roundStateDialog: $('round-state-dialog'),
+    roundStateAction: $('round-state-action'),
     firmware: $('firmware-version'),
     lastSeen: $('last-seen'),
     requestForm: $('request-form'),
@@ -127,7 +128,7 @@
   }
   let videoAssistReady = false;
   let videoAssistBlocked = false;
-  let manualCursorStart = 'statistics';
+  let pendingRoundState = null;
 
   const demoDevice = {
     device_id: 'AFK-001',
@@ -364,24 +365,54 @@
           : 'Change Map and Launch Game select the matching starting macro.');
     } else if (live) {
       els.xboxInstruction.innerHTML = '<strong>WAITING FOR VIDEO:</strong> the live frame is stale or the cursor is uncertain. '
-        + 'Adjust the view or stop broadcasting to choose the starting cursor manually.';
+        + 'Adjust the view or stop broadcasting before using the no-video confirmation.';
     } else {
-      els.xboxInstruction.innerHTML = '<strong>MANUAL CURSOR MODE:</strong> select the actual Xbox cursor position below '
-        + 'before changing maps or launching.';
+      els.xboxInstruction.innerHTML = '<strong>NO VERIFIED VIDEO:</strong> Map Change and Launch will ask whether players '
+        + 'used in-game Ready Up for the previous round. Answer only if you know the menu state.';
     }
     if (device) setButtonBusy(Boolean(device.active_command));
   }
 
-  function setManualCursorStart(value) {
-    manualCursorStart = value === 'options' ? 'options' : 'statistics';
-    els.cursorStartStatistics.classList.toggle('selected', manualCursorStart === 'statistics');
-    els.cursorStartOptions.classList.toggle('selected', manualCursorStart === 'options');
+  function explain(text) {
+    els.contextHelp.textContent = text;
   }
 
-  function commandAction(base) {
-    if (videoAssistReady || manualCursorStart === 'statistics') return base;
-    return base + '_from_options';
+  function confirmRoundState(actionLabel) {
+    if (pendingRoundState || !els.roundStateDialog.showModal) return Promise.resolve(null);
+    els.roundStateAction.textContent = actionLabel;
+    els.roundStateDialog.returnValue = '';
+    return new Promise((resolve) => {
+      pendingRoundState = resolve;
+      els.roundStateDialog.showModal();
+    });
   }
+
+  function actionForOrigin(base, origin) {
+    return origin === 'options' ? base + '_from_options' : base;
+  }
+
+  document.addEventListener('pointerover', (event) => {
+    const target = event.target.closest && event.target.closest('[data-tip]');
+    if (target) explain(target.dataset.tip);
+  });
+  document.addEventListener('focusin', (event) => {
+    const target = event.target.closest && event.target.closest('[data-tip]');
+    if (target) explain(target.dataset.tip);
+  });
+  document.addEventListener('click', (event) => {
+    const target = event.target.closest && event.target.closest('[data-tip]');
+    if (target) explain(target.dataset.tip);
+  });
+  els.roundStateDialog.querySelectorAll('[data-round-state]').forEach((button) => {
+    button.addEventListener('click', () => els.roundStateDialog.close(button.dataset.roundState));
+  });
+  els.roundStateDialog.addEventListener('close', () => {
+    if (pendingRoundState) pendingRoundState(
+      ['statistics', 'options'].includes(els.roundStateDialog.returnValue)
+        ? els.roundStateDialog.returnValue : null
+    );
+    pendingRoundState = null;
+  });
 
   function renderCursorDetection(detection, ageSeconds = Infinity) {
     const cursor = String(detection && detection.cursor || 'unknown');
@@ -817,6 +848,9 @@
       const isSelected = commandMap === selectedMap;
       if (isCurrent) button.classList.add('current');
       else if (isSelected) button.classList.add('selected');
+      button.dataset.tip = isCurrent
+        ? slot.label + ' is recorded as current on the dongle. Use Correct current map if that record is wrong.'
+        : 'Select ' + slot.label + '. Change Map sends the macro; Correct current map only updates the saved position.';
       const strong = document.createElement('strong');
       strong.textContent = slot.slot + '. ' + slot.label;
       const small = document.createElement('small');
@@ -853,7 +887,10 @@
       ? previousSelectedMap
       : '';
     correctionMode = sameDevice ? previousCorrectionMode : false;
-    if (!sameDevice) renderMapDetection(null);
+    if (!sameDevice) {
+      renderCursorDetection(null);
+      renderMapDetection(null);
+    }
     const online = Boolean(device && device.online);
     const controlIsBlackArrow = Boolean(device && device.game_profile === 'rsba');
     const displayMode = mapDisplayMode();
@@ -917,6 +954,9 @@
   function selectMap(name) {
     if (!device || device.active_command) return;
     selectedMap = name;
+    explain(correctionMode
+      ? 'Record ' + mapLabelFor(name) + ' as current without pressing Xbox buttons.'
+      : 'Selected ' + mapLabelFor(name) + '. Press Change Map to run the menu sequence.');
     renderMaps();
   }
 
@@ -932,7 +972,7 @@
     els.correctCurrent.textContent = correctionMode ? 'Cancel correction' : 'Correct current map';
     els.modeNote.textContent = correctionMode
       ? 'Correction mode only updates the dongle’s saved current-map position. It does not press buttons on the Xbox.'
-      : 'Current map is green. Choose another map, then press Change Map. There is no extra confirmation popup.';
+      : 'Current map is green. Choose another map, then press Change Map. Without verified video, confirm the previous round state first.';
     setButtonBusy(Boolean(device && device.active_command));
   }
 
@@ -1162,9 +1202,6 @@
     }
   });
 
-  els.cursorStartStatistics.addEventListener('click', () => setManualCursorStart('statistics'));
-  els.cursorStartOptions.addEventListener('click', () => setManualCursorStart('options'));
-
   els.correctCurrent.addEventListener('click', () => {
     correctionMode = !correctionMode;
     selectedMap = '';
@@ -1204,23 +1241,26 @@
   });
 
   els.launchGame.addEventListener('click', async () => {
-    if (!device || device.active_command || correctionMode) return;
+    if (!device || device.active_command || correctionMode || videoAssistBlocked) return;
+    const deviceId = device.device_id;
+    const origin = videoAssistReady ? 'video' : await confirmRoundState('Launch game');
+    if (!origin || !device || device.device_id !== deviceId || device.active_command) return;
     if (demo) {
-      showNotice('Demo: dongle completed the launch sequence and returned to Statistics.', 'success');
+      showNotice('Demo: launch using ' + (origin === 'video' ? 'verified video' : origin) + '.', 'success');
       return;
     }
     setButtonBusy(true);
     try {
       const result = await api('/v1/web/commands/queue', {
-        device_id: device.device_id,
-        action: commandAction('launch_game'),
+        device_id: deviceId,
+        action: actionForOrigin('launch_game', origin),
         target_map: ''
       });
       const assist = result.video_assist || {};
       showNotice(
         assist.mode === 'automatic'
           ? 'Video verified ' + String(assist.cursor || '').replace('_', ' ') + '; the correct launch macro was queued.'
-          : 'Launch command queued using the selected manual cursor position.',
+          : 'Launch queued assuming the cursor started on ' + origin + '.',
         'busy'
       );
       await loadDevice(device.device_id);
@@ -1231,7 +1271,13 @@
   });
 
   els.changeMap.addEventListener('click', async () => {
-    if (!device || !selectedMap || device.active_command) return;
+    if (!device || !selectedMap || device.active_command || (videoAssistBlocked && !correctionMode)) return;
+    const deviceId = device.device_id;
+    const target = selectedMap;
+    const origin = correctionMode ? 'correction'
+      : (videoAssistReady ? 'video' : await confirmRoundState('Change map to ' + mapLabelFor(target)));
+    if (!origin || !device || device.device_id !== deviceId || device.active_command
+        || selectedMap !== target) return;
     if (demo) {
       demoDevice.current_map = selectedMap;
       device.current_map = selectedMap;
@@ -1246,19 +1292,19 @@
       renderDevice({...device});
       return;
     }
-    const action = correctionMode ? 'correct_current_map' : commandAction('change_map');
+    const action = correctionMode ? 'correct_current_map' : actionForOrigin('change_map', origin);
     setButtonBusy(true);
     try {
       const result = await api('/v1/web/commands/queue', {
-        device_id: device.device_id,
+        device_id: deviceId,
         action,
-        target_map: selectedMap
+        target_map: target
       });
       showNotice(
         !correctionMode
           ? ((result.video_assist || {}).mode === 'automatic'
             ? 'Video verified ' + String(result.video_assist.cursor || '').replace('_', ' ') + '; the correct map macro was queued for ' + mapLabelFor(result.target_map) + '.'
-            : 'Map command queued using the selected manual cursor position for ' + mapLabelFor(result.target_map) + '.')
+            : 'Map command queued from assumed ' + origin + ' for ' + mapLabelFor(result.target_map) + '.')
           : 'Current-map correction queued.',
         'busy'
       );

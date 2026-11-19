@@ -96,6 +96,15 @@
     .cursor-fallback span { color:#e7d29b; font:12px/1.35 Consolas,'Courier New',monospace; margin-right:auto; }
     .cursor-fallback .btn { min-height:36px; padding:7px 10px; font-size:12px; }
     .cursor-fallback .selected { color:#061007; background:var(--green); border-color:var(--green); }
+    .context-help { margin:0 0 16px; padding:10px 12px; border:1px solid #385339; background:#0d190e; color:var(--green2); font-size:13px; line-height:1.45; }
+    .confirm-dialog { width:min(480px,calc(100% - 28px)); max-height:calc(100vh - 32px); overflow:auto; border:1px solid #8a6a20; background:#0b120b; color:var(--text); padding:22px; box-shadow:0 18px 60px #000; }
+    .confirm-dialog::backdrop { background:rgba(0,0,0,.78); }
+    .confirm-dialog h2 { font-size:20px; }
+    .confirm-dialog p { color:#d8e5d5; }
+    .confirm-dialog .choices { display:grid; gap:9px; }
+    .confirm-dialog .choices .btn { width:100%; display:block; text-align:left; }
+    .confirm-dialog .choices small { display:block; color:var(--muted); font-weight:400; }
+    .confirm-dialog .cancel { margin-top:10px; }
     .assist-grid { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr); gap:16px; margin-top:16px; }
     .assist-panel h2 { margin-bottom:6px; }
     .assist-panel > p { color:var(--muted); }
@@ -218,20 +227,19 @@
 
           <section class="panel">
             <p class="instruction" id="xbox-instruction"><strong>Before changing maps or launching:</strong> the saved order must match the Xbox map list exactly. A verified live video feed selects the correct macro automatically.</p>
+            <p class="context-help" id="context-help" aria-live="polite">Hover, focus, or tap a control for a quick explanation. Choose a map to begin.</p>
             <div class="cursor-fallback" id="cursor-fallback">
-              <span>NO VERIFIED VIDEO // SELECT THE XBOX CURSOR POSITION</span>
-              <button class="btn secondary selected" id="cursor-start-statistics" type="button">Statistics</button>
-              <button class="btn secondary" id="cursor-start-options" type="button">Options / after player launch</button>
+              <span>NO VERIFIED VIDEO // Map Change and Launch will ask whether players previously used in-game Ready Up.</span>
             </div>
             <div id="map-empty" class="empty">Choose an authorized dongle to load its maps.</div>
             <div id="map-controls" class="hidden">
               <div class="map-grid" id="map-grid" aria-label="Rainbow Six 3 map list"></div>
               <div class="action-tray">
-                <button class="btn primary" id="change-map" type="button" disabled>Select a map</button>
-                <button class="btn launch" id="launch-game" type="button">Launch game</button>
-                <button class="btn secondary" id="correct-current" type="button">Correct current map</button>
+                <button class="btn primary" id="change-map" type="button" disabled data-tip="Select a map first. With verified video the cursor sets the macro; without video, you will confirm the previous round state.">Select a map</button>
+                <button class="btn launch" id="launch-game" type="button" data-tip="Launch the round. With no verified video, answer the Ready Up question before the macro runs.">Launch game</button>
+                <button class="btn secondary" id="correct-current" type="button" data-tip="Record the map already on the Xbox without pressing any game buttons.">Correct current map</button>
               </div>
-              <p class="mode-note" id="mode-note">Current map is green. Choose another map, then press Change Map. There is no extra confirmation popup.</p>
+              <p class="mode-note" id="mode-note">Current map is green. Choose another map, then press Change Map. Without verified video, confirm the previous round state first.</p>
             </div>
           </section>
         </div>
@@ -247,15 +255,15 @@
             </div>
             <canvas class="hidden" id="broadcast-canvas"></canvas>
             <div class="assist-actions">
-              <button class="btn secondary" id="start-camera" type="button">Broadcast camera</button>
-              <button class="btn secondary" id="start-screen" type="button">Broadcast screen</button>
+              <button class="btn secondary" id="start-camera" type="button" data-tip="Share a camera view of the Xbox menu for cursor and map recognition.">Broadcast camera</button>
+              <button class="btn secondary" id="start-screen" type="button" data-tip="Share a display or capture-card window for the clearest cursor and map reading.">Broadcast screen</button>
               <button class="btn danger hidden" id="stop-broadcast" type="button">Stop broadcast</button>
               <span class="live-badge" id="video-live">VIDEO OFFLINE</span>
-              <span class="cursor-badge unknown" id="cursor-detection">CURSOR // NO VIDEO</span>
-              <span class="cursor-badge unknown" id="map-detection">SCREEN MAP // NO VIDEO</span>
-              <button class="btn secondary hidden" id="sync-screen-map" type="button" disabled>Update saved map</button>
+              <span class="cursor-badge unknown" id="cursor-detection" data-tip="A fresh 90% or better reading lets the site choose the starting-position macro.">CURSOR // NO VIDEO</span>
+              <span class="cursor-badge unknown" id="map-detection" data-tip="The screen map is compared to the dongle's saved map; it never changes the saved map on its own.">SCREEN MAP // NO VIDEO</span>
+              <button class="btn secondary hidden" id="sync-screen-map" type="button" disabled data-tip="Save the map seen on screen to the dongle without pressing Xbox buttons.">Update saved map</button>
             </div>
-            <p class="mode-note">With a fresh 90%+ cursor result, the relay selects the starting-position macro when you press a command. Setup and the other menu rows require the menu-position dongle firmware. When the screen map differs from the saved map, use the adjacent update button to record it on the dongle without pressing Xbox buttons. The sequence still runs on the dongle without checking each button press. Without live video, choose the starting cursor manually above. Only authorized users can upload or view frames. Nothing is recorded by default.</p>
+            <p class="mode-note">With a fresh 90%+ cursor result, the relay selects the starting-position macro when you press a command. Setup and the other menu rows require the menu-position dongle firmware. When the screen map differs from the saved map, use the adjacent update button to record it on the dongle without pressing Xbox buttons. The sequence still runs on the dongle without checking each button press. Without verified video, the command asks whether the previous round was launched by players through in-game Ready Up. Only authorized users can upload or view frames. Nothing is recorded by default.</p>
           </section>
 
           <section class="panel assist-panel" id="manual-panel">
@@ -343,6 +351,17 @@
     </main>
     <footer><span>CREATED BY MEATMAN AND SHREK</span><a href="../index.html">Back to MeatMan Mods</a></footer>
   </div>
-  <script src="afk-site.js?v=20261118-local-video1"></script>
+  <dialog class="confirm-dialog" id="round-state-dialog" aria-labelledby="round-state-title">
+    <h2 id="round-state-title">Confirm the Xbox menu state</h2>
+    <p><strong id="round-state-action"></strong></p>
+    <p>After the previous round ended, was it launched by players using the game's in-game Ready Up?</p>
+    <div class="choices">
+      <button class="btn secondary" type="button" data-round-state="options">Yes — players used Ready Up<small>Assume the cursor returned to Options.</small></button>
+      <button class="btn secondary" type="button" data-round-state="statistics">No — use the normal starting state<small>Assume the cursor is on Statistics.</small></button>
+    </div>
+    <button class="btn secondary cancel" type="button" data-round-state="cancel">Cancel</button>
+    <p class="mode-note">If neither state is known, cancel and check the Xbox before sending a macro.</p>
+  </dialog>
+  <script src="afk-site.js?v=20261118-round-state1"></script>
 </body>
 </html>
