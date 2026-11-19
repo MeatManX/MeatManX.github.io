@@ -67,8 +67,12 @@
 
   const params = new URLSearchParams(location.search);
   const demo = params.get('demo') === '1';
-  const requestedDevice = /^AFK-\d{3}$/.test((params.get('device') || '').toUpperCase())
-    ? params.get('device').toUpperCase() : '';
+  const requestedFromLink = (params.get('device') || '').toUpperCase();
+  if (/^AFK-\d{3}$/.test(requestedFromLink)) {
+    sessionStorage.setItem('ogx_afk_requested_device', requestedFromLink);
+  }
+  const requestedDevice = /^AFK-\d{3}$/.test(requestedFromLink)
+    ? requestedFromLink : (sessionStorage.getItem('ogx_afk_requested_device') || '');
   const configuredGateway = root.dataset.gateway || window.OGX_AFK_GATEWAY_URL || '';
   const gateway = configuredGateway.replace(/\/$/, '');
   const sessionKey = 'ogx_afk_web_session_v1';
@@ -93,6 +97,34 @@
   let captureBusy = false;
   let broadcastDeviceId = '';
   let videoObjectUrl = '';
+  let localMirror = null;
+  window.addEventListener('message', (event) => {
+    if (!event.source || !event.data
+        || event.data.type !== 'ogx-afk-mirror-hello') return;
+    let origin;
+    try { origin = new URL(event.origin); } catch (_) { return; }
+    const host = origin.hostname.toLowerCase();
+    const localHost = /^afk-\d{3}\.local$/.test(host)
+      || /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host)
+      || /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host)
+      || /^172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}$/.test(host);
+    const id = String(event.data.device_id || '');
+    const nonce = String(event.data.nonce || '');
+    if (origin.protocol !== 'http:' || !localHost || id !== requestedDevice
+        || (host.endsWith('.local') && host !== id.toLowerCase() + '.local')
+        || !/^AFK-\d{3}$/.test(id) || !/^[a-f0-9]{32}$/.test(nonce)) return;
+    localMirror = {origin: event.origin, source: event.source, deviceId: id, nonce};
+  });
+
+  function mirrorFrame(blob, deviceId, cursor, map) {
+    if (!localMirror || !token || !device
+        || device.device_id !== deviceId || localMirror.deviceId !== deviceId) return;
+    localMirror.source.postMessage({
+      type: 'ogx-afk-mirror-frame', device_id: deviceId,
+      nonce: localMirror.nonce, frame: blob,
+      cursor_detection: cursor, map_detection: map
+    }, localMirror.origin);
+  }
   let videoAssistReady = false;
   let videoAssistBlocked = false;
   let manualCursorStart = 'statistics';
@@ -440,6 +472,7 @@
       }
       const blob = await response.blob();
       if (!device || device.device_id !== deviceId) return;
+      mirrorFrame(blob, deviceId, status.cursor_detection, status.map_detection);
       releaseVideoObjectUrl();
       videoObjectUrl = URL.createObjectURL(blob);
       els.videoView.src = videoObjectUrl;
@@ -499,6 +532,7 @@
         throw new Error(payload.message || payload.error || ('HTTP ' + response.status));
       }
       const payload = await response.json();
+      mirrorFrame(blob, broadcastDeviceId, payload.cursor_detection, payload.map_detection);
       els.videoLive.textContent = 'BROADCASTING';
       els.videoLive.classList.add('on');
       renderCursorDetection(payload.cursor_detection, 0);
