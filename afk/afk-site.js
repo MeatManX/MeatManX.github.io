@@ -64,7 +64,10 @@
     scrollDown: $('scroll-down')
   };
 
-  const demo = new URLSearchParams(location.search).get('demo') === '1';
+  const params = new URLSearchParams(location.search);
+  const demo = params.get('demo') === '1';
+  const requestedDevice = /^AFK-\d{3}$/.test((params.get('device') || '').toUpperCase())
+    ? params.get('device').toUpperCase() : '';
   const configuredGateway = root.dataset.gateway || window.OGX_AFK_GATEWAY_URL || '';
   const gateway = configuredGateway.replace(/\/$/, '');
   const sessionKey = 'ogx_afk_web_session_v1';
@@ -723,7 +726,9 @@
       option.textContent = item.display_name + ' // ' + item.device_id;
       els.deviceSelect.appendChild(option);
     });
-    const wanted = devices.find((item) => item.device_id === previous) || devices[0];
+    const wanted = devices.find((item) => item.device_id === previous)
+      || devices.find((item) => item.device_id === requestedDevice)
+      || devices[0];
     els.deviceSelect.value = wanted.device_id;
     loadDevice(wanted.device_id);
   }
