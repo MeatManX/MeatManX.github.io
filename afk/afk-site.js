@@ -55,6 +55,7 @@
     videoLive: $('video-live'),
     cursorDetection: $('cursor-detection'),
     mapDetection: $('map-detection'),
+    syncScreenMap: $('sync-screen-map'),
     manualStatus: $('manual-status'),
     manualRequest: $('manual-request'),
     manualRevoke: $('manual-revoke'),
@@ -78,6 +79,9 @@
   let device = null;
   let selectedMap = '';
   let correctionMode = false;
+  let screenMapCandidate = '';
+  let screenMapDeviceId = '';
+  let screenMapSyncBusy = false;
   let mapDisplayDirty = false;
   let mapDisplayEditingDevice = '';
   let pollTimer = null;
@@ -367,6 +371,10 @@
 
   function renderMapDetection(detection, ageSeconds = Infinity) {
     const map = ageSeconds <= 3 && detection && detection.map;
+    screenMapCandidate = '';
+    screenMapDeviceId = '';
+    els.syncScreenMap.classList.add('hidden');
+    els.syncScreenMap.disabled = true;
     if (!map) {
       els.mapDetection.className = 'cursor-badge unknown';
       const detail = detection && (detection.raw_text || detection.reason) || '';
@@ -378,6 +386,14 @@
     }
     const saved = String(device && device.current_map || '');
     const same = saved.toLowerCase() === String(map).toLowerCase();
+    const known = mapSlotsFor().some((slot) => slot.command_map === map);
+    if (!same && known && device && !device.active_command) {
+      screenMapCandidate = map;
+      screenMapDeviceId = device.device_id;
+      els.syncScreenMap.textContent = 'Update saved map to ' + (detection.label || map);
+      els.syncScreenMap.disabled = screenMapSyncBusy || !device.online || !device.remote_enabled;
+      els.syncScreenMap.classList.remove('hidden');
+    }
     els.mapDetection.className = 'cursor-badge ' + (same ? 'safe' : 'recovery');
     els.mapDetection.textContent = 'SCREEN MAP // ' + (detection.label || map)
       + (same ? ' · matches saved' : ' · differs from saved');
@@ -737,6 +753,7 @@
     els.changeMap.disabled = busy || (videoAssistBlocked && !correctionMode) || !selectedMap || !device || !device.online || !device.remote_enabled;
     els.launchGame.disabled = busy || videoAssistBlocked || correctionMode || !device || !device.online || !device.remote_enabled;
     els.correctCurrent.disabled = busy || !device;
+    els.syncScreenMap.disabled = busy || screenMapSyncBusy || !screenMapCandidate || !device || !device.online || !device.remote_enabled;
     els.deviceSelect.disabled = busy || !devices.length;
     [...els.mapGrid.querySelectorAll('button')].forEach((button) => {
       button.disabled = busy || button.classList.contains('current');
@@ -802,6 +819,7 @@
       ? previousSelectedMap
       : '';
     correctionMode = sameDevice ? previousCorrectionMode : false;
+    if (!sameDevice) renderMapDetection(null);
     const online = Boolean(device && device.online);
     const controlIsBlackArrow = Boolean(device && device.game_profile === 'rsba');
     const displayMode = mapDisplayMode();
@@ -1117,6 +1135,38 @@
     correctionMode = !correctionMode;
     selectedMap = '';
     renderMaps();
+  });
+
+  els.syncScreenMap.addEventListener('click', async () => {
+    const target = screenMapCandidate;
+    const deviceId = screenMapDeviceId;
+    if (!target || !device || device.device_id !== deviceId
+        || device.active_command || screenMapSyncBusy) return;
+    screenMapSyncBusy = true;
+    els.syncScreenMap.disabled = true;
+    try {
+      if (demo) {
+        demoDevice.current_map = target;
+        renderDevice({...device, current_map: target});
+        showNotice('Demo: saved current map updated to ' + mapLabelFor(target) + '.', 'success');
+      } else {
+        await api('/v1/web/commands/queue', {
+          device_id: deviceId,
+          action: 'correct_current_map',
+          target_map: target
+        });
+        showNotice('Updating the dongle’s saved current map to ' + mapLabelFor(target) + '.', 'busy');
+        await loadDevice(deviceId);
+      }
+    } catch (error) {
+      showNotice(error.message || 'Could not update the saved map.', 'error');
+    } finally {
+      screenMapSyncBusy = false;
+      if (device && device.device_id === deviceId) {
+        els.syncScreenMap.classList.add('hidden');
+        screenMapCandidate = '';
+      }
+    }
   });
 
   els.launchGame.addEventListener('click', async () => {

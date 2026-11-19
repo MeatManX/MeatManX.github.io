@@ -253,8 +253,9 @@
               <span class="live-badge" id="video-live">VIDEO OFFLINE</span>
               <span class="cursor-badge unknown" id="cursor-detection">CURSOR // NO VIDEO</span>
               <span class="cursor-badge unknown" id="map-detection">SCREEN MAP // NO VIDEO</span>
+              <button class="btn secondary hidden" id="sync-screen-map" type="button" disabled>Update saved map</button>
             </div>
-            <p class="mode-note">With a fresh 90%+ cursor result, the relay selects the starting-position macro when you press a command. Setup and the other menu rows require the menu-position dongle firmware. The map label is read separately from the screen and compared with the saved map list; it does not change the dongle's recorded map. The sequence still runs on the dongle without checking each button press. Without live video, choose the starting cursor manually above. Only authorized users can upload or view frames. Nothing is recorded by default.</p>
+            <p class="mode-note">With a fresh 90%+ cursor result, the relay selects the starting-position macro when you press a command. Setup and the other menu rows require the menu-position dongle firmware. When the screen map differs from the saved map, use the adjacent update button to record it on the dongle without pressing Xbox buttons. The sequence still runs on the dongle without checking each button press. Without live video, choose the starting cursor manually above. Only authorized users can upload or view frames. Nothing is recorded by default.</p>
           </section>
 
           <section class="panel assist-panel" id="manual-panel">
@@ -342,6 +343,6 @@
     </main>
     <footer><span>CREATED BY MEATMAN AND SHREK</span><a href="../index.html">Back to MeatMan Mods</a></footer>
   </div>
-  <script src="afk-site.js?v=20261118-local-link1"></script>
+  <script src="afk-site.js?v=20261118-map-sync1"></script>
 </body>
 </html>
