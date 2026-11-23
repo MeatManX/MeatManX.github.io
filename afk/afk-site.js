@@ -391,18 +391,56 @@
     return origin === 'options' ? base + '_from_options' : base;
   }
 
-  document.addEventListener('pointerover', (event) => {
-    const target = event.target.closest && event.target.closest('[data-tip]');
-    if (target) explain(target.dataset.tip);
+  const helpById = {
+    'scroll-up': 'Scroll upward through the AFK page.',
+    'scroll-down': 'Scroll downward through the AFK page.',
+    signin: 'Sign in with Discord to view dongles you own or have been granted access to.',
+    signout: 'End this browser session and stop any video broadcast from this tab.',
+    'device-select': 'Choose which authorized AFK dongle the maps and controls apply to.',
+    'request-code': 'Enter the AFK code printed on a dongle to request access from its owner.',
+    'stop-broadcast': 'Stop sending private frames. The video relay forgets the feed shortly afterward.',
+    'manual-request': 'Ask the dongle owner for temporary manual Xbox button control.',
+    'manual-revoke': 'End the active temporary manual control session.',
+    'map-display-mode': 'Choose how map names appear on the website; this does not change Xbox menu positions.',
+    'map-display-save': 'Save website map labels for the numbered slots of this dongle.',
+    'map-display-reset': 'Restore the original map names reported by the dongle.',
+    'grant-user-id': 'Enter a Discord user ID to grant this dongle access.',
+    'grant-kind': 'Choose permanent, 30-day, or one-use access.',
+    'grant-submit': 'Grant the selected Discord user access to this dongle.'
+  };
+
+  function helpFor(target) {
+    if (!(target instanceof Element)) return '';
+    const control = target.closest('[data-tip],button,input,select,a,.status-row,.video-stage,.panel');
+    if (!control || control === els.contextHelp) return '';
+    if (control.dataset.tip) return control.dataset.tip;
+    if (helpById[control.id]) return helpById[control.id];
+    if (control.matches('[data-manual-button]'))
+      return 'Send one ' + control.dataset.manualButton.toUpperCase()
+        + ' tap during an owner-approved manual control session.';
+    if (control.closest('#request-form')) return 'Send an access request for the entered AFK code.';
+    if (control.closest('#grant-form')) return 'Manage who can use this dongle remotely.';
+    if (control.closest('.map-display-settings')) return 'These display labels stay attached to the dongle’s numbered map slots.';
+    if (control.closest('#manager-panel')) return 'Review map labels and access grants for this dongle.';
+    if (control.closest('.video-stage')) return 'This private video lets the relay read the menu cursor and map.';
+    if (control.closest('.status-row')) return 'The latest status reported by the selected dongle.';
+    if (control.matches('a')) return control.href.includes('discord.com')
+      ? 'Open the AFK setup post on Discord.' : 'Open the linked guide or page.';
+    if (control.matches('button')) return 'Use ' + control.textContent.trim()
+      + ' for this AFK action.';
+    return '';
+  }
+
+  function showHelpFor(target) {
+    const detail = helpFor(target);
+    if (detail) explain(detail);
+  }
+  document.addEventListener('pointermove', (event) => {
+    showHelpFor(document.elementFromPoint(event.clientX, event.clientY));
   });
-  document.addEventListener('focusin', (event) => {
-    const target = event.target.closest && event.target.closest('[data-tip]');
-    if (target) explain(target.dataset.tip);
-  });
-  document.addEventListener('click', (event) => {
-    const target = event.target.closest && event.target.closest('[data-tip]');
-    if (target) explain(target.dataset.tip);
-  });
+  document.addEventListener('focusin', (event) => showHelpFor(event.target));
+  document.addEventListener('pointerdown', (event) => showHelpFor(event.target));
+  document.addEventListener('change', (event) => showHelpFor(event.target));
   els.roundStateDialog.querySelectorAll('[data-round-state]').forEach((button) => {
     button.addEventListener('click', () => els.roundStateDialog.close(button.dataset.roundState));
   });

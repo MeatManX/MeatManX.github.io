@@ -96,7 +96,7 @@
     .cursor-fallback span { color:#e7d29b; font:12px/1.35 Consolas,'Courier New',monospace; margin-right:auto; }
     .cursor-fallback .btn { min-height:36px; padding:7px 10px; font-size:12px; }
     .cursor-fallback .selected { color:#061007; background:var(--green); border-color:var(--green); }
-    .context-help { margin:0 0 16px; padding:10px 12px; border:1px solid #385339; background:#0d190e; color:var(--green2); font-size:13px; line-height:1.45; }
+    .context-help { position:fixed; bottom:12px; left:50%; transform:translateX(-50%); z-index:60; width:min(700px,calc(100vw - 24px)); margin:0; padding:10px 12px; border:1px solid #56845a; background:#0d190e; color:var(--green2); font-size:13px; line-height:1.45; box-shadow:0 7px 28px #000; pointer-events:none; }
     .confirm-dialog { width:min(480px,calc(100% - 28px)); max-height:calc(100vh - 32px); overflow:auto; border:1px solid #8a6a20; background:#0b120b; color:var(--text); padding:22px; box-shadow:0 18px 60px #000; }
     .confirm-dialog::backdrop { background:rgba(0,0,0,.78); }
     .confirm-dialog h2 { font-size:20px; }
@@ -362,6 +362,6 @@
     <button class="btn secondary cancel" type="button" data-round-state="cancel">Cancel</button>
     <p class="mode-note">If neither state is known, cancel and check the Xbox before sending a macro.</p>
   </dialog>
-  <script src="afk-site.js?v=20261118-round-state1"></script>
+  <script src="afk-site.js?v=20261123-help2"></script>
 </body>
 </html>
