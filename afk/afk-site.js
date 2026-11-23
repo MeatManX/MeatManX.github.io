@@ -734,7 +734,7 @@
     els.mapLabelList.classList.toggle('hidden', !translated);
     els.mapDisplayReset.disabled = mode === 'native';
     els.mapDisplayHelp.textContent = mode === 'black_arrow_live'
-      ? 'Enter the Black Arrow Xbox Live map name for each numbered OldBow firmware slot.'
+      ? 'Use this display mapping only for older dongle firmware with legacy numbered map slots.'
       : (mode === 'custom'
         ? 'Enter the custom or modded map name represented by each numbered firmware slot.'
         : 'Use the map names reported by the dongle with no website translation.');
@@ -931,12 +931,8 @@
     }
     const online = Boolean(device && device.online);
     const controlIsBlackArrow = Boolean(device && device.game_profile === 'rsba');
-    const displayMode = mapDisplayMode();
-    const displayName = displayMode === 'black_arrow_live'
-      ? 'Rainbow Six 3: Black Arrow (Xbox Live)'
-      : (displayMode === 'custom'
-        ? 'Custom / Modded Map List'
-        : (controlIsBlackArrow ? 'Rainbow Six 3: Black Arrow' : 'Rainbow Six 3'));
+    const displayName = controlIsBlackArrow
+      ? 'Rainbow Six 3: Black Arrow Revived/Old Bow' : 'Rainbow Six 3';
     const cursorName = 'Statistics';
     els.deviceOnline.innerHTML = '<span class="dot' + (online ? ' online' : '') + '"></span>' + (online ? 'Online' : 'Offline');
     els.remoteEnabled.textContent = device ? (device.remote_enabled ? 'Enabled locally' : 'Disabled locally') : 'Unknown';
