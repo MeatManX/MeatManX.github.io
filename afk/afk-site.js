@@ -61,9 +61,7 @@
     manualRequest: $('manual-request'),
     manualRevoke: $('manual-revoke'),
     manualRequests: $('manual-requests'),
-    remotePad: $('remote-pad'),
-    scrollUp: $('scroll-up'),
-    scrollDown: $('scroll-down')
+    remotePad: $('remote-pad')
   };
 
   const params = new URLSearchParams(location.search);
@@ -392,8 +390,7 @@
   }
 
   const helpById = {
-    'scroll-up': 'Scroll upward through the AFK page.',
-    'scroll-down': 'Scroll downward through the AFK page.',
+
     signin: 'Sign in with Discord to view dongles you own or have been granted access to.',
     signout: 'End this browser session and stop any video broadcast from this tab.',
     'device-select': 'Choose which authorized AFK dongle the maps and controls apply to.',
@@ -886,9 +883,11 @@
       const isSelected = commandMap === selectedMap;
       if (isCurrent) button.classList.add('current');
       else if (isSelected) button.classList.add('selected');
-      button.dataset.tip = isCurrent
+      const mapContext = /\bagora\b/i.test(slot.label)
+        ? 'Agora’s loading screen identifies Athens, Greece. ' : '';
+      button.dataset.tip = mapContext + (isCurrent
         ? slot.label + ' is recorded as current on the dongle. Use Correct current map if that record is wrong.'
-        : 'Select ' + slot.label + '. Change Map sends the macro; Correct current map only updates the saved position.';
+        : 'Select ' + slot.label + '. Change Map sends the macro; Correct current map only updates the saved position.');
       const strong = document.createElement('strong');
       strong.textContent = slot.slot + '. ' + slot.label;
       const small = document.createElement('small');
@@ -1422,13 +1421,6 @@
   els.startCamera.addEventListener('click', () => startBroadcast('camera'));
   els.startScreen.addEventListener('click', () => startBroadcast('screen'));
   els.stopBroadcast.addEventListener('click', stopBroadcast);
-
-  els.scrollUp.addEventListener('click', () => {
-    window.scrollBy({top: -Math.max(260, window.innerHeight * 0.72), behavior: 'smooth'});
-  });
-  els.scrollDown.addEventListener('click', () => {
-    window.scrollBy({top: Math.max(260, window.innerHeight * 0.72), behavior: 'smooth'});
-  });
 
   window.addEventListener('beforeunload', () => {
     stopBroadcast();
