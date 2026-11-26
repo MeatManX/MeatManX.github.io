@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "product": "ogx-dvd-wireless",
+  "releases": [
+    {
+      "version": "v1.0.0-dev.7",
+      "channel": "experimental",
+      "size": 1245172,
+      "sha256": "7de199e0a60f03a5411603a6f361970776417d989ba43f3cb3d2261f25f318b3",
+      "notes": "Hardware-tested development build: mobile layout, saved home Wi-Fi preference with direct AP fallback, successful local OTA."
+    },
+    {
+      "version": "v1.0.0-dev.6",
+      "channel": "experimental",
+      "size": 1245172,
+      "sha256": "344f1202ac4e1accb328265de93a3e9248da5e6512bf77e2fddc7e7b0dedec42",
+      "notes": "Hardware-tested recovery build: stop controller discovery after pairing; reliable AP and remapping."
+    }
+  ]
+}
