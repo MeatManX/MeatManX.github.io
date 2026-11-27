@@ -170,6 +170,52 @@ header:has(.saveCompact:not([hidden])) .brand strong{font-size:clamp(11px,3.4vw,
 
 .axisMode,.geometry{flex:none}.axisMode button,.geometry button{min-height:36px}
 .advancedCheck{display:flex;align-items:center;gap:8px;font-size:13px}.advancedCheck input{width:22px;height:22px;min-height:22px;accent-color:var(--accent)}
+
+/* Dense instrument overview: four inputs on the first page, no extra title rows. */
+.denseMonitor{grid-template-columns:1fr;grid-template-rows:repeat(4,minmax(0,1fr));gap:4px}
+.denseMonitor .inputCard{padding:3px;gap:2px;border-radius:9px}
+.inputCardHeader{display:flex;align-items:center;gap:3px;flex:none;min-width:0}
+.denseMonitor .inputTitle{flex:1;min-width:0;min-height:32px;padding:0 3px;gap:3px}
+.denseMonitor .inputTitle .inputLabel{display:flex;align-items:baseline;flex-wrap:wrap;gap:1px 6px;min-width:0}
+.denseMonitor .inputTitle strong{font-size:13px;white-space:nowrap}
+.denseMonitor .inputTitle small{font-size:10px;white-space:nowrap}
+.denseMonitor .inputCount{font-size:10px;white-space:nowrap;flex:none}
+.denseMonitor .legacyGroup{min-height:32px;min-width:44px;flex:none;padding:2px 5px;font-size:10px}
+.denseMonitor .widgetGrid{gap:3px;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:1fr}
+.denseMonitor .stickWidgets{grid-template-columns:repeat(3,minmax(0,1fr))}
+.denseMonitor .stickWidgets .miniWidget:last-child{grid-column:auto}
+.denseMonitor .miniWidget{padding:2px;gap:1px;min-height:44px;border-radius:6px;overflow:hidden}
+.denseMonitor .widgetName{font-size:11px;line-height:1.08}
+.denseMonitor .widgetValue{font-size:11px;line-height:1.08}
+.denseMonitor .widgetDesc{font-size:9px;line-height:1.08}
+.denseMonitor .widgetPlot{flex:1;min-height:14px;max-height:45px;display:flex;justify-content:center}
+.denseMonitor .widgetPlot svg{height:100%;width:100%;max-height:45px}
+.denseMonitor .widgetPlot .widgetState{font-size:8px;padding:1px 2px}
+.monitorHeading h2{font-size:15px}
+.instrumentTitle{display:flex;align-items:baseline;gap:2px 7px;flex-wrap:wrap;min-width:0}
+.instrumentTitle h2{white-space:nowrap}
+.graphFrame .focusWidgets{left:3px;right:3px;gap:3px;justify-content:flex-end;align-items:center;flex-wrap:nowrap}
+.graphFrame .focusState{gap:2px;min-width:0}
+.graphFrame .focusState small{font-size:9px}
+.graphFrame .focusToggle,.instrumentPanel .graphReset{min-height:36px;font-size:10px;white-space:nowrap;padding:3px 6px}
+.instrumentPanel .graphReset{background:#23242d;border:1px solid var(--line);color:var(--muted)}
+@media(min-width:600px) and (min-height:450px), (orientation:landscape) and (min-width:500px){
+ .denseMonitor{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}
+}
+@media(min-width:850px) and (min-height:600px){
+ .denseMonitor .inputTitle{min-height:44px}
+ .denseMonitor .inputTitle strong{font-size:17px}.denseMonitor .inputTitle small{font-size:11px}
+ .denseMonitor .miniWidget{gap:4px;padding:4px}
+ .denseMonitor .widgetName,.denseMonitor .widgetValue{font-size:14px}
+ .denseMonitor .widgetDesc{font-size:11px}
+ .denseMonitor .widgetPlot,.denseMonitor .widgetPlot svg{max-height:85px}
+}
+@media(max-height:570px){
+ .denseMonitor .inputTitle small{font-size:9px;display:inline}
+ .denseMonitor .widgetDesc{display:none}
+ .denseMonitor .widgetPlot,.denseMonitor .widgetPlot svg{max-height:34px}
+}
+@media(max-width:340px){.denseMonitor .inputTitle small{font-size:9px}.denseMonitor .widgetName{font-size:10px}.denseMonitor .widgetValue{font-size:10px}.denseMonitor .widgetDesc{display:none}}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
@@ -527,11 +573,12 @@ function renderAdjustmentWidget(p,n,j,{interactive=true}={}){
 }
 function renderInputCard(p,n,interactive=true){
  const m=modules[n],mask=StudioV3.mask(StudioV3.decode(p.layers)[m.i]),visible=m.kind==='stick'?3:4,count=widgetSpecs[m.kind].slice(0,visible).filter((_,j)=>widgetModel(p,m,j).on).length;
- return '<section class="inputCard">'+(interactive?'<button class="inputTitle" data-edit-layer="'+n+'" aria-label="Edit '+m.name+'">':'<div class="inputTitle">')+'<span><strong>'+m.name+'</strong><small>'+ (m.kind==='stick'?'Analog movement':'Trigger travel')+'</small></span><span class="inputCount">'+count+'/'+visible+' '+(interactive?'<span aria-hidden="true">›</span>':'')+'</span>'+(interactive?'</button>':'</div>')+'<div class="widgetGrid '+m.kind+'Widgets">'+widgetSpecs[m.kind].slice(0,visible).map((_,j)=>renderAdjustmentWidget(p,n,j,{interactive})).join('')+'</div>'+(deviceMode&&interactive?'<button class="legacyGroup" data-layer="'+n+'" aria-pressed="'+!!mask+'" '+(!editable()?'disabled':'')+'>All adjustments '+(mask?'ON':'OFF')+'</button>':'')+'</section>';
+ const caption=m.kind==='stick'?'Analog movement':'Trigger travel';
+ const title='<span class="inputLabel"><strong>'+m.name+'</strong><small>'+caption+'</small></span><span class="inputCount">'+count+'/'+visible+(interactive?' ›':'')+'</span>';
+ return '<section class="inputCard"><div class="inputCardHeader">'+(interactive?'<button class="inputTitle" data-edit-layer="'+n+'" aria-label="Edit '+m.name+'">'+title+'</button>':'<div class="inputTitle">'+title+'</div>')+(deviceMode&&interactive?'<button class="legacyGroup" data-layer="'+n+'" aria-pressed="'+!!mask+'" aria-label="Toggle all '+m.name+' adjustments" '+(!editable()?'disabled':'')+'>'+(mask?'ON':'OFF')+'</button>':'')+'</div><div class="widgetGrid '+m.kind+'Widgets">'+widgetSpecs[m.kind].slice(0,visible).map((_,j)=>renderAdjustmentWidget(p,n,j,{interactive})).join('')+'</div></section>';
 }
 function renderInputMonitor(p,all=false,interactive=true){
- const ids=[1,2,3,4];
- return '<div class="inputDeck widgetDeck" tabindex="0" aria-label="Swipe through input monitors"><div class="inputSlide monitorSlide">'+ids.slice(0,2).map(n=>renderInputCard(p,n,interactive)).join('')+'</div><div class="inputSlide monitorSlide">'+ids.slice(2).map(n=>renderInputCard(p,n,interactive)).join('')+'</div><div class="inputSlide motorSlide">'+renderMotorMonitor(p,all,interactive)+'</div></div><div class="swipeHint">'+(!interactive?'Saved profile · read-only. ':deviceMode?'Current firmware: adjustments enabled together. ':'Tap widget to enable/bypass · tap input name to edit. ')+'Swipe for more.</div>';
+ return '<div class="inputDeck widgetDeck" tabindex="0" aria-label="Input monitors; swipe for vibration"><div class="inputSlide monitorSlide denseMonitor">'+[1,2,3,4].map(n=>renderInputCard(p,n,interactive)).join('')+'</div><div class="inputSlide motorSlide">'+renderMotorMonitor(p,all,interactive)+'</div></div><div class="swipeHint">'+(!interactive?'Saved profile · read-only. ':deviceMode?'Current firmware: adjustments enabled together. ':'Tap widget to toggle · tap input title to edit. ')+'Swipe for vibration.</div>';
 }
 function renderMotorMonitor(p,all,interactive=true){
  const a=StudioV3.decode(p.layers),m=modules[5],muted=a[22]&&a[23]===0&&a[24]===0;
@@ -604,13 +651,15 @@ function tuningEditor(){
  const p=profile(),a=StudioV3.decode(p.layers);
  if(pane===0)return layerDeck(p,false);
  const n=pane<=4?1:pane<=8?2:pane<=11?3:pane<=14?4:pane===15?5:6,m=modules[n],i=m.i,on=onLayer(p,m,a),sub=pane-m.route;
- let html='<section class="instrumentPanel"><div class="instrumentHeader"><button data-pane="0" class="backInputs" aria-label="All inputs">‹</button><div><h2>'+m.name+'</h2><small>'+m.brand+'</small></div>'+(deviceMode||m.kind==='motor'?'<button data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+(on?'CUSTOM ON':'STOCK')+'</button>':'')+'</div>';
+ const resetButton='<button id="resetLayer" class="graphReset" aria-label="Reset this input" title="Reset all settings for this input" '+(!editable()?'disabled':'')+'>Reset input</button>';
+ const groupToggle='<button class="focusToggle '+(on?'lit':'dim')+'" data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+(on?'Custom ON':'Stock')+'</button>';
+ let html='<section class="instrumentPanel"><div class="instrumentHeader"><button data-pane="0" class="backInputs" aria-label="All inputs">‹</button><div class="instrumentTitle"><h2>'+m.name+'</h2><small>'+m.brand+'</small></div></div>';
 
  if(m.kind==='stick'||m.kind==='trigger'){
  const tabs=m.kind==='stick'?['Response','Dead zones','Limits']:['Response','Travel','Hair trigger'];
  const info=panelInfo[m.kind][sub];
  html+='<div class="row tuneTabs">'+tabs.map((t,k)=>'<button data-pane="'+(m.route+k)+'" aria-pressed="'+(sub===k)+'">'+t+'</button>').join('')+'</div><div class="instrumentIntro"><p><strong>'+info[0]+'</strong> — '+info[1]+'</p></div>';
- const toggles=!deviceMode?'<div class="focusWidgets">'+widgetSpecs[m.kind].map((w,j)=>w.sub===sub?'<div class="focusState">'+(m.kind==='trigger'&&sub===1?'<small>'+w.title+'</small>':'')+focusToggle(p,n,j)+'</div>':'').join('')+'</div>':'';
+ const toggles='<div class="focusWidgets">'+(deviceMode?groupToggle:widgetSpecs[m.kind].map((w,j)=>w.sub===sub?'<div class="focusState">'+(m.kind==='trigger'&&sub===1?'<small>'+w.title+'</small>':'')+focusToggle(p,n,j)+'</div>':'').join(''))+resetButton+'</div>';
  html+='<div class="graphFrame">'+toggles+'<div id="liveGraph" class="graphLarge">'+focusedGraph(p,m,sub)+'</div></div>'+(m.kind==='stick'&&(sub===3||sub===1)?'':'<div class="outputExample" id="outputExample">'+outputExample(p,m,a)+'</div><div class="graphKey"><span>— Applied'+(m.kind==='stick'?' X':'')+'</span>'+(m.kind==='stick'&&(axisEditor||StudioV3.options(p,m.i).x!==StudioV3.options(p,m.i).y)?'<span style="color:#79b4f5">— Y</span>':'')+'<span>┄ Stock</span><span class="storedKey">┈ Stored</span></div>')+(m.kind==='trigger'&&StudioV3.effective(p,i,a).hair?'<small>Hair trigger overrides sensitivity and full-output travel.</small>':'');
  const curve=m.kind==='stick'?p[m.curve]:a[i+3],cf=m.kind==='stick'?m.curve:'a'+(i+3);
  if(sub===0){
@@ -625,9 +674,9 @@ function tuningEditor(){
  else{html+=(deviceMode?'<div class="row"><button data-hair aria-pressed="'+!!a[i+4]+'" '+(!editable()?'disabled':'')+'>Stored hair mode: '+(a[i+4]?'Instant':'Normal')+'</button></div>':'')+sliderField('Simulated trigger press','simulation',simulated,0,100,'Preview only, not a live controller reading.',50);}
 
  }
- else if(m.kind==='motor'){html+='<div class="instrumentIntro"><p><strong>Game vibration</strong> — Adjust how strongly each motor responds to vibration requested by the game.</p></div><div id="liveGraph" class="graphLarge">'+tuningGraph(p,m,true)+'</div>'+sliderField('Strong motor','a23',a[23],0,100,'Scales the left/strong game rumble request.',100)+sliderField('Weak motor','a24',a[24],0,100,'Scales the right/weak game rumble request.',100)+'<small>System feedback and physical motor tests require the device adapter.</small>';}
+ else if(m.kind==='motor'){html+='<div class="instrumentIntro"><p><strong>Game vibration</strong> — Adjust how strongly each motor responds to vibration requested by the game.</p></div><div class="graphFrame"><div class="focusWidgets">'+groupToggle+resetButton+'</div><div id="liveGraph" class="graphLarge">'+tuningGraph(p,m,true)+'</div></div>'+sliderField('Strong motor','a23',a[23],0,100,'Scales the left/strong game rumble request.',100)+sliderField('Weak motor','a24',a[24],0,100,'Scales the right/weak game rumble request.',100)+'<small>System feedback and physical motor tests require the device adapter.</small>';}
  else html+='<div class="card"><div class="graphLarge">'+tuningGraph(p,m,true)+'</div><h3>Physical Guide · hold 1 second</h3><p> Sends LT + RT + Start + Back. The Xbox or game must support reset.</p><small>Turn off to release the Guide shortcut. Protected system chords remain separate.</small></div>';
- return html+'<div class="row"><small id="layerState">'+(on?'Enabled groups affect the output':'Bypassed · changes are stored only')+'</small><button id="resetLayer" '+(!editable()?'disabled':'')+'>Reset this input</button></div></section>';
+ return html+'</section>';
 }
 function bindTuning(){
  const p=profile();
