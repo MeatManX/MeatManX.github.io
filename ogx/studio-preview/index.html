@@ -339,6 +339,33 @@ header .saveSlot .saveCompact{width:58px;min-width:58px;max-width:58px;height:36
 .directGraph .focusToggle{width:64px;min-width:64px;max-width:64px;padding:2px 3px}
 .directGraph .graphReset{width:68px;min-width:68px;max-width:68px;padding:2px 3px}
 @media(max-width:350px){.directGraph .focusToggle{width:58px;min-width:58px;max-width:58px}.directGraph .graphReset{width:62px;min-width:62px;max-width:62px}}
+
+/* Compact utility dashboards follow the same self-contained card language. */
+.utilityHeading{display:flex;align-items:center;justify-content:space-between;flex:none;gap:5px}
+.utilityHeading h2{font-size:17px}.utilityHeading small{font-size:11px}
+.compactAction{min-height:36px;font-size:11px;padding:3px 8px}
+.scopeConnection,.vaultActive,.vaultEdit{display:flex;flex-direction:column;gap:3px;padding:7px;border:1px solid var(--line);border-radius:10px;background:var(--card);min-width:0;flex:none}
+.scopeConnection strong,.vaultTitle strong,.vaultEdit strong{font-size:15px;overflow-wrap:anywhere}
+.scopeConnection small,.vaultTitle small,.vaultEdit small{font-size:10px}
+.scopeGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(62px,1fr);gap:5px;flex:1;min-height:0}
+.scopeCard{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;padding:4px;background:var(--card);border:1px solid var(--line);border-radius:9px;min-width:0;min-height:62px}
+.scopeCardTitle strong{font-size:12px}.scopeValue{font-size:clamp(13px,4vw,21px);font-weight:750;color:var(--accent);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.scopeCard small,.utilityNote{font-size:10px;line-height:1.2;color:var(--muted)}
+.utilityNote{text-align:center;flex:none}
+.vaultTitle,.vaultEdit>div:first-child{display:grid;gap:2px}
+.vaultSummary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:4px;background:transparent;border:0}
+.vaultSummary>div{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;min-height:44px;background:var(--graph);border-radius:6px;padding:2px;gap:2px}
+.vaultSummary small{font-size:9px}.vaultSummary strong{font-size:12px;color:var(--accent)}
+.vaultEdit{flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.vaultEdit .row{flex:1;min-width:140px}.vaultEdit button{font-size:11px;min-height:36px}
+.vaultTools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(44px,1fr);gap:5px;flex:1;min-height:0}
+.vaultTool{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:3px;min-height:44px;background:var(--card);border-color:var(--line)}
+.vaultTool strong{font-size:13px}.vaultTool small{font-size:10px}
+.statusButton[data-strength="1"] .bars rect:nth-child(1),.statusButton[data-strength="2"] .bars rect:nth-child(-n+2),.statusButton[data-strength="3"] .bars rect:nth-child(-n+3),.statusButton[data-strength="4"] .bars rect{fill:var(--success)}
+.statusButton[data-strength]:not([data-strength="0"]) .bars{opacity:1}
+.statusButton[data-strength]:not([data-strength="0"]) .bars rect{opacity:.35}
+.statusButton[data-strength="1"] .bars rect:nth-child(1),.statusButton[data-strength="2"] .bars rect:nth-child(-n+2),.statusButton[data-strength="3"] .bars rect:nth-child(-n+3),.statusButton[data-strength="4"] .bars rect{opacity:1}
+@media(orientation:landscape) and (max-height:450px){.scopeGrid,.vaultTools{grid-template-columns:repeat(3,minmax(0,1fr))}.vaultEdit{padding:3px}.vaultSummary>div{min-height:32px}}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
@@ -532,15 +559,15 @@ function syncDeviceChrome(){
  const b=$('status'),state=departed||deviceError?'offline':deviceStatus?'online':'unknown';
  const description=departed?'Reconnection required':deviceError?'Connection unavailable':deviceStatus?(deviceStatus.ap?'Direct Wi-Fi':'Home Wi-Fi')+' · '+deviceStatus.ip:'Connecting to dongle…';
  // Bars represent no measured strength yet. The dot indicates only API reachability.
- b.dataset.link=state;b.classList.toggle('statusError',state==='offline');
- $('linkText').textContent=description+' · Signal strength not measured';
+ b.dataset.link=state;const r=deviceStatus?.wifi_rssi_dbm;b.dataset.strength=state==='online'&&Number.isFinite(r)?r>=-55?'4':r>=-67?'3':r>=-75?'2':'1':'0';b.classList.toggle('statusError',state==='offline');
+ $('linkText').textContent=description+(Number.isFinite(r)?' · Dongle to router '+r+' dBm':' · Signal strength not measured');
  b.title=$('linkText').textContent;b.setAttribute('aria-label',description+'; open connection details');
  b.disabled=busy||departed;b.onclick=connectionDetails;
 }
 function connectionDetails(){
  if(!deviceMode||busy||departed)return;
  const d=deviceStatus||{};
- modal('Connection details','<p>'+esc(deviceError?'Status request failed: '+deviceError:'Last reported device status')+'</p><small>'+esc(d.ip||'IP unavailable')+' · '+esc(d.version||'Version unavailable')+'</small><small>Signal strength is not measured yet. The green dot means the dongle status API responded, not a measured Wi-Fi level.</small>'+(deviceError?'<p class="muted">Displayed values may be stale. Retry the status request; if necessary, re-enter configuration mode on the controller.</p>':'')+(operationStatus?'<p>'+esc(operationStatus)+'</p>':''),[{label:'Close'},{label:'Retry status',primary:true,run:()=>refreshDevice({initial:!ready,profileCheck:ready})}]);
+ modal('Connection details','<p>'+esc(deviceError?'Status request failed: '+deviceError:'Last reported device status')+'</p><small>'+esc(d.ip||'IP unavailable')+' · '+esc(d.version||'Version unavailable')+'</small><small>'+(Number.isFinite(d.wifi_rssi_dbm)?'Dongle to router: '+d.wifi_rssi_dbm+' dBm. Not the phone’s signal.':'Signal strength not measured. The green dot indicates API reachability.')+'</small>'+(deviceError?'<p class="muted">Displayed values may be stale. Retry the status request; if necessary, re-enter configuration mode on the controller.</p>':'')+(operationStatus?'<p>'+esc(operationStatus)+'</p>':''),[{label:'Close'},{label:'Retry status',primary:true,run:()=>refreshDevice({initial:!ready,profileCheck:ready})}]);
 }
 async function refreshDevice({initial=false,profileCheck=false}={}){
  if(!deviceMode||busy||departed||refreshing)return;
@@ -582,21 +609,32 @@ function leaveGaming(){afterDraft(()=>transition('/api/exit',undefined,'Return-t
 function networkView(){
  const d=deviceStatus||{},mode=d.ap===undefined?'Unknown':d.ap?'Direct AP':'Home Wi-Fi',head='<div class="heading"><h2>MeatLink™</h2><small>'+esc(networkPanes[pane])+'</small></div>';
  if(pane===0)return head+'<div class="hero"><small>NETWORK MODE</small><strong>'+mode+'</strong><span>'+esc(d.ip||'Not available')+'</span></div><div class="tiles"><button class="tile" data-device-pane="1"><strong>Direct Wi-Fi</strong><small>Local access</small></button><button class="tile" data-device-pane="2"><strong>Home Wi-Fi</strong><small>'+(d.saved?'Network saved':'No saved network')+'</small></button></div><small>'+(d.prefer_home===undefined?'Preference unavailable':d.prefer_home?'Home Wi-Fi preferred':'Direct Wi-Fi preferred')+'</small>';
- if(pane===1)return head+'<div class="card"><h3>Direct configuration</h3><p>Join the OGX-DVD Wi-Fi network and open <b>192.168.4.1</b>. Internet access is not required for local settings.</p><small>Switching networks can disconnect this page.</small></div><button id="useDirect">'+(d.ap?'Prefer direct Wi-Fi':'Switch to direct Wi-Fi')+'</button>';
+ if(pane===1)return head+'<div class="card"><h3>Direct configuration</h3><p>Join the OGX-DVD Wi-Fi network and open <b>192.168.4.1</b>. Internet access is not required for local settings.</p><small>Switching networks can disconnect this page.</small><button id="useDirect">'+(d.ap?'Prefer direct Wi-Fi':'Switch to direct Wi-Fi')+'</button></div>';
  if(pane===2){const items=networkCache.slice(networkPage*3,networkPage*3+3);return head+'<div class="row"><button id="scanCache">Load cached networks</button><button id="manualWifi">Enter manually</button></div><div class="list">'+items.map((n,i)=>'<button data-network="'+(networkPage*3+i)+'"><strong>'+esc(n.ssid)+'</strong><br><small>'+n.rssi+' dBm · '+(n.secure?'Secured':'Open')+'</small></button>').join('')+'</div>'+(netLoaded&&!items.length?'<small>No cached networks. Enter the name manually.</small>':'')+'<div class="row"><button id="netPrev" '+(!networkPage?'disabled':'')+'>‹</button><small>'+ (networkPage+1)+' / '+Math.max(1,Math.ceil(networkCache.length/3))+'</small><button id="netNext" '+((networkPage+1)*3>=networkCache.length?'disabled':'')+'>›</button></div><button id="connectSaved" '+(!d.saved?'disabled':'')+'>Connect saved network</button><small>Cached scan from configuration startup, not a live rescan.</small>';}
  if(pane===3)return head+'<div class="card"><small>LOCAL HOSTNAME</small><strong>'+esc(d.short_name||d.hostname||'Unavailable')+'</strong><small>Unique fallback: '+esc(d.hostname||'Unavailable')+'</small><small>'+(d.mdns?'mDNS advertised':'mDNS unavailable')+'</small></div><div class="card"><small>IP ADDRESS</small><strong class="metric">'+esc(d.ip||'Unknown')+'</strong></div><small>Use the same network. If .local does not resolve, use the IP address.</small>';
  return head+'<div class="card"><small>Free ESP32 heap</small><strong class="metric">'+(Number.isFinite(d.heap)?Math.round(d.heap/1024)+' KiB':'Unknown')+'</strong><small>Auto-off countdown: '+(Number.isFinite(d.idle_seconds)?d.idle_seconds+' s':'Unknown')+'</small></div><button id="refreshStatus">Refresh status</button><small>Wi-Fi is off at normal DVD boot. No credential changes are made by viewing this screen.</small>';
 }
+// Status metrics use the last completed firmware measurement window, not packet-loss or latency estimates.
+function scopeMetrics(d,stale=false){
+ const t=d.scope||{},valid=!!t.connected&&t.sampled===true&&Number.isFinite(t.window_ms)&&t.window_ms>0&&Number.isFinite(t.reports)&&t.reports>=0;
+ const ms=v=>Number.isFinite(v)&&v>0?(v/1000).toFixed(2)+' ms':'Unavailable';
+ const val=(v,suffix='')=>Number.isFinite(v)?v+suffix:'Unavailable';
+ return {link:t.connected?String(t.model||'Gamepad'):d.scope?'Disconnected':'Not measured',transport:t.connected?String(t.transport||'Unknown'):'Unavailable',battery:t.connected&&Number.isFinite(t.battery_pct)&&t.battery_pct>=0&&t.battery_pct<=100?t.battery_pct+'%':'Unavailable',rate:valid?(t.reports*1000/t.window_ms).toFixed(1)+' Hz':'Unavailable',mean:valid&&t.intervals>0?ms(t.mean_us):'Unavailable',min:valid&&t.intervals>0?ms(t.min_us):'Unavailable',max:valid&&t.intervals>0?ms(t.max_us):'Unavailable',ble:t.connected&&t.transport==='BLE'?ms(t.ble_interval_us):'Unavailable',wifi:val(d.wifi_rssi_dbm,' dBm'),heap:Number.isFinite(d.heap)?Math.round(d.heap/1024)+' KiB':'Unavailable',idle:val(d.idle_seconds,' s'),state:stale?'Stale · retry status':!d.scope?'Legacy firmware · limited metrics':!t.connected?'No ready controller':valid?'Last completed sample':'Waiting for sample'};
+}
+function scopeCard(label,value,detail,kind='',target=null){
+ const inner='<div class="scopeCardTitle"><strong>'+esc(label)+'</strong></div><div class="scopeValue">'+esc(value)+'</div><small>'+esc(detail)+'</small>';
+ return target===null?'<div class="scopeCard '+kind+'">'+inner+'</div>':'<button class="scopeCard '+kind+'" data-device-pane="'+target+'">'+inner+'</button>';
+}
 function diagView(){
- const d=deviceStatus||{};
- const head='<div class="heading"><h2>SignalScope™</h2><small>'+diagPanes[pane]+'</small></div>';
- if(pane===0)return head+'<div class="card"><small>DEVICE STATUS</small><strong>'+esc(d.version||'Unavailable')+'</strong><small>'+esc(d.ip||'Unknown')+'</small></div><div class="tiles"><div class="card"><small>Controller battery</small><strong>Not measured</strong></div><div class="card"><small>Bluetooth RSSI</small><strong>Not measured</strong></div><div class="card"><small>BLE interval</small><strong>Not measured</strong></div><div class="card"><small>Observed reports</small><strong>Not measured</strong></div></div>';
- if(pane===1)return head+'<div class="card"><small>Free ESP32 heap</small><strong class="metric">'+(Number.isFinite(d.heap)?Math.round(d.heap/1024)+' KiB':'Unknown')+'</strong></div><div class="card"><small>Configuration idle countdown</small><strong class="metric">'+(Number.isFinite(d.idle_seconds)?d.idle_seconds+' s':'Unknown')+'</strong></div><button id="refreshStatus">Refresh status</button>';
- return head+'<div class="card"><h3>Instrumentation pending</h3><p>'+(pane===2?'Controller model, battery, Bluetooth signal and report timing are not exposed by this firmware API.':'Input-to-I2C-write timing and write errors require new firmware instrumentation. This is not end-to-end latency.')+'</p></div>';
+ const d=deviceStatus||{},m=scopeMetrics(d,!!deviceError),head='<div class="heading utilityHeading"><div><h2>SignalScope™</h2><small>'+esc(diagPanes[pane])+'</small></div><button id="refreshStatus" class="compactAction">Refresh</button></div>';
+ if(pane===0)return head+'<div class="scopeConnection"><strong>'+esc(m.link)+'</strong><small>'+esc(m.transport+' · '+m.state)+'</small></div><div class="scopeGrid">'+scopeCard('Battery',m.battery,'Controller-reported', '',2)+scopeCard('Input reports',m.rate,'Decoded callbacks / s','',2)+scopeCard('Report interval',m.mean,'Mean within sample','',2)+scopeCard('BLE interval',m.ble,'Negotiated radio interval','',2)+scopeCard('Home Wi-Fi',m.wifi,'Dongle to router','',1)+scopeCard('Free memory',m.heap,'ESP32 heap','',1)+'</div><small class="utilityNote">Bluetooth RSSI and Xbox handoff timing are not yet measured.</small>';
+ if(pane===1)return head+'<div class="scopeGrid">'+scopeCard('Free memory',m.heap,'ESP32 heap')+scopeCard('Wi-Fi auto-off',m.idle,'Configuration idle timer')+scopeCard('Home Wi-Fi',m.wifi,'Router RSSI; unavailable in direct AP')+scopeCard('Address',d.ip||'Unavailable',d.ap?'Direct AP':'Home Wi-Fi')+'</div><small class="utilityNote">'+esc(m.state)+'</small>';
+ if(pane===2)return head+'<div class="scopeConnection"><strong>'+esc(m.link)+'</strong><small>'+esc(m.transport+' · '+m.state)+'</small></div><div class="scopeGrid">'+scopeCard('Battery',m.battery,'Controller-reported')+scopeCard('Input reports',m.rate,'Callbacks per second')+scopeCard('Mean interval',m.mean,'Within sample')+scopeCard('Shortest',m.min,'Within sample')+scopeCard('Longest',m.max,'Within sample')+scopeCard('BLE interval',m.ble,'Not input latency')+'</div><small class="utilityNote">Report cadence may vary with activity. It is not packet loss, polling rate or end-to-end latency. Bluetooth RSSI is not measured.</small>';
+ return head+'<div class="card"><h3>Xbox handoff</h3><p>I2C queue/write timing and errors are not measured yet. No end-to-end latency estimate is available.</p></div>';
 }
 function firmwareView(){
  const o=otaStatus||{},d=deviceStatus||{},r=releaseList[releaseIndex],head='<div class="heading"><h2>MeatLink™ updates</h2><small>'+firmwarePanes[pane]+'</small></div>';
- if(pane===0)return head+'<div class="hero"><small>INSTALLED FIRMWARE</small><strong>'+esc(d.version||'Unknown')+'</strong><span>OGX DVD · signed update target</span></div><div class="card"><small>Running partition</small><strong>'+esc(o.running_partition||'Unknown')+'</strong><small>OTA state: '+esc(o.last_result||'Unknown')+'</small><small>'+(o.pending_validation?'Validation pending':'')+'</small></div><button id="checkUpdates">Check for updates</button><small>Hosted HTTPS catalog; signed images verified by dongle. Local upload is HTTP.</small>';
+ if(pane===0)return head+'<div class="hero"><small>INSTALLED FIRMWARE</small><strong>'+esc(d.version||'Unknown')+'</strong><span>OGX DVD · signed update target</span></div><div class="card"><small>Running partition</small><strong>'+esc(o.running_partition||'Unknown')+'</strong><small>OTA state: '+esc(o.last_result||'Unknown')+'</small><small>'+(o.pending_validation?'Validation pending':'')+'</small><button id="checkUpdates">Check for updates</button><small>Signed images verified by dongle. Local upload is HTTP.</small></div>';
  if(pane===1||pane===2){if(!r)return head+'<div class="card"><p>No catalog loaded.</p><button id="checkUpdates">Check for updates</button></div>';
  const cmp=versionParts(d.version)?compareVersion(r.version,d.version):0,label=cmp===0?'Installed':cmp>0?'Install':'Downgrade';
  return head+'<div class="card"><small>'+esc(r.channel)+'</small><strong class="metric">'+esc(r.version)+'</strong><small>'+Math.round(r.size/1024)+' KiB · '+label+'</small><div class="releaseNotes">'+esc(r.notes)+'</div></div><div class="row"><button id="releasePrev" '+(!releaseIndex?'disabled':'')+'>‹</button><small>'+ (releaseIndex+1)+' / '+releaseList.length+'</small><button id="releaseNext" '+(releaseIndex+1>=releaseList.length?'disabled':'')+'>›</button></div><button id="installRelease" '+(cmp===0?'disabled':'')+'>'+label+'</button>';}
@@ -646,7 +684,7 @@ function bindDevice(){
  bind('useDirect',()=>afterDraft(()=>transition('/wifi/local',undefined,deviceStatus?.ap?'Direct Wi-Fi is now preferred.':'Switch accepted. Join OGX-DVD and reopen 192.168.4.1.',!!deviceStatus?.ap)));
  bind('manualWifi',()=>wifiDialog());bind('scanCache',scanCache);bind('connectSaved',()=>afterDraft(()=>transition('/wifi/connect',undefined,'Connecting to saved network. Rejoin it and reopen the dongle.')));
  bind('netPrev',()=>{networkPage--;render();});bind('netNext',()=>{networkPage++;render();});
- bind('refreshStatus',()=>refreshDevice({profileCheck:true}));bind('checkUpdates',checkCatalog);
+ bind('refreshStatus',()=>refreshDevice({profileCheck:deck!=='diagnostics'}));bind('checkUpdates',checkCatalog);
  bind('releasePrev',()=>{releaseIndex--;render();});bind('releaseNext',()=>{releaseIndex++;render();});
  bind('installRelease',()=>confirmInstall(releaseList[releaseIndex]));bind('recoveryFile',()=>{$('firmwareFile').value='';$('firmwareFile').click();});
 }
@@ -974,7 +1012,11 @@ function tap(i){
 }
 function renderProfiles(){
  const p=profile();
- if(pane===0)return '<h2>MeatVault™</h2><div class="hero"><small>'+ (JSON.parse(baseline).active===library.active?'ACTIVE PROFILE':'PROPOSED ACTIVE · SAVE TO APPLY')+'</small><strong>'+esc(library.profiles.find(p=>p.id===library.active).name)+'</strong><span>Editing '+esc(p.name)+'</span></div><div class="card"><h3>'+esc(p.name)+'</h3><small>'+(editable()?'Editable profile':'Protected preset')+'</small><button id="useProfile" '+(library.active===editing?'disabled':'')+'>Use selected profile on save</button><button id="duplicate">Duplicate profile</button></div><div class="row"><button id="library">Browse library</button><button id="activeMonitor">Saved profile monitor</button></div>';
+ if(pane===0){
+  const saved=JSON.parse(baseline),active=saved.profiles.find(x=>x.id===saved.active),t=StudioV3.decode(active.layers),muted=t[22]&&t[23]===0&&t[24]===0,customCount=[0,6,12,17].filter(i=>StudioV3.mask(t[i])).length;
+  return '<div class="heading utilityHeading"><div><h2>MeatVault™</h2><small>Profile management</small></div></div><div class="vaultActive"><div class="vaultTitle"><small>SAVED ACTIVE PROFILE</small><strong>'+esc(active.name)+'</strong></div><button id="activeMonitor" class="vaultSummary" aria-label="Open saved profile monitor"><div><small>Mapping</small><strong>'+(active.custom?'Custom':'Stock')+'</strong></div><div><small>Tuned inputs</small><strong>'+customCount+'/4</strong></div><div><small>Vibration</small><strong>'+(muted?'Muted':t[22]?'Custom':'Stock')+'</strong></div><div><small>Reset</small><strong>'+(active.igr?'On':'Off')+'</strong></div></button></div><div class="vaultEdit"><div><small>EDITING '+(editable()?'· CUSTOM':'· PROTECTED')+'</small><strong>'+esc(p.name)+'</strong></div><div class="row"><button id="useProfile" '+(library.active===editing?'disabled':'')+'>'+ (library.active===editing?(saved.active===editing?'Active':'Pending save'):'Use on save')+'</button><button id="duplicate">Duplicate</button></div></div><div class="vaultTools">'+[['Library','Browse profiles','library',null],['Quick slots','Assign profiles','',2],['Manage','New / rename / delete','',3],['Import','Load profile file','import',null],['Export','Download selected','export',null],['Profile layers','Edit instruments','',4]].map(([title,desc,id,route])=>'<button class="vaultTool" '+(id?'id="'+id+'"':'data-vault-pane="'+route+'"')+'><strong>'+title+'</strong><small>'+desc+'</small></button>').join('')+'</div>';
+ }
+
  if(pane===1){const list=library.profiles.slice(group*3,group*3+3);return '<h2>Profile library · '+library.profiles.length+'/12</h2><div class="list">'+list.map(x=>'<button data-profile="'+x.id+'"><strong>'+esc(x.name)+'</strong><br><small>'+(x.id===editing?'Editing · ':'')+(x.id===library.active?'Selected active · ':'')+(x.id<2?'Protected':'Custom')+'</small></button>').join('')+'</div><div class="row"><button id="groupPrev" '+(!group?'disabled':'')+'>‹</button><span>'+ (group+1) +'/'+Math.ceil(library.profiles.length/3)+'</span><button id="groupNext" '+((group+1)*3>=library.profiles.length?'disabled':'')+'>›</button></div><button id="duplicate">Duplicate selected</button>';}
  if(pane===2)return '<h2>QuadSlot™</h2><div class="slotgrid">'+[0,3,1,2].map(j=>'<button class="card slot slot'+j+'" data-slot="'+j+'"><small>'+['↑','→','↓','←'][j]+' Slot '+(j+1)+'</small><strong>'+esc(library.profiles.find(p=>p.id===library.slots[j])?.name||'Unassigned')+'</strong></button>').join('')+'<div class="slotCenter">✚</div></div><small>Local slot assignments only. Physical Start + Back shortcut is pending firmware integration.</small>';
  if(pane===3)return '<h2>Manage profiles</h2><div class="card"><strong>'+esc(p.name)+'</strong><small>'+(editable()?'Editable':'Protected preset')+'</small></div><div class="tiles"><button id="newProfile" class="tile"><strong>New profile</strong><small>Factory values</small></button><button id="duplicate" class="tile"><strong>Duplicate</strong><small>Copy selected</small></button><button id="rename" class="tile" '+(!editable()?'disabled':'')+'><strong>Rename</strong></button><button id="deleteProfile" class="tile" '+(!editable()?'disabled':'')+'><strong>Delete</strong></button></div><button id="import">Import profile</button>';
@@ -1020,6 +1062,7 @@ function render(){
 
  content.querySelectorAll('[data-key]').forEach(b=>{b.onclick=()=>tap(+b.dataset.key);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap(+b.dataset.key);}};});
  content.querySelectorAll('[data-advanced]').forEach(b=>b.onclick=()=>showTargetPicker(+b.dataset.advanced));
+ content.querySelectorAll('[data-vault-pane]').forEach(b=>b.onclick=()=>go('profiles',+b.dataset.vaultPane));
  content.querySelectorAll('[data-profile]').forEach(b=>b.onclick=()=>{editing=+b.dataset.profile;go('profiles',0);});
  const bind=(id,fn)=>{const e=$(id);if(e)e.onclick=fn;};
  bind('toggleMap',()=>{if(editable()){p.custom=!p.custom;source=null;render();}});
