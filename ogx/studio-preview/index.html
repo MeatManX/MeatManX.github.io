@@ -59,6 +59,37 @@ footer{padding:4px 8px 8px}.saveState{font-size:11px}.primary{min-height:44px}
 }
 @media(max-height:570px){.homeScreen #content{padding:6px}.homeScreen .homeTiles{gap:6px}.homeScreen .homeTiles .tile svg{width:26px;height:26px}}
 @media(orientation:landscape) and (max-height:599px) and (min-width:500px){.homeScreen .homeTiles{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(62px,1fr)}.homeScreen .homeTiles .tile{gap:2px;padding:3px}}
+
+/* Compact controller canvas: cosmetic selector and single remap switch inside card. */
+.mapperCard{flex:1;min-height:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;background:var(--graph);padding:4px;gap:4px}
+.mapperTop{display:flex;justify-content:center;flex:none}
+.skinPicker{display:flex;justify-content:center;gap:3px;max-width:100%}
+.skinPicker button{font-size:11px;min-height:44px;padding:2px 9px;background:transparent;border:1px solid transparent;color:var(--muted)}
+.skinPicker button[aria-pressed=true]{color:var(--text);border-color:var(--accent);background:#38212b}
+.mapperCard .canvas{position:relative;flex:1;min-height:150px;border:0;border-radius:0;background:none;overflow:visible}
+.mapperCard .canvas svg{width:100%;height:100%;max-height:none;position:absolute;inset:0}
+.mapPill{position:absolute;bottom:2%;left:50%;transform:translateX(-50%);min-height:44px;min-width:88px;border-radius:22px;padding:4px 9px;font-size:12px;background:#23242d;color:var(--muted)}
+.mapPill[aria-pressed=true]{background:#4c0e12;border-color:var(--accent);color:var(--text)}
+.mapperHint{display:flex;align-items:center;justify-content:center;gap:4px;flex:none}
+.mapperHint .prompt{min-height:0;text-align:center;font-size:12px}
+.mapperHint .textAction{font-size:11px;min-height:44px;background:transparent;border-color:transparent;color:var(--text);padding:3px 6px}
+.mapLegend{text-align:center;font-size:10px;color:var(--muted)}
+.inputDeck{display:flex;flex:1;min-height:0;min-width:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;touch-action:pan-x;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.inputSlide{flex:0 0 100%;width:100%;min-width:0;scroll-snap-align:start;scroll-snap-stop:always;gap:6px;padding:2px;min-height:0}
+.inputSlide.modulegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));grid-auto-rows:unset}
+.module .moduleTitle{display:flex;align-items:center;justify-content:space-between;min-height:44px;text-align:left;border:0;background:transparent;padding:2px;gap:4px;font-size:13px}
+.module .moduleTitle small{font-size:10px}.module.on .moduleTitle small{color:var(--accent)}
+.module .graphTap{flex:1;min-height:44px}.module .graphTap svg{max-height:115px}
+.motorSlide{display:grid;place-items:center}.motorSlide>.module{width:min(100%,360px);height:min(100%,300px)}
+.swipeHint{text-align:center;font-size:11px;color:var(--muted)}
+.backInputs{flex:0 0 44px}
+.contextual{display:grid;gap:4px}
+@media(max-height:570px){.inputSlide.modulegrid{flex:0 0 100%;grid-auto-rows:unset}.module{padding:5px;gap:2px}.module .graphTap svg{max-height:68px}.module .moduleTitle{font-size:12px}}
+.mapperCard .canvas{container-type:size;display:grid;place-items:center}
+.controllerStage{position:relative;width:min(100%,calc(100cqh * 1.36612));aspect-ratio:500/366;max-height:100%}
+.mapperCard .controllerStage .mapPill{bottom:1%;z-index:1}
+.controllerBack{align-self:flex-start;min-height:44px;background:transparent;border:0;color:var(--muted);padding:0 6px}
+.inputDeck .moduleTitle:focus-visible,.inputDeck .graphTap:focus-visible{outline-offset:-2px}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
@@ -137,7 +168,7 @@ function controllerSvg(s,p,source,operation){
  const cls=[source===i?'selected':'',changed?'modified':'',shared?'shared':''].join(' '),dark=s==='classic'&&i===9,fill=dark?'#e9e3da':type==='face'&&i>=5&&i<=8?faceColors[i]:'#23242d';
  const label=source!==null&&operation==='remap'?names[i]:physicalName(s,i);
  const ar=label+(reserved&&source===null?' (reserved for IGR)':'');
- svg+='<g class="'+cls+'" data-key="'+i+'" tabindex="0" role="button" aria-label="'+ar+'"><title>'+ar+'</title>';
+ svg+='<g class="'+cls+'" data-key="'+i+'" tabindex="0" role="button" aria-label="'+ar+'"><meta name="robots" content="noindex,nofollow"><title>'+ar+'</title>';
  if(type==='dpad'){
  const rot=({1:0,2:180,3:-90,4:90})[i];
  svg+='<path class="hitmark" transform="translate('+x+' '+y+') rotate('+rot+')" d="M-12 -17Q0 -21 12 -17L12 0L0 12L-12 0Z" fill="'+fill+'" stroke="#f06470" stroke-width="2.5" stroke-linejoin="round"/>';
@@ -332,10 +363,10 @@ const modules=[
  {name:'Left trigger',brand:'Rapid Actuation System™',i:12,kind:'trigger',route:9},
  {name:'Right trigger',brand:'Rapid Actuation System™',i:17,kind:'trigger',route:12},
  {name:'Game vibration',brand:'HapticDrive™',i:22,kind:'motor',route:15},
- {name:'In-game reset',brand:'Guide shortcut',i:-2,kind:'igr',route:16}
+ {name:'In-game reset',brand:'Guide shortcut',i:-2,kind:'igr',route:3}
 ];
 let simulated=50;
-const tuningPanes=['Overview','Left stick · Response','Left stick · Dead zones','Left stick · Limits','Left stick · Direction','Right stick · Response','Right stick · Dead zones','Right stick · Limits','Right stick · Direction','Left trigger · Response','Left trigger · Travel','Left trigger · Preview','Right trigger · Response','Right trigger · Travel','Right trigger · Preview','Game vibration','In-game reset'];
+const tuningPanes=['Overview','Left stick · Response','Left stick · Dead zones','Left stick · Limits','Left stick · Direction','Right stick · Response','Right stick · Dead zones','Right stick · Limits','Right stick · Direction','Left trigger · Response','Left trigger · Travel','Left trigger · Preview','Right trigger · Response','Right trigger · Travel','Right trigger · Preview','Game vibration'];
 function onLayer(p,m,a=StudioCodec.decode(p.layers)){return m.i===-1?p.custom:m.i===-2?p.igr:!!a[m.i];}
 function setLayer(p,m,value){if(m.i===-1)p.custom=value;else if(m.i===-2)p.igr=value;else{const a=StudioCodec.decode(p.layers);a[m.i]=+value;p.layers=StudioCodec.encode(a);}}
 function responseValue(p,m,a,x){let i=m.i;if(m.kind==='stick')return StudioCodec.response(x,a[i+1],a[i+2],p[m.curve],a[i+3],a[i+4]);if(m.kind==='trigger'){if(a[i+4])return x>a[i+1]/100?1:0;return StudioCodec.response(x,a[i+1],100-a[i+2],a[i+3]);}return x;}
@@ -351,8 +382,10 @@ function tuningGraph(p,m,large=false){
 }
 function moduleSummary(p,m,a){const i=m.i;if(m.kind==='map')return p.map.filter((v,k)=>v!==k+1).length+' stored changes';if(m.kind==='igr')return 'Hold Guide 1 second';if(m.kind==='motor')return a[23]+'% / '+a[24]+'%';if(m.kind==='stick')return p[m.curve]+'% curve · DZ '+a[i+1]+'/'+a[i+2];return a[i+4]?'Hair trigger':a[i+3]+'% curve · full '+a[i+2]+'%';}
 function layerDeck(p,all){
- const a=StudioCodec.decode(p.layers),ids=all?[0,1,2,3,4,5,6]:[1,2,3,4,5,6],pages=Math.ceil(ids.length/4),pg=Math.min(group,pages-1);
- return '<div class="heading"><h2>'+(all?'Profile layers':'Tuning modules')+'</h2><small>'+esc(p.name)+'</small></div><div class="modulegrid">'+ids.slice(pg*4,pg*4+4).map(n=>{const m=modules[n],on=onLayer(p,m,a);return '<div class="module '+(on?'on':'')+'"><div class="modulehead"><strong>'+m.name+'</strong><small>'+(on?'ON':m.kind==='igr'?'OFF':'STOCK')+'</small></div><button class="graphTap" data-layer="'+n+'" aria-label="Toggle '+m.name+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+tuningGraph(p,m)+'</button><small>'+moduleSummary(p,m,a)+'</small><button data-edit-layer="'+n+'">Edit</button></div>';}).join('')+'</div><div class="row subnav"><button id="groupPrev" '+(!pg?'disabled':'')+'>‹</button><small>Modules '+(pg+1)+' / '+pages+'</small><button id="groupNext" '+(pg+1>=pages?'disabled':'')+'>›</button></div>';
+ const a=StudioCodec.decode(p.layers),ids=all?[0,1,2,3,4,5,6]:[1,2,3,4,5],pages=Math.ceil(ids.length/4),pg=Math.min(group,pages-1);
+ const card=n=>{const m=modules[n],on=onLayer(p,m,a);return '<div class="module '+(on?'on':'')+'"><button class="moduleTitle" data-edit-layer="'+n+'"><strong>'+m.name+'</strong><small>'+(on?'CUSTOM':m.kind==='igr'?'OFF':'STOCK')+'</small></button><button class="graphTap" data-layer="'+n+'" aria-label="Toggle '+m.name+' customization" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+tuningGraph(p,m)+'</button><small>'+moduleSummary(p,m,a)+'</small></div>';};
+ if(!all)return '<div class="heading"><h2>Input tuning</h2><small>Tap graph to enable/bypass</small></div><div class="inputDeck" tabindex="0" aria-label="Input tuning, swipe for vibration"><div class="inputSlide modulegrid">'+ids.slice(0,4).map(card).join('')+'</div><div class="inputSlide motorSlide"><div class="module '+(onLayer(p,modules[5],a)?'on':'')+'"><button class="moduleTitle" data-edit-layer="5"><strong>Game vibration</strong><small>HapticDrive™</small></button><button class="graphTap" data-layer="5" aria-label="Toggle custom vibration strength" aria-pressed="'+onLayer(p,modules[5],a)+'" '+(!editable()?'disabled':'')+'>'+tuningGraph(p,modules[5])+'</button><small>'+moduleSummary(p,modules[5],a)+'</small><button id="muteRumble" aria-pressed="'+(onLayer(p,modules[5],a)&&a[23]===0&&a[24]===0)+'" '+(!editable()?'disabled':'')+'>'+(onLayer(p,modules[5],a)&&a[23]===0&&a[24]===0?'Enable game vibration':'Mute game vibration')+'</button></div></div></div><div class="swipeHint">Swipe for vibration · tap input name to edit</div>';
+ return '<div class="heading"><h2>Profile layers</h2><small>'+esc(p.name)+'</small></div><div class="modulegrid">'+ids.slice(pg*4,pg*4+4).map(card).join('')+'</div><div class="row subnav"><button id="groupPrev" '+(!pg?'disabled':'')+'>‹</button><small>Modules '+(pg+1)+' / '+pages+'</small><button id="groupNext" '+(pg+1>=pages?'disabled':'')+'>›</button></div>';
 }
 function sliderField(label,field,v,min,max,help,def){
  return '<label class="sliderField"><span><strong>'+label+'</strong><output data-value="'+field+'">'+v+'%</output></span><input type="range" data-tune="'+field+'" min="'+min+'" max="'+max+'" value="'+v+'" '+(!editable()&&field!=='simulation'?'disabled':'')+'><small>'+help+' Factory: '+def+'%.</small></label>';
@@ -361,7 +394,7 @@ function tuningEditor(){
  const p=profile(),a=StudioCodec.decode(p.layers);
  if(pane===0)return layerDeck(p,false);
  const n=pane<=4?1:pane<=8?2:pane<=11?3:pane<=14?4:pane===15?5:6,m=modules[n],i=m.i,on=onLayer(p,m,a),sub=pane-m.route;
- let html='<div class="heading"><div><h2>'+m.name+'</h2><small>'+m.brand+'</small></div><button data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+(on?'CUSTOM ON':m.kind==='igr'?'OFF':'STOCK')+'</button></div>';
+ let html='<div class="heading"><button data-pane="0" class="backInputs" aria-label="All inputs">‹</button><div><h2>'+m.name+'</h2><small>'+m.brand+'</small></div><button data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+(on?'CUSTOM ON':m.kind==='igr'?'OFF':'STOCK')+'</button></div>';
  if(m.kind==='stick'||m.kind==='trigger'){
  const tabs=m.kind==='stick'?['Response','Dead zones','Limits','Direction']:['Response','Travel','Preview'];
  html+='<div class="row tuneTabs">'+tabs.map((t,k)=>'<button data-pane="'+(m.route+k)+'" aria-pressed="'+(sub===k)+'">'+t+'</button>').join('')+'</div><div id="liveGraph" class="graphLarge">'+tuningGraph(p,m,true)+'</div>';
@@ -377,9 +410,10 @@ function tuningEditor(){
 }
 function bindTuning(){
  const p=profile();
- content.querySelectorAll('[data-layer]').forEach(b=>b.onclick=()=>{if(editable()){const m=modules[+b.dataset.layer];setLayer(p,m,!onLayer(p,m));render();}});
- content.querySelectorAll('[data-edit-layer]').forEach(b=>b.onclick=()=>{const m=modules[+b.dataset.editLayer];group=0;go(m.kind==='map'?'controller':'tuning',m.kind==='map'?1:m.route);});
+ content.querySelectorAll('[data-layer]').forEach(b=>b.onclick=()=>{if(editable()){const m=modules[+b.dataset.layer];setLayer(p,m,!onLayer(p,m));const x=content.querySelector('.inputDeck')?.scrollLeft||0;render();const d=content.querySelector('.inputDeck');if(d)d.scrollLeft=x;}});
+ content.querySelectorAll('[data-edit-layer]').forEach(b=>b.onclick=()=>{const m=modules[+b.dataset.editLayer];group=0;go(m.kind==='map'||m.kind==='igr'?'controller':'tuning',m.kind==='map'?0:m.route);});
  content.querySelectorAll('[data-pane]').forEach(b=>b.onclick=()=>go('tuning',+b.dataset.pane));
+ const mute=$('muteRumble');if(mute)mute.onclick=()=>{if(!editable())return;const a=StudioCodec.decode(p.layers),muted=a[22]&&a[23]===0&&a[24]===0;const apply=()=>{if(muted)a[22]=0;else{a[22]=1;a[23]=a[24]=0;}p.layers=StudioCodec.encode(a);render();const d=content.querySelector('.inputDeck');if(d)d.scrollLeft=d.clientWidth;};if(!muted&&(a[23]!==0||a[24]!==0))modal('Mute game vibration?','<p>Set both stored motor strengths to 0%. You can adjust them again in Game vibration.</p>',[{label:'Cancel'},{label:'Mute',primary:true,run:apply}]);else apply();};
  if(deck!=='tuning'||pane===0)return;
  const n=pane<=4?1:pane<=8?2:pane<=11?3:pane<=14?4:pane===15?5:6,m=modules[n],i=m.i;
  function update(field,v){
@@ -461,21 +495,21 @@ const base=(id,name,custom,map)=>({id,name,custom,left:100,right:100,igr:true,ma
 const initial=()=>({schema:2,revision:1,active:2,slots:[0,1,2,255],profiles:[base(0,'Default Xbox',false,identityMap()),base(1,'Rainbow Six 3',true,identityMap().map(i=>({3:9,9:3,4:10,10:4})[i]||i)),base(2,'My profile',false,identityMap())]});
 let library=initial(),loadError='';
 try{const raw=deviceMode?null:localStorage.getItem(key);if(raw){const d=JSON.parse(raw);if(d.schema!==2||!Array.isArray(d.profiles)||!d.profiles.every(StudioCodec.validProfile)||!d.profiles.some(p=>p.id===d.active))throw Error('Invalid preview library');library=d;}}catch(e){loadError=e.message;}
-let baseline=JSON.stringify(library),editing=library.active,deck='home',pane=0,skin='modern',operation='remap',source=null,group=0,restoreFocus=null;
+let baseline=JSON.stringify(library),editing=library.active,deck='home',pane=0,skin='modern',source=null,group=0,restoreFocus=null;
 const last={};
 const profile=()=>library.profiles.find(p=>p.id===editing),editable=()=>editing>=2&&!locked(),dirty=()=>JSON.stringify(library)!==baseline;
-const panes={home:['Dashboard'],controller:['Overview','Visual remapper','Assignment summary','Advanced mapping','Transfer'],tuning:tuningPanes,profiles:['Active profile','Library','Quick slots','Manage profiles','Profile layers','Import review'],about:['About','Help','Desktop files']};
+const panes={home:['Dashboard'],controller:['Visual remapper','Assignment summary','Advanced mapping','In-game reset','Transfer'],tuning:tuningPanes,profiles:['Active profile','Library','Quick slots','Manage profiles','Profile layers','Import review'],about:['About','Help','Desktop files']};
 const icons={controller:'<path d="M7 7h10q3 0 4 4l1 5q0 4-3 3l-4-4H9l-4 4q-3 1-3-3l1-5q1-4 4-4Z"/><path d="M7 10v5m-2.5-2.5h5m6-1h.1m3 2h.1"/>',tuning:'<path d="M3 5h18M3 12h18M3 19h18M8 2v6m8 1v6m-5 1v6"/>',profiles:'<rect x="5" y="3" width="16" height="14" rx="2"/><path d="M3 7v12q0 2 2 2h12M9 8h8m-8 4h5"/>',about:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.1"/>'};
 if(deviceMode){panes.network=networkPanes;panes.firmware=firmwarePanes;panes.diagnostics=diagPanes;icons.network='<path d="M2 8q10-9 20 0M6 12q6-5 12 0M10 16q2-2 4 0M12 20h.1"/>';icons.firmware='<path d="M12 2v13m-5-5 5 5 5-5M4 16v5h16v-5"/>';icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';}
 const icon=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[k]+'</svg>';
 function go(d,i){if(dialog.open||locked())return;source=null;group=0;deck=d;pane=i===undefined?(last[d]||0):i;last[d]=pane;render();}
-function step(n){if(pane+n>=0&&pane+n<panes[deck].length)go(deck,pane+n);}
+function step(n){if(deck==='controller'||deck==='tuning')return;if(pane+n>=0&&pane+n<panes[deck].length)go(deck,pane+n);}
 function tile(d,title,desc){return '<button class="tile" data-go="'+d+'">'+icon(d)+'<strong>'+title+'</strong><small>'+desc+'</small></button>';}
 function modal(title,body,actions,after){
  restoreFocus=document.activeElement;
  $('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modalActions').replaceChildren();
  for(const a of actions){const b=document.createElement('button');b.textContent=a.label;if(a.primary)b.className='primary';b.onclick=()=>{closeModal();a.run?.();};$('modalActions').append(b);}
- dialog.oncancel=e=>{e.preventDefault();closeModal();after?.();};dialog.showModal();$('modalActions').querySelector('button')?.focus();
+ dialog.oncancel=e=>{e.preventDefault();closeModal();after?.();};dialog.showModal();(dialog.querySelector('#modalBody button')||$('modalActions').querySelector('button'))?.focus({preventScroll:true});dialog.scrollTop=0;
 }
 function closeModal(){if(dialog.open)dialog.close();restoreFocus?.focus?.();restoreFocus=null;}
 function save(){if(deviceMode)return saveDevice();try{if(loadError)throw Error('Preview storage error: '+loadError);const current=JSON.parse(localStorage.getItem(key)||'null');if(current&&current.revision!==library.revision)throw Error('Preview changed in another tab. Reload or export draft.');if(!library.profiles.every(StudioCodec.validProfile))throw Error('Invalid profile settings.');const next=copy(library);next.revision++;localStorage.setItem(key,JSON.stringify(next));library=next;baseline=JSON.stringify(next);render();}catch(e){modal('Save failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}}
@@ -484,36 +518,37 @@ function renderHome(){
  const cards=tile('controller','Controller','Remap buttons')+tile('tuning','Tuning','Adjust input response')+tile('profiles','Profiles','Manage saved profiles')+(deviceMode?tile('diagnostics','Diagnostics','Connection & performance')+tile('network','Network','Wi-Fi settings')+tile('firmware','Firmware','Update your dongle'):tile('about','About','Help & credits'));
  return '<div class="tiles homeTiles">'+cards+'</div>';
 }
-const skinRow=()=>'<div class="row" aria-label="Controller skin">'+Object.entries(skins).map(([k,v])=>'<button data-skin="'+k+'" aria-pressed="'+(skin===k)+'">'+v.label+'</button>').join('')+'</div>';
-const mapToggle=p=>'<button id="toggleMap" '+(!editable()?'disabled':'')+' aria-pressed="'+p.custom+'">Remapping: '+(p.custom?'ON':'STOCK')+'</button>';
+const skinRow=()=>'<div class="skinPicker" aria-label="Controller appearance">'+Object.entries(skins).map(([k,v])=>'<button data-skin="'+k+'" aria-pressed="'+(skin===k)+'" title="'+v.label+' appearance only">'+({classic:'Xbox S',modern:'Series X/S',dual:'PS5'})[k]+'</button>').join('')+'</div>';
+const mapToggle=p=>'<button id="toggleMap" class="mapPill" '+(!editable()?'disabled':'')+' aria-pressed="'+p.custom+'">Remap '+(p.custom?'ON':'OFF')+'</button>';
 function mapper(){
  const p=profile(),a=analyzeMap(p.map,p.igr);
- if(pane===0)return '<div class="heading"><h2>Controller</h2><small>ReFlex Mapping™</small></div><div class="canvas">'+controllerSvg(skin,p,null,operation)+'</div>'+skinRow()+'<div class="row">'+mapToggle(p)+'<button id="openMapper">Open remapper</button></div><div class="card muted">'+esc(p.name)+' · '+p.map.filter((v,i)=>v!==i+1).length+' changed · '+a.missing.length+' missing · '+a.duplicates.length+' shared</div>';
- if(pane===1)return skinRow()+'<div class="row">'+['remap','swap','disable'].map(op=>'<button data-op="'+op+'" aria-pressed="'+(op===operation)+'">'+op[0].toUpperCase()+op.slice(1)+'</button>').join('')+'</div><div class="canvas" id="canvas">'+controllerSvg(skin,p,source,operation)+'</div><div class="prompt" role="status">'+(!editable()?'Factory preset — duplicate to edit.':!p.custom?'Enable remapping to begin.':source===null?'Tap the physical source.':('<strong>'+esc(physicalName(skin,source))+'</strong> selected. '+(operation==='swap'?'Tap another physical button.':'Tap an Xbox output.')))+'</div><div class="row">'+mapToggle(p)+'<button id="other" '+(!p.custom||!editable()?'disabled':'')+'>'+(source===null?'Other inputs':'Other outputs')+'</button></div><div class="legend">* Missing · blue count: shared · × Disabled · R: IGR</div>';
- if(pane===2){let rows=p.map.map((t,i)=>t!==i+1?'<div class="item">'+esc(physicalName(skin,i+1))+' → Xbox '+esc(names[t])+'</div>':'').filter(Boolean);rows.push(...a.missing.map(i=>'<div class="item warning">Xbox '+esc(names[i])+' has no assigned input.</div>'),...a.duplicates.map(i=>'<div class="item info">Xbox '+esc(names[i])+' shared by '+a.owners[i].length+' inputs.</div>'));return '<h2>Assignment summary</h2><div class="row"><div class="card"><small>Changed</small><span class="metric">'+p.map.filter((t,i)=>t!==i+1).length+'</span></div><div class="card"><small>Missing</small><span class="metric warning">'+a.missing.length+'</span></div><div class="card"><small>Shared</small><span class="metric info">'+a.duplicates.length+'</span></div></div><div class="card"><small>'+(p.custom?'Custom mapping':'Stored map; bypassed')+'</small><div class="list">'+(rows.length?rows.slice(group*4,group*4+4).join(''):'No modified assignments.')+'</div><div class="row"><button id="groupPrev" '+(!group?'disabled':'')+'>‹</button><small>'+Math.min(group+1,Math.max(1,Math.ceil(rows.length/4)))+' / '+Math.max(1,Math.ceil(rows.length/4))+'</small><button id="groupNext" '+((group+1)*4>=rows.length?'disabled':'')+'>›</button></div><button id="resetMap" '+(!editable()?'disabled':'')+'>Restore stock map</button></div>';}
- if(pane===3){const ids=[[5,6,7,8],[1,2,3,4],[9,10,17,18],[11,12,13,14],[15,16]][group%5];return '<h2>Advanced mapping</h2><div class="row"><button id="groupPrev">‹</button><span class="muted">'+['Face','D-pad','Shoulders','System / sticks','Extras'][group%5]+'</span><button id="groupNext">›</button></div><div class="card">'+ids.map(i=>'<div class="maprow"><span>'+esc(physicalName(skin,i))+'</span><button data-advanced="'+i+'" '+(!editable()||!p.custom||isReserved(i,p.igr)?'disabled':'')+'>'+esc(names[p.map[i-1]])+'</button></div>').join('')+'</div>';}
+ if(pane===0)return '<div class="mapperCard"><div class="mapperTop">'+skinRow()+'</div><div class="canvas" id="canvas"><div class="controllerStage">'+controllerSvg(skin,p,source,'remap')+mapToggle(p)+'</div></div><div class="mapperHint"><span class="prompt" role="status">'+(!editable()?'Factory preset — duplicate to edit.':!p.custom?'Turn on Remap to customize buttons.':source===null?'Tap a button to change its output.':'<strong>'+esc(physicalName(skin,source))+'</strong> → choose Xbox output.')+'</span>'+(source!==null?'<button id="other" class="textAction">Other / disable</button>':p.custom?'<button id="other" class="textAction">Other inputs</button>':'')+'</div>'+(p.custom?'<div class="mapLegend">* Missing · blue: shared · × disabled · R: reset</div>':'')+'</div>';
+ if(pane===1){let rows=p.map.map((t,i)=>t!==i+1?'<div class="item">'+esc(physicalName(skin,i+1))+' → Xbox '+esc(names[t])+'</div>':'').filter(Boolean);rows.push(...a.missing.map(i=>'<div class="item warning">Xbox '+esc(names[i])+' has no assigned input.</div>'),...a.duplicates.map(i=>'<div class="item info">Xbox '+esc(names[i])+' shared by '+a.owners[i].length+' inputs.</div>'));return '<h2>Assignment summary</h2><div class="row"><div class="card"><small>Changed</small><span class="metric">'+p.map.filter((t,i)=>t!==i+1).length+'</span></div><div class="card"><small>Missing</small><span class="metric warning">'+a.missing.length+'</span></div><div class="card"><small>Shared</small><span class="metric info">'+a.duplicates.length+'</span></div></div><div class="card"><small>'+(p.custom?'Custom mapping':'Stored map; bypassed')+'</small><div class="list">'+(rows.length?rows.slice(group*4,group*4+4).join(''):'No modified assignments.')+'</div><div class="row"><button id="groupPrev" '+(!group?'disabled':'')+'>‹</button><small>'+Math.min(group+1,Math.max(1,Math.ceil(rows.length/4)))+' / '+Math.max(1,Math.ceil(rows.length/4))+'</small><button id="groupNext" '+((group+1)*4>=rows.length?'disabled':'')+'>›</button></div><button id="resetMap" '+(!editable()?'disabled':'')+'>Restore stock map</button></div>';}
+ if(pane===2){const ids=[[5,6,7,8],[1,2,3,4],[9,10,17,18],[11,12,13,14],[15,16]][group%5];return '<h2>Advanced mapping</h2><div class="row"><button id="groupPrev">‹</button><span class="muted">'+['Face','D-pad','Shoulders','System / sticks','Extras'][group%5]+'</span><button id="groupNext">›</button></div><div class="card">'+ids.map(i=>'<div class="maprow"><span>'+esc(physicalName(skin,i))+'</span><button data-advanced="'+i+'" '+(!editable()||!p.custom||isReserved(i,p.igr)?'disabled':'')+'>'+esc(names[p.map[i-1]])+'</button></div>').join('')+'</div>';}
+ if(pane===3)return '<div class="card"><h2>In-game reset</h2><small>Controller shortcut</small><p>Hold the physical Guide / PS button for one second to send LT + RT + Start + Back. Requires Xbox or game reset support.</p><button id="toggleIgr" aria-pressed="'+p.igr+'" '+(!editable()?'disabled':'')+'>Guide reset '+(p.igr?'ON':'OFF')+'</button><small>'+ (p.igr?'Guide is reserved for reset.':'Guide is available for mapping.')+'</small></div>';
  return '<h2>Portable profile</h2><div class="card"><h3>Export '+esc(p.name)+'</h3><p class="muted">Portable v2 JSON includes mapping and tuning layers. This preview exports the current draft.</p><button id="export">Export profile</button></div><div class="card"><h3>Import profile</h3><p class="muted">Select the layers to bring into a new profile.</p><button id="import">Choose file</button></div>';
 }
 function showTargetPicker(i){
- source=i;operation='remap';
+ source=i;
  modal('Select Xbox output','<div class="list">'+names.map((n,id)=>'<button data-target="'+id+'">'+esc(n)+'</button>').join('')+'</div>',[{label:'Cancel',run:()=>{source=null;render();}}],()=>{source=null;render();});
  dialog.querySelectorAll('[data-target]').forEach(b=>b.onclick=()=>{closeModal();proposal(+b.dataset.target);});
 }
 function proposal(target){
- const p=profile(),s=source,op=operation;
- if(s===null||!editable()||!p.custom||isReserved(s,p.igr)||op==='swap'&&(target===s||isReserved(target,p.igr)||!target))return;
- const next=editMap(p.map,s,target,op==='swap'?'swap':'remap',p.igr);
+ const p=profile(),s=source;
+ if(s===null||!editable()||!p.custom||isReserved(s,p.igr))return;
+ const next=editMap(p.map,s,target,'remap',p.igr);
  const before=analyzeMap(p.map,p.igr),after=analyzeMap(next,p.igr);
  const warnings=after.missing.filter(i=>!before.missing.includes(i)).map(i=>'Xbox '+names[i]+' will have no assigned input.').concat(after.duplicates.filter(i=>!before.duplicates.includes(i)).map(i=>'Xbox '+names[i]+' will have shared inputs.'));
- const label=op==='swap'?'Confirm swap':target===0?'Disable input?':'Confirm remap';
- const summary=op==='swap'?physicalName(skin,s)+' ↔ '+physicalName(skin,target):physicalName(skin,s)+' → '+(target===0?'Disabled':'Xbox '+names[target]);
- const description=op==='swap'?physicalName(skin,s)+' will send '+names[next[s-1]]+'; '+physicalName(skin,target)+' will send '+names[next[target-1]]+'.':'Current output: '+names[p.map[s-1]]+'.';
+ const label=target===0?'Disable input?':'Confirm remap';
+ const summary=physicalName(skin,s)+' → '+(target===0?'Disabled':'Xbox '+names[target]);
+ const description='Current output: '+names[p.map[s-1]]+'.';
  modal(label,'<div class="bigArrow">'+esc(summary)+'</div><p>'+esc(description)+'</p>'+warnings.map(w=>'<p class="warning">'+esc(w)+'</p>').join('')+'<small>Changes apply to this draft until saved.</small>',[{label:'Cancel',run:()=>{source=null;render();content.querySelector('[data-key="'+s+'"]')?.focus({preventScroll:true});}},{label:'Confirm',primary:true,run:()=>{p.map=next;source=null;render();content.querySelector('[data-key="'+s+'"]')?.focus({preventScroll:true});}}],()=>{source=null;render();content.querySelector('[data-key="'+s+'"]')?.focus({preventScroll:true});});
 }
 function tap(i){
- if(deck!=='controller'||pane!==1||dialog.open||!editable()||!profile().custom)return;
- if(source===null){if(isReserved(i,profile().igr))return;source=i;if(operation==='disable')proposal(0);else render();}
- else if(operation==='swap'&&i===source){source=null;render();}
+ if(deck!=='controller'||pane!==0||dialog.open||!editable())return;
+ if(source===null&&isReserved(i,profile().igr)){go('controller',3);return;}
+ if(!profile().custom)return;
+ if(source===null){source=i;render();}
  else proposal(i);
 }
 function renderProfiles(){
@@ -550,38 +585,42 @@ function updateSaveBar(){
 function render(){
  const focused=document.activeElement?.dataset?.key;
  document.querySelector('.window').classList.toggle('homeScreen',deck==='home');
- document.querySelector('.pager').hidden=deck==='home';
+ document.querySelector('.pager').hidden=deck==='home'||deck==='controller'||deck==='tuning';
  const p=profile();
  content.innerHTML=deviceMode&&!ready?'<div class="card"><h2>Connect to dongle</h2><p>'+esc(loadError||'Loading saved profile library…')+'</p><button id="retryDevice">Retry</button></div>':deviceMode&&departed?'<div class="card"><h2>Reconnect required</h2><p>'+esc(operationStatus)+'</p><p>Re-enter configuration mode if necessary and reload this page.</p></div>':deck==='network'?networkView():deck==='firmware'?firmwareView():deck==='diagnostics'?diagView():deck==='home'?renderHome():deck==='controller'?mapper():deck==='profiles'?renderProfiles():deck==='tuning'?tuningEditor():'<div class="placeholder">'+icon('about')+'<h2>'+esc(panes[deck][pane])+'</h2><p>Hambone Industries<br><small>A Meat Inc. subsidiary</small></p><p class="muted">'+(pane===2?'S.H.R.E.K. — Synthetic Hierarchical Response Enablement Kernel. Controllers have layers.':pane===1?'Select Controller to try the three Hambone-style vector skins. Confirm changes in the popup, then save or export the draft.':'The competition is running stock firmware. Adorable.<br><small>The Hambone name and logo are trademarks of Hambone Industries, a subsidiary of Meat Inc. (fictional branding).</small>')+'</p><small>Local design preview · based on upstream OGX.</small></div>';
  if(deviceMode&&operationStatus&&!departed&&deck!=='home'&&!(deck==='firmware'&&pane===3)){const note=document.createElement('small');note.className='deviceNote';note.textContent=operationStatus;content.append(note);}
+ if(deck==='controller'&&pane!==0){const back=document.createElement('button');back.className='controllerBack';back.textContent='‹ Controller';back.onclick=()=>go('controller',0);content.prepend(back);}
  content.scrollTop=0;
  $('pick').textContent=(deck==='home'?'Home':panes[deck][pane])+' · '+(pane+1)+' / '+panes[deck].length;$('prev').disabled=pane===0;$('next').disabled=pane===panes[deck].length-1;
  updateSaveBar();bindTuning();
- content.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{group=0;go(b.dataset.go);});
+ content.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{group=0;go(b.dataset.go,['controller','tuning'].includes(b.dataset.go)?0:undefined);});
  content.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{skin=b.dataset.skin;source=null;render();});
- content.querySelectorAll('[data-op]').forEach(b=>b.onclick=()=>{operation=b.dataset.op;source=null;render();});
+
  content.querySelectorAll('[data-key]').forEach(b=>{b.onclick=()=>tap(+b.dataset.key);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap(+b.dataset.key);}};});
  content.querySelectorAll('[data-advanced]').forEach(b=>b.onclick=()=>showTargetPicker(+b.dataset.advanced));
  content.querySelectorAll('[data-profile]').forEach(b=>b.onclick=()=>{editing=+b.dataset.profile;go('profiles',0);});
  const bind=(id,fn)=>{const e=$(id);if(e)e.onclick=fn;};
  bind('toggleMap',()=>{if(editable()){p.custom=!p.custom;source=null;render();}});
- bind('openMapper',()=>go('controller',1));bind('library',()=>{group=0;go('profiles',1);});
+ bind('toggleIgr',()=>{if(editable()){p.igr=!p.igr;render();}});bind('library',()=>{group=0;go('profiles',1);});
  bind('useProfile',()=>{library.active=editing;render();});bind('export',exportProfile);
- bind('groupPrev',()=>{group=pane===3&&deck==='controller'?(group+4)%5:Math.max(0,group-1);render();});bind('groupNext',()=>{group=pane===3&&deck==='controller'?(group+1)%5:group+1;render();});
+ bind('groupPrev',()=>{group=pane===2&&deck==='controller'?(group+4)%5:Math.max(0,group-1);render();});bind('groupNext',()=>{group=pane===2&&deck==='controller'?(group+1)%5:group+1;render();});
  bindProfiles();bindDevice();syncDeviceChrome();
  if(deviceMode){if(locked()){for(const b of document.querySelectorAll('.window button,.window input,.window select'))b.disabled=true;}else{$('home').disabled=$('menu').disabled=$('pick').disabled=false;}
  const retry=$('retryDevice');if(retry){retry.disabled=false;retry.onclick=()=>refreshDevice({initial:true});}
  }
  if(focused)content.querySelector('[data-key="'+focused+'"]')?.focus({preventScroll:true});
- bind('other',()=>{if(source!==null){if(operation==='swap'){modal('Select physical input','<div class="list">'+identityMap().filter(i=>i!==source&&!isReserved(i,p.igr)).map(i=>'<button data-extra="'+i+'">'+esc(physicalName(skin,i))+'</button>').join('')+'</div>',[{label:'Cancel',run:()=>{source=null;render();}}],()=>{source=null;render();});dialog.querySelectorAll('[data-extra]').forEach(b=>b.onclick=()=>{closeModal();proposal(+b.dataset.extra);});}else showTargetPicker(source);}else{modal('Select physical input','<div class="list">'+identityMap().filter(i=>!isReserved(i,p.igr)).map(i=>'<button data-extra="'+i+'">'+esc(physicalName(skin,i))+'</button>').join('')+'</div>',[{label:'Cancel'}]);dialog.querySelectorAll('[data-extra]').forEach(b=>b.onclick=()=>{closeModal();tap(+b.dataset.extra);});}});
+ bind('other',()=>{if(source!==null){showTargetPicker(source);}else{modal('Select physical input','<div class="list">'+identityMap().filter(i=>!isReserved(i,p.igr)).map(i=>'<button data-extra="'+i+'">'+esc(physicalName(skin,i))+'</button>').join('')+'</div>',[{label:'Cancel'}]);dialog.querySelectorAll('[data-extra]').forEach(b=>b.onclick=()=>{closeModal();tap(+b.dataset.extra);});}});
+
 }
 $('home').onclick=()=>{group=0;go('home',0);};$('prev').onclick=()=>{group=0;step(-1);};$('next').onclick=()=>{group=0;step(1);};
 function picker(workspaces){
  if(locked())return;
  const values=workspaces?Object.keys(panes):panes[deck];
+ const local=workspaces&&(deck==='controller'||deck==='tuning')?'<div class="list contextual"><small>'+ (deck==='controller'?'Controller tools':'Tuning')+'</small>'+(deck==='controller'?panes.controller.map((v,i)=>'<button data-local-pane="'+i+'">'+v+'</button>').join(''):'<button data-local-pane="0">All inputs</button><button data-local-pane="15">Game vibration</button>')+'</div><hr>':'';
  const extras=workspaces?'<hr><p class="menuProfile"><small>Active profile</small><strong>'+esc(JSON.parse(baseline).profiles.find(p=>p.id===JSON.parse(baseline).active)?.name||'Unavailable')+'</strong></p><button id="menuExport">Export '+(dirty()?'draft':'profile')+'</button>'+(deviceMode?'<button id="menuStatus">Connection details</button><button id="menuGaming">Return to gaming</button>':''):'';
- modal(workspaces?'Workspaces':'Select pane','<div class="list">'+values.map((v,i)=>'<button data-pick="'+i+'">'+esc(v[0].toUpperCase()+v.slice(1))+'</button>').join('')+extras+'</div>',[{label:'Cancel'}]);
+ modal(workspaces?'Workspaces':'Select pane',local+'<div class="list">'+values.map((v,i)=>'<button data-pick="'+i+'">'+esc(v[0].toUpperCase()+v.slice(1))+'</button>').join('')+extras+'</div>',[{label:'Cancel'}]);
  dialog.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{closeModal();group=0;if(workspaces)go(values[+b.dataset.pick]);else go(deck,+b.dataset.pick);});
+ dialog.querySelectorAll('[data-local-pane]').forEach(b=>b.onclick=()=>{closeModal();go(deck,+b.dataset.localPane);});
  if($('menuExport'))$('menuExport').onclick=()=>{closeModal();exportProfile();};
  if($('menuStatus'))$('menuStatus').onclick=()=>{closeModal();connectionDetails();};
  if($('menuGaming'))$('menuGaming').onclick=()=>{closeModal();leaveGaming();};
