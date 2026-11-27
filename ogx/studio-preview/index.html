@@ -397,10 +397,51 @@ header .saveSlot .saveCompact{width:58px;min-width:58px;max-width:58px;height:36
  .scopeConnection{min-height:38px;padding:3px}
 }
 .homeScreen .homeTiles:not(:has([data-go=network])){grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* QuadSlot is the primary Vault dashboard, not a library index. */
+.quadDashboard{display:flex;flex-direction:column;flex:1;min-height:0;gap:5px}
+.quadHeader{display:flex;align-items:center;justify-content:space-between;min-height:34px;gap:4px}
+.quadHeader h2{font-size:17px}
+.vaultLock{display:flex;align-items:center;gap:4px;color:var(--danger);font-size:11px;min-height:34px;padding:3px 7px}
+.vaultLock svg{width:19px;height:19px}
+.vaultLock.localOpen{color:var(--success)}
+.quadActive{display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:5px 6px;flex:none}
+.quadActive>div{flex:1;min-width:0;display:grid;gap:1px}
+.quadActive small{font-size:9px}.quadActive strong{font-size:13px;overflow-wrap:anywhere}
+.quadMode{color:var(--muted);font-size:10px;white-space:nowrap}
+.quadActive button{min-height:34px;padding:3px 6px;font-size:11px}
+.quadGrid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:5px}
+.quadCard{display:flex;flex-direction:column;gap:2px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:4px;min-width:0;min-height:0;overflow:hidden}
+.quadCard.activeQuad{border-color:var(--accent)}
+.quadCardTop{display:flex;align-items:center;justify-content:space-between;min-height:28px;gap:3px;padding:0 2px}
+.quadCardTop strong{font-size:13px;color:var(--accent)}
+.quadCardTop button{font-size:17px;min-height:28px;min-width:36px;padding:0 5px}
+.quadBody{flex:1;min-height:0;min-width:0;display:flex;flex-direction:column;gap:3px;background:transparent;border:0;padding:1px;overflow:hidden}
+.quadName{font-size:12px;line-height:1.15;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:100%}
+.quadWidgets{flex:1;min-height:0;width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr)) auto;gap:2px}
+.quadReading,.quadFlag{background:var(--graph);border-radius:4px;min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;gap:2px;padding:2px}
+.quadReading small,.quadFlag small{font-size:9px}.quadReading svg{width:100%;height:100%;min-width:0;min-height:0;max-height:34px}
+.quadReading.on{outline:1px solid #a34c58;outline-offset:-1px}
+.quadFlag strong{font-size:9px;white-space:nowrap}
+.quadEmpty{flex:1;display:grid;place-items:center;font-size:28px;color:var(--muted)}
+.quadFoot{font-size:10px;line-height:1.15;text-align:center;flex:none}
+.returnVault{flex:none;min-height:34px;font-size:10px;padding:2px 5px;white-space:nowrap}
+.mapperTop:has(.returnVault){align-items:center;justify-content:space-between;gap:2px}
+.mapperTop:has(.returnVault) .skinPicker button{padding:2px 4px;font-size:10px}
+.inspectTabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;flex:none}
+.inspectTabs button{min-height:34px;padding:3px;font-size:11px}
+.inspectTabs button[aria-pressed=true]{background:var(--burg);border-color:var(--accent)}
+.inspectMapping,.inspectSystem{flex:1;min-height:0;display:flex;flex-direction:column;gap:5px}
+.inspectRows{overflow:auto;min-height:0;display:grid;gap:3px}
+.inspectMapRow{display:flex;justify-content:space-between;padding:7px;background:var(--card);border:1px solid var(--line);border-radius:6px;font-size:12px}
+.scopeState{font-size:10px;line-height:1.15;color:var(--muted);flex:none;min-height:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scopeState:empty{display:none}
+.statusButton[data-link=offline] .linkSlash{stroke:var(--danger)}
+@media(orientation:landscape) and (max-height:450px){.quadGrid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:1fr}.quadWidgets{grid-template-rows:repeat(2,minmax(0,1fr)) auto}.quadCard{padding:3px}}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
-<header><button id="home" class="icon homeMark" aria-label="Home" title="Home"><svg class="ham" viewBox="0 0 110 92" aria-hidden="true"><g stroke="#f06470" stroke-width="3" stroke-linejoin="round"><path d="M16 31C29 11 50 17 67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49C73 71 49 91 25 87C3 85 1 62 16 31Z" fill="#4c0e12"/><path d="M67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49Z" fill="#e9e3da"/><path d="M17 33Q27 24 38 38Q52 58 43 77Q39 86 24 81Q5 78 10 58Z" fill="#6e1012"/><path d="M35 20Q61 32 62 68M50 22Q76 42 71 56M42 42Q55 33 69 34M48 58Q63 48 76 48M47 72Q61 65 70 58" fill="none" stroke="#b3000a" stroke-width="2.6"/><ellipse cx="26" cy="59" rx="6" ry="10" fill="none" stroke="#e9e3da" stroke-width="4" transform="rotate(-20 26 59)"/></g><text x="104" y="8" font-size="8" fill="#e9e3da" text-anchor="end">™</text></svg></button><div class="brand"><strong>OGX Controller Studio™</strong></div><button id="status" type="button" class="statusButton" aria-label="Standalone mode, no device connected" title="Standalone mode" data-link="unknown" disabled><svg class="signal" viewBox="0 0 26 22" aria-hidden="true"><g class="bars" fill="currentColor"><rect x="1" y="16" width="4" height="5" rx="1"/><rect x="7" y="11" width="4" height="10" rx="1"/><rect x="13" y="6" width="4" height="15" rx="1"/><rect x="19" y="1" width="4" height="20" rx="1"/></g><path class="linkSlash" d="M2 2L24 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle class="linkDot" cx="24" cy="19" r="2.4" fill="currentColor"/></svg><span class="srOnly" id="linkText">Standalone · signal not measured</span></button><div class="saveSlot"><button id="primary" class="saveCompact" hidden>Save</button></div><span id="saveState" class="srOnly" aria-live="polite"></span><button id="menu" class="icon" aria-label="Workspace menu">⋯</button></header>
+<header><button id="home" class="icon homeMark" aria-label="Home" title="Home"><svg class="ham" viewBox="0 0 110 92" aria-hidden="true"><g stroke="#f06470" stroke-width="3" stroke-linejoin="round"><path d="M16 31C29 11 50 17 67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49C73 71 49 91 25 87C3 85 1 62 16 31Z" fill="#4c0e12"/><path d="M67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49Z" fill="#e9e3da"/><path d="M17 33Q27 24 38 38Q52 58 43 77Q39 86 24 81Q5 78 10 58Z" fill="#6e1012"/><path d="M35 20Q61 32 62 68M50 22Q76 42 71 56M42 42Q55 33 69 34M48 58Q63 48 76 48M47 72Q61 65 70 58" fill="none" stroke="#b3000a" stroke-width="2.6"/><ellipse cx="26" cy="59" rx="6" ry="10" fill="none" stroke="#e9e3da" stroke-width="4" transform="rotate(-20 26 59)"/></g><text x="104" y="8" font-size="8" fill="#e9e3da" text-anchor="end">™</text></svg></button><div class="brand"><strong>OGX Controller Studio™</strong></div><button id="status" type="button" class="statusButton" aria-label="Standalone mode, no device connected" title="Standalone mode" data-link="unknown" disabled><svg class="signal" viewBox="0 0 26 22" aria-hidden="true"><g class="bars" fill="currentColor"><rect x="1" y="16" width="4" height="5" rx="1"/><rect x="7" y="11" width="4" height="10" rx="1"/><rect x="13" y="6" width="4" height="15" rx="1"/><rect x="19" y="1" width="4" height="20" rx="1"/></g><path class="linkSlash" d="M2 2L24 21 M24 2L2 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle class="linkDot" cx="24" cy="19" r="2.4" fill="currentColor"/></svg><span class="srOnly" id="linkText">Standalone · signal not measured</span></button><div class="saveSlot"><button id="primary" class="saveCompact" hidden>Save</button></div><span id="saveState" class="srOnly" aria-live="polite"></span><button id="menu" class="icon" aria-label="Workspace menu">⋯</button></header>
 <section id="content" aria-label="Workspace content"></section>
 <nav class="pager" aria-label="Panel navigation"><button id="prev" aria-label="Previous pane">‹</button><button id="pick" aria-label="Select pane"></button><button id="next" aria-label="Next pane">›</button></nav>
 
@@ -586,8 +627,8 @@ function validLibrary(d){
 }
 function locked(){return busy||departed||deviceMode&&(!ready||deviceLock);}
 function syncDeviceChrome(){
- if(!deviceMode)return;
- const b=$('status'),state=departed||deviceError?'offline':deviceStatus?'online':'unknown';
+ if(!deviceMode){const b=$('status');b.dataset.link='offline';b.dataset.strength='0';b.disabled=false;b.title='Standalone preview · no dongle connected';$('linkText').textContent=b.title;b.setAttribute('aria-label',b.title);b.onclick=()=>modal('Connection details','<p>Standalone preview. No dongle connected.</p><small>Example readings are simulated. Open the dongle local address for real measurements.</small>',[{label:'Close'}]);return;}
+ const b=$('status'),state=departed||deviceError?'offline':deviceStatus?'online':'offline';
  const description=departed?'Reconnection required':deviceError?'Connection unavailable':deviceStatus?(deviceStatus.ap?'Direct Wi-Fi':'Home Wi-Fi')+' · '+deviceStatus.ip:'Connecting to dongle…';
  // Bars represent no measured strength yet. The dot indicates only API reachability.
  b.dataset.link=state;const r=deviceStatus?.wifi_rssi_dbm;b.dataset.strength=state==='online'&&Number.isFinite(r)?r>=-55?'4':r>=-67?'3':r>=-75?'2':'1':'0';b.classList.toggle('statusError',state==='offline');
@@ -598,7 +639,7 @@ function syncDeviceChrome(){
 function connectionDetails(){
  if(!deviceMode||busy||departed)return;
  const d=deviceStatus||{};
- modal('Connection details','<p>'+esc(deviceError?'Status request failed: '+deviceError:'Last reported device status')+'</p><small>'+esc(d.ip||'IP unavailable')+' · '+esc(d.version||'Version unavailable')+'</small><small>'+(Number.isFinite(d.wifi_rssi_dbm)?'Dongle to router: '+d.wifi_rssi_dbm+' dBm. Not the phone’s signal.':'Signal strength not measured. The green dot indicates API reachability.')+'</small>'+(deviceError?'<p class="muted">Displayed values may be stale. Retry the status request; if necessary, re-enter configuration mode on the controller.</p>':'')+(operationStatus?'<p>'+esc(operationStatus)+'</p>':''),[{label:'Close'},{label:'Retry status',primary:true,run:()=>refreshDevice({initial:!ready,profileCheck:ready})}]);
+ modal('Connection details','<p>'+esc(deviceError?'Status request failed: '+deviceError:'Last reported device status')+'</p><small>'+esc(d.scope?(d.scope.connected?d.scope.model+' · '+d.scope.transport:'Controller disconnected'):'Controller telemetry unavailable')+'</small><small>'+esc(d.ip||'IP unavailable')+' · '+esc(d.version||'Version unavailable')+'</small><small>'+(Number.isFinite(d.wifi_rssi_dbm)?'Dongle to router: '+d.wifi_rssi_dbm+' dBm. Not the phone’s signal.':'Signal strength not measured. The green dot indicates API reachability.')+'</small>'+(deviceError?'<p class="muted">Displayed values may be stale. Retry the status request; if necessary, re-enter configuration mode on the controller.</p>':'')+(operationStatus?'<p>'+esc(operationStatus)+'</p>':''),[{label:'Close'},{label:'Retry status',primary:true,run:()=>refreshDevice({initial:!ready,profileCheck:ready})}]);
 }
 async function refreshDevice({initial=false,profileCheck=false}={}){
  if(!deviceMode||busy||departed||refreshing)return;
@@ -661,10 +702,10 @@ const scopeDemo={ip:'192.168.1.228',ap:false,heap:102400,idle_seconds:240,wifi_r
 let scopeExample=false;
 function diagView(){
  const d=deviceMode?(deviceStatus||{}):scopeExample?scopeDemo:{},m=scopeMetrics(d,!!deviceError);
- const head='<div class="heading utilityHeading"><div><h2>SignalScope™</h2><small>'+esc(diagPanes[pane])+'</small></div>'+(deviceMode?'<button id="refreshStatus" class="compactAction">Refresh</button>':'<button id="scopeExample" class="compactAction" aria-pressed="'+scopeExample+'">'+(scopeExample?'Example ON':'Show example')+'</button>')+'</div>';
+ const head='<div class="heading utilityHeading"><div><h2>SignalScope™</h2></div>'+(deviceMode?'<button id="refreshStatus" class="compactAction">Refresh</button>':'<button id="scopeExample" class="compactAction" aria-pressed="'+scopeExample+'">'+(scopeExample?'Example ON':'Show example')+'</button>')+'</div>';
  const tabs='<div class="scopeTabs">'+diagPanes.map((n,i)=>'<button data-device-pane="'+i+'" aria-pressed="'+(pane===i)+'">'+n+'</button>').join('')+'</div>';
  const state=deviceMode?m.state:scopeExample?'SIMULATED EXAMPLE · NOT LIVE':'Standalone preview · no device attached';
- const connection='<div class="scopeConnection"><strong>'+esc(deviceMode||scopeExample?m.link:'No device connected')+'</strong><small>'+esc((deviceMode||scopeExample?m.transport+' · ':'')+state)+'</small></div>';
+ const connection='<div class="scopeState" role="status">'+esc(state)+(deviceMode&&d.scope?.connected?' · '+esc(m.link+' / '+m.transport):'')+'</div>';
  const hardware=scopeCard('ESP32 temp','Unavailable','No supported sensor driver')+scopeCard('RP2040 temp','Unavailable','Firmware support required')+scopeCard('Voltage','Unavailable','Sensing circuit required')+scopeCard('Current','Unavailable','Current sensor required')+scopeCard('Power','Unavailable','Voltage × current')+scopeCard('Free memory',m.heap,'ESP32 heap');
  if(pane===0)return head+tabs+connection+'<div class="scopeGrid">'+scopeCard('Battery',m.battery,'Controller-reported','',2)+scopeCard('Input reports',m.rate,'Decoded callbacks / s','',2)+scopeCard('Report interval',m.mean,'Mean within sample','',2)+scopeCard('BLE interval',m.ble,'Negotiated radio interval','',2)+scopeCard('Home Wi-Fi',m.wifi,'Dongle to router','',1)+scopeCard('Free memory',m.heap,'ESP32 heap','',1)+'</div><small class="utilityNote">Tap a reading or select an instrument group.</small>';
  if(pane===1)return head+tabs+connection+'<div class="scopeGrid">'+hardware+'</div><small class="utilityNote">Temperature and power readings require additional support. No estimates substituted.</small>';
@@ -954,8 +995,8 @@ function deleteProfile(){
  modal('Delete '+p.name+'?','<p>This removes the profile from the draft library.'+(assigned.length?' Clears slots '+assigned.join(', ')+'.':'')+(library.active===p.id?' The active selection returns to Default Xbox.':'')+'</p>',[{label:'Cancel'},{label:'Delete profile',primary:true,run:()=>{library.profiles=library.profiles.filter(x=>x.id!==p.id);library.slots=library.slots.map(i=>i===p.id?255:i);if(library.active===p.id)library.active=0;editing=library.active;go('profiles',0);}}]);
 }
 function slotDialog(index){
- modal('Assign slot '+(index+1),'<div class="list">'+[...library.profiles,{id:255,name:'Unassigned'}].map(p=>'<button data-slot-profile="'+p.id+'">'+esc(p.name)+'</button>').join('')+'</div>',[{label:'Cancel'}]);
- dialog.querySelectorAll('[data-slot-profile]').forEach(b=>b.onclick=()=>{library.slots[index]=+b.dataset.slotProfile;closeModal();render();});
+ modal('Assign slot '+(index+1),'<small>Choosing an assigned profile swaps the two slots.</small><div class="list">'+[...library.profiles,{id:255,name:'Unassigned'}].map(p=>'<button data-slot-profile="'+p.id+'">'+esc(p.name)+'</button>').join('')+'</div>',[{label:'Cancel'}]);
+ dialog.querySelectorAll('[data-slot-profile]').forEach(b=>b.onclick=()=>{const id=+b.dataset.slotProfile,old=library.slots[index],other=id===255?-1:library.slots.findIndex((v,j)=>j!==index&&v===id);if(other>=0)library.slots[other]=old;library.slots[index]=id;closeModal();render();});
 }
 let importDraft=null,importChoices=[],importPage=0;
 function importProfile(p){if(nextId()===undefined){modal('Library full','<p>Delete an editable profile before importing.</p>',[{label:'Close'}]);return;}importDraft=p;importChoices=modules.map(()=>true);importPage=0;go('profiles',5);}
@@ -996,12 +1037,13 @@ let library=initial(),loadError='';
 try{const raw=deviceMode?null:localStorage.getItem(key);if(raw){const d=JSON.parse(raw);if(d.schema!==2||!Array.isArray(d.profiles)||!d.profiles.every(StudioV3.validProfile)||!d.profiles.some(p=>p.id===d.active))throw Error('Invalid preview library');library=d;}}catch(e){loadError=e.message;}
 let baseline=JSON.stringify(library),editing=library.active,deck='home',pane=0,skin='modern',source=null,group=0,restoreFocus=null;
 const last={};
+let vaultReturn=null,inspectTab=0;
 const profile=()=>library.profiles.find(p=>p.id===editing),editable=()=>editing>=2&&!locked(),dirty=()=>JSON.stringify(library)!==baseline;
-const panes={home:['Dashboard'],controller:['Visual remapper','Assignment summary','Advanced mapping','In-game reset','Transfer'],tuning:tuningPanes,profiles:['Library','Profile details','Quick slots','Manage profile','Profile layers','Import review','Saved profile monitor'],about:['About','Help','Desktop files']};
+const panes={home:['Dashboard'],controller:['Visual remapper','Assignment summary','Advanced mapping','In-game reset','Transfer'],tuning:tuningPanes,profiles:['Library','Profile details','Quick slots','Manage profile','Profile layers','Import review','Saved profile monitor','Library','Transfer'],about:['About','Help','Desktop files']};
 const icons={controller:'<path d="M7 7h10q3 0 4 4l1 5q0 4-3 3l-4-4H9l-4 4q-3 1-3-3l1-5q1-4 4-4Z"/><path d="M7 10v5m-2.5-2.5h5m6-1h.1m3 2h.1"/>',tuning:'<path d="M3 5h18M3 12h18M3 19h18M8 2v6m8 1v6m-5 1v6"/>',profiles:'<rect x="5" y="3" width="16" height="14" rx="2"/><path d="M3 7v12q0 2 2 2h12M9 8h8m-8 4h5"/>',about:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.1"/>'};
 panes.diagnostics=diagPanes;icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';if(deviceMode){panes.network=networkPanes;panes.firmware=firmwarePanes;icons.network='<path d="M2 8q10-9 20 0M6 12q6-5 12 0M10 16q2-2 4 0M12 20h.1"/>';icons.firmware='<path d="M12 2v13m-5-5 5 5 5-5M4 16v5h16v-5"/>';icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';}
 const icon=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[k]+'</svg>';
-function go(d,i){if(dialog.open||locked())return;source=null;group=0;deck=d;pane=i===undefined?(last[d]||0):i;last[d]=pane;render();}
+function go(d,i){if(dialog.open||locked())return;if(deck==='profiles'&&['controller','tuning'].includes(d))vaultReturn=pane;else if(!['controller','tuning'].includes(d))vaultReturn=null;source=null;group=0;deck=d;pane=i===undefined?(last[d]||0):i;last[d]=pane;render();}
 function step(n){if(['controller','tuning','profiles','diagnostics'].includes(deck))return;if(pane+n>=0&&pane+n<panes[deck].length)go(deck,pane+n);}
 function tile(d,title,desc){return '<button class="tile" data-go="'+d+'">'+icon(d)+'<strong>'+title+'</strong><small>'+desc+'</small></button>';}
 function modal(title,body,actions,after){
@@ -1053,12 +1095,23 @@ function tap(i){
 function vaultHeading(title,subtitle,back=true){
  return '<div class="vaultHeading">'+(back?'<button class="vaultBack" data-vault-pane="0" aria-label="Back to MeatVault">‹</button>':'')+'<div><h2>'+title+'</h2><small>'+subtitle+'</small></div></div>';
 }
+function vaultMini(p){
+ if(!p)return '<div class="quadEmpty">＋</div><small>Assign a profile</small>';
+ const a=StudioV3.decode(p.layers);
+ return '<div class="quadWidgets">'+[1,2,3,4].map((n,j)=>{const m=modules[n];return '<div class="quadReading '+(onLayer(p,m,a)?'on':'')+'"><small>'+['LS','RS','LT','RT'][j]+'</small>'+tuningGraph(p,m)+'</div>';}).join('')+'<div class="quadFlag"><small>Map</small><strong>'+(p.custom?p.map.filter((v,k)=>v!==k+1).length+' edits':'Stock')+'</strong></div><div class="quadFlag"><small>Reset</small><strong>'+(p.igr?'ON':'OFF')+'</strong></div></div>';
+}
+function vaultLockIcon(open){return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="'+(open?'M9 10V6a4 4 0 0 1 8 0':'M8 10V6a4 4 0 0 1 8 0v4')+'" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 14v3" stroke="currentColor" stroke-width="2"/></svg>';}
 function renderProfiles(){
  const p=profile(),saved=JSON.parse(baseline),active=saved.profiles.find(x=>x.id===saved.active);
  if(pane===0){
-  const rows=library.profiles.map(x=>'<button class="vaultProfile" data-profile="'+x.id+'" aria-label="Open '+esc(x.name)+'" aria-current="'+(x.id===editing?'true':'false')+'"><span class="vaultProfileName">'+esc(x.name)+'</span><small>'+(x.id===saved.active?'● Active':x.id===library.active?'Pending active':x.id<2?'Protected':'Custom')+'</small></button>').join('');
-  return vaultHeading('MeatVault™','Profile library · '+library.profiles.length+'/12',false)+'<div class="vaultActiveLine"><div><small>Saved active</small><strong>'+esc(active.name)+'</strong></div><button id="activeMonitor" title="Inspect saved active profile">Inspect</button></div><div class="vaultLibrary">'+rows+'</div><div class="vaultActionBar"><button id="newProfile">+ New</button><button id="import">Import</button><button data-vault-pane="2">Quick slots</button></div>';
+  const slotNames=['↑','→','↓','←'],slots=saved.slots.map((v,i)=>v===saved.active?slotNames[i]:'').filter(Boolean).join(' '),pending=library.active!==saved.active||JSON.stringify(library.slots)!==JSON.stringify(saved.slots);
+  return '<section class="quadDashboard"><div class="quadHeader"><h2>MeatVault™</h2><button id="vaultLock" class="vaultLock" aria-pressed="false" title="Open local transfer tools; online sharing not connected">'+vaultLockIcon(false)+'<span>Locked</span></button></div><div class="quadActive"><div><small>Saved active '+(slots?'· '+slots:'· Unassigned')+'</small><strong>'+esc(active.name)+'</strong></div><span class="quadMode">'+(active.id===0?'Stock mode':'Profile ON')+'</span><button id="activeMonitor">Inspect</button></div><div class="quadGrid">'+library.slots.map((id,j)=>{const x=library.profiles.find(v=>v.id===id);return '<section class="quadCard '+(id===saved.active&&saved.slots[j]===id?'activeQuad':'')+'"><div class="quadCardTop"><strong>'+slotNames[j]+' '+(j+1)+'</strong><button data-slot="'+j+'" title="Assign or swap slot '+(j+1)+'" aria-label="Assign slot '+(j+1)+'">↔</button></div><button class="quadBody" '+(x?'data-profile="'+x.id+'"':'data-slot="'+j+'"')+'><strong class="quadName">'+esc(x?.name||'Unassigned')+'</strong>'+vaultMini(x)+'</button></section>';}).join('')+'</div><div class="vaultActionBar"><button id="newProfile">+ New</button><button data-vault-pane="7">All profiles</button><button id="stockProfile" '+(library.active===0?'disabled':'')+'>Use stock</button></div><small class="quadFoot">'+(pending?'Pending selection / slots · Save to apply.':'QuadSlot™ · Physical profile shortcuts pending firmware support.')+'</small></section>';
  }
+ if(pane===7){
+  const rows=library.profiles.map(x=>'<button class="vaultProfile" data-profile="'+x.id+'" aria-label="Open '+esc(x.name)+'" aria-current="'+(x.id===editing?'true':'false')+'"><span class="vaultProfileName">'+esc(x.name)+'</span><small>'+(x.id===saved.active?'● Active':x.id===library.active?'Pending active':x.id<2?'Protected':'Custom')+'</small></button>').join('');
+  return vaultHeading('All profiles','Local library')+'<div class="vaultLibrary">'+rows+'</div><div class="vaultActionBar"><button id="newProfile">+ New</button><button id="import">Import</button></div>';
+ }
+ if(pane===8)return vaultHeading('Vault access','Local transfer tools')+'<div class="card"><div class="row"><span class="vaultLock localOpen">'+vaultLockIcon(true)+' Local access</span></div><p>Online vault is not connected. Your profiles stay on this device.</p><small>Community browse, upload and download require an online service.</small></div><div class="vaultActionBar"><button id="import">Import file</button><button id="export">Export selected</button></div><button data-vault-pane="7">Browse local profiles</button>';
  if(pane===1||pane===3){
   const t=StudioV3.decode(p.layers),count=[0,6,12,17].filter(i=>StudioV3.mask(t[i])).length;
   const status=p.id===saved.active?'Saved active':p.id===library.active?'Pending activation':'Not active';
@@ -1066,7 +1119,11 @@ function renderProfiles(){
  }
  if(pane===2)return vaultHeading('QuadSlot™','Assign saved profile shortcuts')+'<div class="slotgrid">'+[0,3,1,2].map(j=>'<button class="card slot slot'+j+'" data-slot="'+j+'"><small>'+['↑','→','↓','←'][j]+' Slot '+(j+1)+'</small><strong>'+esc(library.profiles.find(p=>p.id===library.slots[j])?.name||'Unassigned')+'</strong></button>').join('')+'<div class="slotCenter">✚</div></div><small>Slot assignments require Save. Physical shortcut support pending.</small>';
  if(pane===5)return vaultHeading('Import profile','Review selected layers')+importView();
- if(pane===6)return vaultHeading('Saved profile',esc(active.name))+renderInputMonitor(active,true,false);
+ if(pane===6){
+  const a=StudioV3.decode(active.layers),tabs='<div class="inspectTabs">'+['Inputs','Mapping','System'].map((n,i)=>'<button data-inspect-tab="'+i+'" aria-pressed="'+(inspectTab===i)+'">'+n+'</button>').join('')+'</div>';
+  const rows=active.map.map((t,i)=>t!==i+1?'<div class="inspectMapRow"><strong>'+esc(physicalName(skin,i+1))+'</strong><span>→ '+esc(names[t])+'</span></div>':'').filter(Boolean);
+  return vaultHeading('Saved profile',esc(active.name))+tabs+(inspectTab===0?renderInputMonitor(active,true,false):inspectTab===1?'<div class="inspectMapping"><div class="card"><strong>'+(active.custom?'Remapping enabled':'Stock mapping · stored changes bypassed')+'</strong><small>'+rows.length+' stored assignments</small></div><div class="inspectRows">'+(rows.join('')||'<div class="card">No modified assignments.</div>')+'</div></div>':'<div class="inspectSystem">'+renderMotorMonitor(active,true,false)+'</div>');
+ }
  return vaultHeading('Profile layers',esc(p.name))+layerDeck(p,true);
 }
 function updateSaveBar(){
@@ -1097,6 +1154,10 @@ function render(){
  const p=profile();
  content.innerHTML=deviceMode&&!ready?'<div class="card"><h2>Connect to dongle</h2><p>'+esc(loadError||'Loading saved profile library…')+'</p><button id="retryDevice">Retry</button></div>':deviceMode&&departed?'<div class="card"><h2>Reconnect required</h2><p>'+esc(operationStatus)+'</p><p>Re-enter configuration mode if necessary and reload this page.</p></div>':deck==='network'?networkView():deck==='firmware'?firmwareView():deck==='diagnostics'?diagView():deck==='home'?renderHome():deck==='controller'?mapper():deck==='profiles'?renderProfiles():deck==='tuning'?tuningEditor():'<div class="placeholder">'+icon('about')+'<h2>'+esc(panes[deck][pane])+'</h2><p>Hambone Industries<br><small>A Meat Inc. subsidiary</small></p><p class="muted">'+(pane===2?'S.H.R.E.K. — Synthetic Hierarchical Response Enablement Kernel. Controllers have layers.':pane===1?'Select Controller to try the three Hambone-style vector skins. Confirm changes in the popup, then save or export the draft.':'The competition is running stock firmware. Adorable.<br><small>The Hambone name and logo are trademarks of Hambone Industries, a subsidiary of Meat Inc. (fictional branding).</small>')+'</p><small>Local design preview · based on upstream OGX.</small></div>';
  if(deviceMode&&operationStatus&&!departed&&['network','diagnostics','firmware'].includes(deck)&&!(deck==='firmware'&&pane===3)){const note=document.createElement('small');note.className='deviceNote';note.textContent=operationStatus;content.append(note);}
+ if(vaultReturn!==null&&['controller','tuning'].includes(deck)&&pane===0){
+ const back=document.createElement('button');back.className='returnVault';back.textContent='‹ MeatVault';back.onclick=()=>go('profiles',vaultReturn);
+ const row=deck==='controller'?content.querySelector('.mapperTop'):content.querySelector('.monitorHeading');row?.prepend(back);
+ }
  if(deck==='controller'&&pane!==0){const back=document.createElement('button');back.className='controllerBack';back.textContent='‹ Controller';back.onclick=()=>go('controller',0);content.prepend(back);}
  content.scrollTop=0;
  const monitor=content.querySelector('.widgetDeck');if(monitor){monitor.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&!e.ctrlKey){e.preventDefault();monitor.scrollLeft+=e.deltaY;}},{passive:false});monitor.addEventListener('keydown',e=>{if(e.target===monitor&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();monitor.scrollBy({left:(e.key==='ArrowRight'?1:-1)*monitor.clientWidth,behavior:'smooth'});}});}
@@ -1111,7 +1172,7 @@ function render(){
  content.querySelectorAll('[data-profile]').forEach(b=>b.onclick=()=>{editing=+b.dataset.profile;go('profiles',1);});
  const bind=(id,fn)=>{const e=$(id);if(e)e.onclick=fn;};
  bind('toggleMap',()=>{if(editable()){p.custom=!p.custom;source=null;render();}});
- bind('toggleIgr',()=>{if(editable()){p.igr=!p.igr;render();}});bind('library',()=>{group=0;go('profiles',1);});bind('activeMonitor',()=>go('profiles',6));
+ bind('toggleIgr',()=>{if(editable()){p.igr=!p.igr;render();}});bind('library',()=>{group=0;go('profiles',7);});bind('activeMonitor',()=>{inspectTab=0;go('profiles',6);});bind('vaultLock',()=>go('profiles',8));bind('stockProfile',()=>{library.active=0;render();});content.querySelectorAll('[data-inspect-tab]').forEach(b=>b.onclick=()=>{inspectTab=+b.dataset.inspectTab;render();});
  bind('useProfile',()=>{library.active=editing;render();});bind('export',exportProfile);
  bind('groupPrev',()=>{group=pane===2&&deck==='controller'?(group+4)%5:Math.max(0,group-1);render();});bind('groupNext',()=>{group=pane===2&&deck==='controller'?(group+1)%5:group+1;render();});
  bindProfiles();bindDevice();syncDeviceChrome();
