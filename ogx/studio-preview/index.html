@@ -14,17 +14,39 @@ h2,h3,p{margin:0}h2{font-size:18px}h3{font-size:15px}small,.muted{color:var(--mu
 @media(max-height:570px){.modulegrid{flex:none;grid-auto-rows:minmax(140px,1fr)}.graphLarge{min-height:100px;flex:none}}
 .slotgrid{flex:1;display:grid;grid-template-columns:1fr 64px 1fr;grid-template-rows:repeat(3,minmax(68px,1fr));gap:6px;align-items:stretch}.slot{display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-wrap:anywhere;padding:5px;font-size:12px}.slot0{grid-column:1/4;grid-row:1;width:46%;justify-self:center}.slot3{grid-row:2;grid-column:1}.slot1{grid-row:2;grid-column:3}.slot2{grid-row:3;grid-column:1/4;width:46%;justify-self:center}.slotCenter{grid-row:2;grid-column:2;display:grid;place-items:center;color:var(--accent);font-size:54px}.importGraph{width:100%;max-height:75px}.importGraph svg{width:100%;height:65px}.tile[aria-pressed=true]{border-color:var(--accent);background:#38212b}.tile[aria-pressed=false]{opacity:.75}
 @media(max-height:700px) and (min-height:571px){#content:has(.sliderField){gap:5px}.graphLarge svg{max-height:128px}.sliderField small{line-height:1.2}.sliderField input{height:32px}}
-\n.canvas .modified .hitmark{fill:#6e1012;stroke:#f06470;stroke-width:4}.canvas .shared .hitmark{stroke:#79b4f5;stroke-width:3.5}.canvas .selected .hitmark{stroke:#e9e3da;stroke-width:4.5}\n</style></head><body>
+\n.canvas .modified .hitmark{fill:#6e1012;stroke:#f06470;stroke-width:4}.canvas .shared .hitmark{stroke:#79b4f5;stroke-width:3.5}.canvas .selected .hitmark{stroke:#e9e3da;stroke-width:4.5}\n.releaseNotes{font-size:13px;max-height:145px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}.deviceNote{display:block;padding:5px 8px;background:#362029;border-radius:8px;color:var(--text)}progress{width:100%;accent-color:var(--accent)}progress[hidden]{display:none}
+
+/* Home refinement: six centered tiles, no pager or clean-state footer. */
+[hidden]{display:none!important}
+.window>header{grid-row:1}.window>.status{grid-row:2}.window>#content{grid-row:3}.window>.pager{grid-row:4}.window>footer{grid-row:5}
+.window.homeScreen{grid-template-rows:56px 36px minmax(0,1fr) 0 auto}
+.statusButton{min-width:0;min-height:32px;height:32px;border:0;background:none;text-align:left;padding:0;color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.statusButton:disabled{opacity:1;cursor:default}
+.statusButton.statusError{color:var(--danger)}
+.homeScreen #content{gap:8px;padding:10px;touch-action:pan-y}
+.homeScreen .homeProfile{flex:none;min-height:64px;min-width:0;text-align:center;justify-items:center;padding:7px 9px;gap:2px}
+.homeScreen .homeProfile strong{display:block;max-width:100%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;font-size:clamp(16px,4.5vw,23px)}
+.homeScreen .homeProfile small{font-size:10px;letter-spacing:.08em}
+.homeScreen .homeProfile .muted{font-size:11px}
+.homeScreen .homeTiles{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(76px,1fr);gap:8px}
+.homeScreen .homeTiles .tile{align-items:center;justify-content:center;text-align:center;padding:6px;gap:4px;min-height:0;min-width:0}
+.homeScreen .homeTiles .tile svg{width:clamp(24px,5vh,42px);height:clamp(24px,5vh,42px);flex:none}
+.homeScreen .homeTiles .tile strong{font-size:clamp(14px,4vw,20px);line-height:1.18}
+.homeScreen .homeTiles .tile small{font-size:clamp(11px,2.9vw,13px);line-height:1.18;max-width:100%}
+@media(min-width:850px){.homeScreen .homeTiles{grid-template-columns:repeat(3,minmax(0,1fr))}.homeScreen .homeTiles .tile svg{width:48px;height:48px}.homeScreen #content{padding:16px}.homeScreen .homeProfile{min-height:76px}}
+@media(max-height:570px){.window.homeScreen{grid-template-rows:48px 30px minmax(0,1fr) 0 auto}.homeScreen #content{padding:6px;gap:6px}.homeScreen .homeTiles{gap:6px}.homeScreen .homeProfile{min-height:56px;padding:4px 6px}.homeScreen .homeTiles .tile svg{width:24px;height:24px}}
+@media(orientation:landscape) and (max-height:570px) and (min-width:500px){.homeScreen .homeTiles{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(62px,1fr)}.homeScreen .homeTiles .tile{gap:2px;padding:3px}.homeScreen .homeTiles .tile svg{width:20px;height:20px}.homeScreen .homeProfile{min-height:48px}.homeScreen .homeProfile .muted{display:none}}
+</style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
 <header><button id="home" class="icon" aria-label="Home">⌂</button><svg class="ham" viewBox="0 0 110 92" aria-label="Hambone trademark"><g stroke="#f06470" stroke-width="3" stroke-linejoin="round"><path d="M16 31C29 11 50 17 67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49C73 71 49 91 25 87C3 85 1 62 16 31Z" fill="#4c0e12"/><path d="M67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49Z" fill="#e9e3da"/><path d="M17 33Q27 24 38 38Q52 58 43 77Q39 86 24 81Q5 78 10 58Z" fill="#6e1012"/><path d="M35 20Q61 32 62 68M50 22Q76 42 71 56M42 42Q55 33 69 34M48 58Q63 48 76 48M47 72Q61 65 70 58" fill="none" stroke="#b3000a" stroke-width="2.6"/><ellipse cx="26" cy="59" rx="6" ry="10" fill="none" stroke="#e9e3da" stroke-width="4" transform="rotate(-20 26 59)"/></g><text x="104" y="8" font-size="8" fill="#e9e3da" text-anchor="end">™</text></svg><div class="brand"><strong>OGX Controller Studio™</strong><small>by Hambone Industries</small></div><button id="menu" class="icon" aria-label="Workspace menu">⋯</button></header>
-<div class="status"><span id="status">Standalone · design preview</span><span id="edition">LOCAL</span></div>
+<div class="status"><button id="status" type="button" class="statusButton" aria-label="Connection details" disabled>Standalone · design preview</button><span id="edition">LOCAL</span></div>
 <section id="content" aria-label="Workspace content"></section>
 <nav class="pager" aria-label="Panel navigation"><button id="prev" aria-label="Previous pane">‹</button><button id="pick" aria-label="Select pane"></button><button id="next" aria-label="Next pane">›</button></nav>
 <footer><div class="saveState" id="saveState" aria-live="polite"></div><button id="primary" class="primary">Export profile</button></footer>
 </main>
 <dialog id="modal" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><div id="modalBody"></div><div id="modalActions" class="actions"></div></dialog>
-<input type="file" id="importFile" accept=".json,application/json" hidden><script>// Shared wire codec and portable format. All bytes match the packed C++ Layers.
+<input type="file" id="firmwareFile" accept=".bin,application/octet-stream" hidden><input type="file" id="importFile" accept=".json,application/json" hidden><script>// Shared wire codec and portable format. All bytes match the packed C++ Layers.
 const StudioCodec=(()=>{
  const defaults=(l=100,r=100)=>[+(l!==100),0,0,100,0,0, +(r!==100),0,0,100,0,0, 0,0,100,100,0, 0,0,100,100,0, 0,100,100];
  const valid=(a)=>Array.isArray(a)&&a.length===25&&a.every(x=>Number.isInteger(x)&&x>=0&&x<=255)&&[0,6].every(i=>a[i]<=1&&a[i+1]<=30&&a[i+2]<=30&&a[i+3]>=1&&a[i+3]<=100&&a[i+4]<=a[i+3]&&a[i+5]<=3)&&[12,17].every(i=>a[i]<=1&&a[i+1]<=30&&a[i+2]>=35&&a[i+2]<=100&&a[i+3]>=50&&a[i+3]<=200&&a[i+4]<=1)&&a[22]<=1&&a[23]<=100&&a[24]<=100;
@@ -119,6 +141,164 @@ function controllerSvg(s,p,source,operation){
  }
  return svg+'</svg>';
 }
+
+function versionParts(v){const m=/^v(\d{1,4})\.(\d{1,4})\.(\d{1,4})(?:-dev\.(\d{1,6}))?$/.exec(v);return m?[+m[1],+m[2],+m[3],m[4]===undefined?1000000:+m[4]]:null;}
+function compareVersion(a,b){const x=versionParts(a),y=versionParts(b);if(!x||!y)throw Error('Unsupported version format');for(let i=0;i<x.length;i++)if(x[i]!==y[i])return x[i]-y[i];return 0;}
+async function onlineFetch(url,timeout=30000){const c=new AbortController(),timer=setTimeout(()=>c.abort(),timeout);try{const r=await fetch(url,{signal:c.signal,cache:'no-store',redirect:'error',credentials:'omit',referrerPolicy:'no-referrer'});if(!r.ok)throw Error('Website returned HTTP '+r.status);return await r.arrayBuffer();}finally{clearTimeout(timer);}}
+function sha256Fallback(buf){
+ const K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+ const H=new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]),n=buf.byteLength,pad=new Uint8Array(Math.ceil((n+9)/64)*64),w=new Uint32Array(64);pad.set(new Uint8Array(buf));pad[n]=128;const v=new DataView(pad.buffer);v.setUint32(pad.length-4,n*8);const ro=(x,k)=>(x>>>k)|(x<<(32-k));for(let off=0;off<pad.length;off+=64){for(let i=0;i<16;i++)w[i]=v.getUint32(off+i*4);for(let i=16;i<64;i++){const x=w[i-15],y=w[i-2];w[i]=w[i-16]+(ro(x,7)^ro(x,18)^(x>>>3))+w[i-7]+(ro(y,17)^ro(y,19)^(y>>>10));}let [a,b,c,d,e,f,g,h]=H;for(let i=0;i<64;i++){const t1=(h+(ro(e,6)^ro(e,11)^ro(e,25))+((e&f)^(~e&g))+K[i]+w[i])>>>0,t2=((ro(a,2)^ro(a,13)^ro(a,22))+((a&b)^(a&c)^(b&c)))>>>0;h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;}[a,b,c,d,e,f,g,h].forEach((x,i)=>H[i]+=x);}return Array.from(H,x=>x.toString(16).padStart(8,'0')).join('');
+}
+async function hashHex(buf){if(globalThis.crypto&&crypto.subtle){const digest=await crypto.subtle.digest('SHA-256',buf);return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');}return sha256Fallback(buf);}
+function verifyHeader(buf,version){const bytes=new Uint8Array(buf),v=new DataView(buf);if(bytes[0]!==0xe9||v.getUint32(32,true)!==0xabcd5432)throw Error('Not an ESP32 application image');const str=(o)=>new TextDecoder().decode(bytes.slice(o,o+32)).split('\0')[0];if(str(48)!==version||!str(80).startsWith('OGX-DVD-'))throw Error('Downloaded firmware target/version mismatch');}
+
+// DVD adapter: same-origin, existing dev.12 API only. Not used by standalone.
+const deviceMode=false;
+let busy=false,departed=false,ready=!deviceMode,deviceStatus=null,otaStatus=null,networkCache=[],networkPage=0,netLoaded=false,releaseList=[],releaseIndex=0,operationStatus='',uploadPercent=null,lastActivity=0,deviceError='',conflict=false,deviceLock=false,refreshing=false,uncertainUpload=false;
+const networkPanes=['Overview','Direct Wi-Fi','Home Wi-Fi','Local access','Advanced'];
+const firmwarePanes=['Installed','Available releases','Release notes','Update operation','Recovery'];
+const diagPanes=['Overview','Device resources','Bluetooth','Controller handoff'];
+const releaseBase='https://meatmanmods.com/ogx/dvd/';
+async function request(url,options={}){
+ if(!deviceMode)throw Error('Hardware unavailable in standalone');
+ const c=new AbortController(),timer=setTimeout(()=>c.abort(),12000);
+ try{const r=await fetch(url,{...options,cache:'no-store',signal:c.signal,credentials:'same-origin'});if(!r.ok){const e=Error((await r.text()).slice(0,500)||'HTTP '+r.status);e.status=r.status;throw e;}return r;}finally{clearTimeout(timer);}
+}
+const post=(url,data)=>request(url,{method:'POST',...(data===undefined?{}:{headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})});
+function validLibrary(d){
+ if(!d||d.schema!==2||!Number.isInteger(d.revision)||d.revision<1||d.revision>0xffffffff||!Array.isArray(d.profiles)||d.profiles.length>12||!Array.isArray(d.slots)||d.slots.length!==4)return false;
+ const ids=new Set();for(const p of d.profiles){if(!StudioCodec.validProfile(p)||!Number.isInteger(p.id)||p.id<0||p.id>=12||ids.has(p.id))return false;ids.add(p.id);}
+ return ids.has(0)&&ids.has(1)&&ids.has(d.active)&&d.slots.every(x=>x===255||ids.has(x));
+}
+function locked(){return busy||departed||deviceMode&&(!ready||deviceLock);}
+function syncDeviceChrome(){
+ if(!deviceMode)return;
+ const b=$('status');
+ $('edition').textContent='DVD';b.textContent=departed?'Reconnection required':deviceError?'Connection unavailable · Details':deviceStatus?(deviceStatus.ap?'Direct Wi-Fi':'Home Wi-Fi')+' · '+deviceStatus.ip:'Connecting to dongle…';
+ b.classList.toggle('statusError',!!deviceError||departed);
+ b.disabled=busy||departed;
+ b.onclick=connectionDetails;
+}
+function connectionDetails(){
+ if(!deviceMode||busy||departed)return;
+ const d=deviceStatus||{};
+ modal('Connection details','<p>'+esc(deviceError?'Status request failed: '+deviceError:'Last reported device status')+'</p><small>'+esc(d.ip||'IP unavailable')+' · '+esc(d.version||'Version unavailable')+'</small>'+(deviceError?'<p class="muted">Displayed values may be stale. Retry the status request; if necessary, re-enter configuration mode on the controller.</p>':'')+(operationStatus?'<p>'+esc(operationStatus)+'</p>':''),[{label:'Close'},{label:'Retry status',primary:true,run:()=>refreshDevice({initial:!ready,profileCheck:ready})}]);
+}
+async function refreshDevice({initial=false,profileCheck=false}={}){
+ if(!deviceMode||busy||departed||refreshing)return;
+ refreshing=true;
+ try{
+ const d=await(await request('/api/status')).json();if(typeof d.version!=='string'||typeof d.ip!=='string')throw Error('Invalid device status');deviceStatus=d;deviceError='';
+ if(busy||departed)return;
+ if(initial||profileCheck){
+ const lib=await(await request('/api/profile')).json();if(!validLibrary(lib))throw Error('Invalid device profile library');if(busy||departed)return;
+ if(!ready||!dirty()&&lib.revision!==library.revision){library=lib;baseline=JSON.stringify(lib);editing=lib.profiles.some(p=>p.id===editing)&&ready?editing:lib.active;ready=true;conflict=false;loadError='';}
+ else if(lib.revision!==library.revision){conflict=true;updateSaveBar();}
+ }
+ if(deck==='firmware'||initial||deviceLock){const o=await(await request('/api/v1/ota/status')).json();if(!busy&&!departed){otaStatus=o;deviceLock=uncertainUpload||!!(o.busy||o.reboot_pending);}}
+ }catch(e){deviceError=e.message;if(!ready)loadError=e.message;}finally{refreshing=false;}
+ if(busy||departed)return;
+ syncDeviceChrome();if(!dialog.open&&['network','diagnostics','firmware','home'].includes(deck))render();else updateSaveBar();
+}
+async function saveDevice(){
+ if(!ready||conflict||busy||departed||deviceLock||!dirty())return false;
+ busy=true;render();
+ try{if(!validLibrary(library))throw Error('Invalid profile library.');const d=await(await post('/api/profile',library)).json();if(!Number.isInteger(d.revision)||d.revision<=library.revision)throw Error('Invalid save acknowledgement; reload to check device.');library.revision=d.revision;baseline=JSON.stringify(library);return true;}
+ catch(e){if(e.status===409)conflict=true;modal('Save failed','<p class="error">'+esc(e.message)+'</p><p>Your unsaved draft is retained.</p>',[{label:'Close'}]);return false;}
+ finally{busy=false;if(!dialog.open)render();else updateSaveBar();}
+}
+function resolveConflict(){
+ modal('Device profile changed','<p>The dongle has a newer library. Export the editing profile before discarding local changes, or cancel to retain the draft.</p>',[{label:'Cancel'},{label:'Export draft',run:exportProfile},{label:'Reload saved',primary:true,run:async()=>{busy=true;render();try{const d=await(await request('/api/profile')).json();if(!validLibrary(d))throw Error('Invalid library');library=d;editing=d.active;baseline=JSON.stringify(d);conflict=false;}catch(e){deviceError=e.message;}finally{busy=false;render();}}}]);
+}
+function afterDraft(fn){
+ if(locked())return;
+ if(!dirty()){fn();return;}
+ modal('Unsaved profile changes','<p>Save your library before leaving configuration, or discard the draft explicitly.</p>',[{label:'Cancel'},{label:'Discard',run:()=>{library=JSON.parse(baseline);editing=library.active;conflict=false;fn();}},{label:'Save & continue',primary:true,run:async()=>{if(await saveDevice())fn();}}]);
+}
+function transition(url,data,message,stay=false){
+ if(locked())return;
+ busy=true;render();
+ post(url,data).then(()=>{operationStatus=message;departed=!stay;}).catch(e=>{operationStatus='Request failed or connection lost: '+e.message+'. Reconnect and check device status before retrying.';}).finally(()=>{busy=false;render();if(stay&&!departed)refreshDevice();});
+}
+function leaveGaming(){afterDraft(()=>transition('/api/exit',undefined,'Return-to-gaming command accepted. Wi-Fi will switch off. Re-enter configuration mode to reconnect.'));}
+function networkView(){
+ const d=deviceStatus||{},mode=d.ap===undefined?'Unknown':d.ap?'Direct AP':'Home Wi-Fi',head='<div class="heading"><h2>MeatLink™</h2><small>'+esc(networkPanes[pane])+'</small></div>';
+ if(pane===0)return head+'<div class="hero"><small>NETWORK MODE</small><strong>'+mode+'</strong><span>'+esc(d.ip||'Not available')+'</span></div><div class="tiles"><button class="tile" data-device-pane="1"><strong>Direct Wi-Fi</strong><small>Local access</small></button><button class="tile" data-device-pane="2"><strong>Home Wi-Fi</strong><small>'+(d.saved?'Network saved':'No saved network')+'</small></button></div><small>'+(d.prefer_home===undefined?'Preference unavailable':d.prefer_home?'Home Wi-Fi preferred':'Direct Wi-Fi preferred')+'</small>';
+ if(pane===1)return head+'<div class="card"><h3>Direct configuration</h3><p>Join the OGX-DVD Wi-Fi network and open <b>192.168.4.1</b>. Internet access is not required for local settings.</p><small>Switching networks can disconnect this page.</small></div><button id="useDirect">'+(d.ap?'Prefer direct Wi-Fi':'Switch to direct Wi-Fi')+'</button>';
+ if(pane===2){const items=networkCache.slice(networkPage*3,networkPage*3+3);return head+'<div class="row"><button id="scanCache">Load cached networks</button><button id="manualWifi">Enter manually</button></div><div class="list">'+items.map((n,i)=>'<button data-network="'+(networkPage*3+i)+'"><strong>'+esc(n.ssid)+'</strong><br><small>'+n.rssi+' dBm · '+(n.secure?'Secured':'Open')+'</small></button>').join('')+'</div>'+(netLoaded&&!items.length?'<small>No cached networks. Enter the name manually.</small>':'')+'<div class="row"><button id="netPrev" '+(!networkPage?'disabled':'')+'>‹</button><small>'+ (networkPage+1)+' / '+Math.max(1,Math.ceil(networkCache.length/3))+'</small><button id="netNext" '+((networkPage+1)*3>=networkCache.length?'disabled':'')+'>›</button></div><button id="connectSaved" '+(!d.saved?'disabled':'')+'>Connect saved network</button><small>Cached scan from configuration startup, not a live rescan.</small>';}
+ if(pane===3)return head+'<div class="card"><small>LOCAL HOSTNAME</small><strong>'+esc(d.short_name||d.hostname||'Unavailable')+'</strong><small>Unique fallback: '+esc(d.hostname||'Unavailable')+'</small><small>'+(d.mdns?'mDNS advertised':'mDNS unavailable')+'</small></div><div class="card"><small>IP ADDRESS</small><strong class="metric">'+esc(d.ip||'Unknown')+'</strong></div><small>Use the same network. If .local does not resolve, use the IP address.</small>';
+ return head+'<div class="card"><small>Free ESP32 heap</small><strong class="metric">'+(Number.isFinite(d.heap)?Math.round(d.heap/1024)+' KiB':'Unknown')+'</strong><small>Auto-off countdown: '+(Number.isFinite(d.idle_seconds)?d.idle_seconds+' s':'Unknown')+'</small></div><button id="refreshStatus">Refresh status</button><small>Wi-Fi is off at normal DVD boot. No credential changes are made by viewing this screen.</small>';
+}
+function diagView(){
+ const d=deviceStatus||{};
+ const head='<div class="heading"><h2>SignalScope™</h2><small>'+diagPanes[pane]+'</small></div>';
+ if(pane===0)return head+'<div class="card"><small>DEVICE STATUS</small><strong>'+esc(d.version||'Unavailable')+'</strong><small>'+esc(d.ip||'Unknown')+'</small></div><div class="tiles"><div class="card"><small>Controller battery</small><strong>Not measured</strong></div><div class="card"><small>Bluetooth RSSI</small><strong>Not measured</strong></div><div class="card"><small>BLE interval</small><strong>Not measured</strong></div><div class="card"><small>Observed reports</small><strong>Not measured</strong></div></div>';
+ if(pane===1)return head+'<div class="card"><small>Free ESP32 heap</small><strong class="metric">'+(Number.isFinite(d.heap)?Math.round(d.heap/1024)+' KiB':'Unknown')+'</strong></div><div class="card"><small>Configuration idle countdown</small><strong class="metric">'+(Number.isFinite(d.idle_seconds)?d.idle_seconds+' s':'Unknown')+'</strong></div><button id="refreshStatus">Refresh status</button>';
+ return head+'<div class="card"><h3>Instrumentation pending</h3><p>'+(pane===2?'Controller model, battery, Bluetooth signal and report timing are not exposed by this firmware API.':'Input-to-I2C-write timing and write errors require new firmware instrumentation. This is not end-to-end latency.')+'</p></div>';
+}
+function firmwareView(){
+ const o=otaStatus||{},d=deviceStatus||{},r=releaseList[releaseIndex],head='<div class="heading"><h2>MeatLink™ updates</h2><small>'+firmwarePanes[pane]+'</small></div>';
+ if(pane===0)return head+'<div class="hero"><small>INSTALLED FIRMWARE</small><strong>'+esc(d.version||'Unknown')+'</strong><span>OGX DVD · signed update target</span></div><div class="card"><small>Running partition</small><strong>'+esc(o.running_partition||'Unknown')+'</strong><small>OTA state: '+esc(o.last_result||'Unknown')+'</small><small>'+(o.pending_validation?'Validation pending':'')+'</small></div><button id="checkUpdates">Check for updates</button><small>Hosted HTTPS catalog; signed images verified by dongle. Local upload is HTTP.</small>';
+ if(pane===1||pane===2){if(!r)return head+'<div class="card"><p>No catalog loaded.</p><button id="checkUpdates">Check for updates</button></div>';
+ const cmp=versionParts(d.version)?compareVersion(r.version,d.version):0,label=cmp===0?'Installed':cmp>0?'Install':'Downgrade';
+ return head+'<div class="card"><small>'+esc(r.channel)+'</small><strong class="metric">'+esc(r.version)+'</strong><small>'+Math.round(r.size/1024)+' KiB · '+label+'</small><div class="releaseNotes">'+esc(r.notes)+'</div></div><div class="row"><button id="releasePrev" '+(!releaseIndex?'disabled':'')+'>‹</button><small>'+ (releaseIndex+1)+' / '+releaseList.length+'</small><button id="releaseNext" '+(releaseIndex+1>=releaseList.length?'disabled':'')+'>›</button></div><button id="installRelease" '+(cmp===0?'disabled':'')+'>'+label+'</button>';}
+ if(pane===3)return head+'<div class="card"><h3 id="otaPhase">'+esc(operationStatus||'No update in progress')+'</h3><progress id="otaProgress" max="100" '+(uploadPercent===null?'hidden':'value="'+uploadPercent+'"')+'></progress><small>Upload percentage measures bytes sent, not flash completion. Confirm the running version after reboot.</small></div>';
+ return head+'<div class="card"><h3>Local recovery file</h3><p>Use a signed OGX-DVD ESP32 application binary. Never upload an RP2040 UF2 or merged flash image.</p><button id="recoveryFile">Choose .bin</button><small>Downgrading may restore older profile storage. Export your profiles first.</small></div>';
+}
+function wifiDialog(ssid=''){
+ modal('Home Wi-Fi','<label>Network name<input id="wifiName" value="'+esc(ssid)+'" autocomplete="off"></label><label>Password<input type="password" id="wifiPass" autocomplete="new-password"></label><small>Credentials go only to this dongle over the existing local HTTP API.</small>',[{label:'Cancel',run:()=>{$('wifiPass').value='';}},{label:'Save & connect',primary:true,run:()=>{const ssid=$('wifiName').value,password=$('wifiPass').value;$('wifiPass').value='';const len=s=>new TextEncoder().encode(s).length;if(!len(ssid)||len(ssid)>32||len(password)>63){modal('Invalid Wi-Fi credentials','<p>Network name must be 1–32 bytes and password at most 63 bytes.</p>',[{label:'Close'}]);return;}afterDraft(()=>transition('/wifi/save',{ssid,password},'Credentials saved. Rejoin your home Wi-Fi and open the dongle hostname or IP. Direct AP returns if connection fails.'));}}],()=>{$('wifiPass').value='';});
+}
+async function scanCache(){busy=true;render();try{const a=await(await request('/wifi/scan')).json();if(!Array.isArray(a))throw Error('Invalid scan response');networkCache=a.slice(0,24).filter(n=>typeof n.ssid==='string'&&Number.isFinite(n.rssi));networkPage=0;netLoaded=true;}catch(e){operationStatus=e.message;}finally{busy=false;render();}}
+async function checkCatalog(){
+ if(locked()||!deviceStatus||!versionParts(deviceStatus.version))return;
+ busy=true;operationStatus='Checking hosted firmware catalog…';render();
+ try{await post('/api/activity');const bytes=await onlineFetch(releaseBase+'manifest.json?t='+Date.now());releaseList=validateCatalog(bytes);releaseIndex=Math.max(0,releaseList.findIndex(r=>r.version!==deviceStatus.version));pane=1;last.firmware=1;operationStatus=releaseList.length?'Catalog loaded.':'Catalog is empty.';}
+ catch(e){operationStatus='Catalog check failed: '+e.message+'. Use home Wi-Fi or local recovery.';}finally{busy=false;render();}
+}
+function validateCatalog(bytes){
+ if(bytes.byteLength>32768)throw Error('Catalog too large');const d=JSON.parse(new TextDecoder().decode(bytes));
+ if(d.schema!==1||d.product!=='ogx-dvd-wireless'||!Array.isArray(d.releases)||d.releases.length>30)throw Error('Invalid DVD firmware catalog');
+ const seen=new Set();return d.releases.map(r=>{if(!r||typeof r.version!=='string'||!versionParts(r.version)||seen.has(r.version)||!['experimental','stable'].includes(r.channel)||!Number.isInteger(r.size)||r.size<288||r.size>0x1c0000||typeof r.sha256!=='string'||!/^[a-f0-9]{64}$/.test(r.sha256)||typeof r.notes!=='string'||r.notes.length>1200)throw Error('Invalid release entry');seen.add(r.version);return r;}).sort((a,b)=>compareVersion(b.version,a.version));
+}
+function updatePhase(msg,pct=null){operationStatus=msg;uploadPercent=pct;const a=$('otaPhase'),p=$('otaProgress');if(a)a.textContent=msg;if(p){p.hidden=pct===null;if(pct!==null)p.value=pct;}}
+function startUpload(blob){
+ return new Promise((resolve,reject)=>{const x=new XMLHttpRequest();x.open('POST','/api/v1/ota/upload');x.setRequestHeader('Content-Type','application/octet-stream');x.timeout=180000;x.upload.onprogress=e=>{if(e.lengthComputable){const p=Math.round(100*e.loaded/e.total);updatePhase(p===100?'Dongle verifying signed image…':'Uploading '+p+'%',p);}};x.onload=()=>{if(x.status!==200){reject(Error(x.responseText.slice(0,500)||'HTTP '+x.status));return;}try{const d=JSON.parse(x.responseText);if(typeof d.rebooting!=='boolean')throw Error('Unexpected acknowledgement');resolve(d);}catch(e){reject(e);}};x.onerror=x.ontimeout=()=>reject(Error('Connection lost or timed out. Check running version before retrying.'));x.send(blob);});
+}
+function confirmInstall(r,file){
+ if(locked()||!deviceStatus)return;
+ const version=r?r.version:'local signed image',down=r&&compareVersion(r.version,deviceStatus.version)<0;
+ if(r&&r.version===deviceStatus.version)return;
+ modal(down?'Confirm downgrade':'Confirm installation','<p>'+esc(deviceStatus.version)+' → '+esc(version)+'</p><p>Do not unplug the dongle. It will reboot into gaming mode. '+(down?'Older profile storage may be restored.':'')+'</p>',[{label:'Cancel'},{label:down?'Downgrade':'Install',primary:true,run:()=>afterDraft(()=>installFirmware(r,file))}]);
+}
+async function installFirmware(r,file){
+ busy=true;deck='firmware';pane=3;last.firmware=3;uploadPercent=null;operationStatus='Preparing firmware…';render();
+ let uploadStarted=false;
+ try{
+ await post('/api/activity');let bytes;
+ if(r){updatePhase('Downloading '+r.version+'…');bytes=await onlineFetch(releaseBase+'OGX-DVD-'+r.version+'-ESP32.bin',90000);if(bytes.byteLength!==r.size)throw Error('Downloaded size mismatch');updatePhase('Checking SHA-256 and target…');if(await hashHex(bytes)!==r.sha256)throw Error('Downloaded SHA-256 mismatch');verifyHeader(bytes,r.version);}
+ else{if(!file||file.size<288||file.size>0x1c0000)throw Error('Invalid image size');bytes=await file.arrayBuffer();const v=new TextDecoder().decode(new Uint8Array(bytes,48,32)).split('\0')[0];if(!versionParts(v)||v===deviceStatus.version)throw Error('Invalid or already installed version');verifyHeader(bytes,v);}
+ await post('/api/activity');uploadStarted=true;updatePhase('Uploading signed firmware…',0);const d=await startUpload(new Blob([bytes],{type:'application/octet-stream'}));departed=true;updatePhase(d.rebooting?'Image accepted. Reboot scheduled. Re-enter configuration and verify installed version.':'Image accepted. Power cycle required. Verify installed version afterward.',100);
+ }catch(e){updatePhase('Update failed: '+e.message);if(uploadStarted){uncertainUpload=true;deviceLock=true;operationStatus+=' Reload and check device status before retrying.';}}finally{busy=false;render();}
+}
+function bindDevice(){
+ if(!deviceMode)return;
+ const bind=(id,fn)=>{const e=$(id);if(e)e.onclick=fn;};
+ content.querySelectorAll('[data-device-pane]').forEach(b=>b.onclick=()=>go(deck,+b.dataset.devicePane));
+ content.querySelectorAll('[data-network]').forEach(b=>b.onclick=()=>wifiDialog(networkCache[+b.dataset.network].ssid));
+ bind('useDirect',()=>afterDraft(()=>transition('/wifi/local',undefined,deviceStatus?.ap?'Direct Wi-Fi is now preferred.':'Switch accepted. Join OGX-DVD and reopen 192.168.4.1.',!!deviceStatus?.ap)));
+ bind('manualWifi',()=>wifiDialog());bind('scanCache',scanCache);bind('connectSaved',()=>afterDraft(()=>transition('/wifi/connect',undefined,'Connecting to saved network. Rejoin it and reopen the dongle.')));
+ bind('netPrev',()=>{networkPage--;render();});bind('netNext',()=>{networkPage++;render();});
+ bind('refreshStatus',()=>refreshDevice({profileCheck:true}));bind('checkUpdates',checkCatalog);
+ bind('releasePrev',()=>{releaseIndex--;render();});bind('releaseNext',()=>{releaseIndex++;render();});
+ bind('installRelease',()=>confirmInstall(releaseList[releaseIndex]));bind('recoveryFile',()=>{$('firmwareFile').value='';$('firmwareFile').click();});
+}
+function initDevice(){
+ if(!deviceMode)return;
+ $('firmwareFile').onchange=()=>{const f=$('firmwareFile').files[0];if(f)confirmInstall(null,f);};
+ document.addEventListener('click',activity);document.addEventListener('input',activity);
+ refreshDevice({initial:true});setInterval(()=>{if(!dialog.open&&!busy&&!departed&&ready)refreshDevice();},10000);
+}
+function activity(){if(!deviceMode||locked()||Date.now()-lastActivity<15000)return;lastActivity=Date.now();post('/api/activity').catch(()=>{});}
 
 // Presentation only: reuse the existing portable layer codec and response math.
 const modules=[
@@ -256,14 +436,15 @@ const copy=o=>JSON.parse(JSON.stringify(o));
 const base=(id,name,custom,map)=>({id,name,custom,left:100,right:100,igr:true,map,layers:StudioCodec.encode(StudioCodec.defaults())});
 const initial=()=>({schema:2,revision:1,active:2,slots:[0,1,2,255],profiles:[base(0,'Default Xbox',false,identityMap()),base(1,'Rainbow Six 3',true,identityMap().map(i=>({3:9,9:3,4:10,10:4})[i]||i)),base(2,'My profile',false,identityMap())]});
 let library=initial(),loadError='';
-try{const raw=localStorage.getItem(key);if(raw){const d=JSON.parse(raw);if(d.schema!==2||!Array.isArray(d.profiles)||!d.profiles.every(StudioCodec.validProfile)||!d.profiles.some(p=>p.id===d.active))throw Error('Invalid preview library');library=d;}}catch(e){loadError=e.message;}
+try{const raw=deviceMode?null:localStorage.getItem(key);if(raw){const d=JSON.parse(raw);if(d.schema!==2||!Array.isArray(d.profiles)||!d.profiles.every(StudioCodec.validProfile)||!d.profiles.some(p=>p.id===d.active))throw Error('Invalid preview library');library=d;}}catch(e){loadError=e.message;}
 let baseline=JSON.stringify(library),editing=library.active,deck='home',pane=0,skin='modern',operation='remap',source=null,group=0,restoreFocus=null;
 const last={};
-const profile=()=>library.profiles.find(p=>p.id===editing),editable=()=>editing>=2,dirty=()=>JSON.stringify(library)!==baseline;
+const profile=()=>library.profiles.find(p=>p.id===editing),editable=()=>editing>=2&&!locked(),dirty=()=>JSON.stringify(library)!==baseline;
 const panes={home:['Dashboard'],controller:['Overview','Visual remapper','Assignment summary','Advanced mapping','Transfer'],tuning:tuningPanes,profiles:['Active profile','Library','Quick slots','Manage profiles','Profile layers','Import review'],about:['About','Help','Desktop files']};
 const icons={controller:'<path d="M7 7h10q3 0 4 4l1 5q0 4-3 3l-4-4H9l-4 4q-3 1-3-3l1-5q1-4 4-4Z"/><path d="M7 10v5m-2.5-2.5h5m6-1h.1m3 2h.1"/>',tuning:'<path d="M3 5h18M3 12h18M3 19h18M8 2v6m8 1v6m-5 1v6"/>',profiles:'<rect x="5" y="3" width="16" height="14" rx="2"/><path d="M3 7v12q0 2 2 2h12M9 8h8m-8 4h5"/>',about:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.1"/>'};
+if(deviceMode){panes.network=networkPanes;panes.firmware=firmwarePanes;panes.diagnostics=diagPanes;icons.network='<path d="M2 8q10-9 20 0M6 12q6-5 12 0M10 16q2-2 4 0M12 20h.1"/>';icons.firmware='<path d="M12 2v13m-5-5 5 5 5-5M4 16v5h16v-5"/>';icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';}
 const icon=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[k]+'</svg>';
-function go(d,i){if(dialog.open)return;source=null;group=0;deck=d;pane=i===undefined?(last[d]||0):i;last[d]=pane;render();}
+function go(d,i){if(dialog.open||locked())return;source=null;group=0;deck=d;pane=i===undefined?(last[d]||0):i;last[d]=pane;render();}
 function step(n){if(pane+n>=0&&pane+n<panes[deck].length)go(deck,pane+n);}
 function tile(d,title,desc){return '<button class="tile" data-go="'+d+'">'+icon(d)+'<strong>'+title+'</strong><small>'+desc+'</small></button>';}
 function modal(title,body,actions,after){
@@ -273,9 +454,13 @@ function modal(title,body,actions,after){
  dialog.oncancel=e=>{e.preventDefault();closeModal();after?.();};dialog.showModal();$('modalActions').querySelector('button')?.focus();
 }
 function closeModal(){if(dialog.open)dialog.close();restoreFocus?.focus?.();restoreFocus=null;}
-function save(){try{if(loadError)throw Error('Preview storage error: '+loadError);const current=JSON.parse(localStorage.getItem(key)||'null');if(current&&current.revision!==library.revision)throw Error('Preview changed in another tab. Reload or export draft.');if(!library.profiles.every(StudioCodec.validProfile))throw Error('Invalid profile settings.');const next=copy(library);next.revision++;localStorage.setItem(key,JSON.stringify(next));library=next;baseline=JSON.stringify(next);render();}catch(e){modal('Save failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}}
+function save(){if(deviceMode)return saveDevice();try{if(loadError)throw Error('Preview storage error: '+loadError);const current=JSON.parse(localStorage.getItem(key)||'null');if(current&&current.revision!==library.revision)throw Error('Preview changed in another tab. Reload or export draft.');if(!library.profiles.every(StudioCodec.validProfile))throw Error('Invalid profile settings.');const next=copy(library);next.revision++;localStorage.setItem(key,JSON.stringify(next));library=next;baseline=JSON.stringify(next);render();}catch(e){modal('Save failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}}
 function exportProfile(){const p=profile(),blob=new Blob([JSON.stringify(StudioCodec.portable(p),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=p.name.replace(/[^a-zA-Z0-9_-]/g,'_')+'.ogx-profile.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
-function renderHome(){const saved=JSON.parse(baseline);return '<button class="hero" data-go="profiles"><small>'+(saved.active===library.active?'ACTIVE PROFILE':'PROPOSED ACTIVE · SAVE TO APPLY')+' · MEATVAULT™</small><strong>'+esc(library.profiles.find(p=>p.id===library.active).name)+'</strong><span class="muted">Browser-local preview · no dongle connected</span></button><div class="tiles">'+tile('controller','Controller','Visual remapping')+tile('tuning','Tuning','Precision response')+tile('profiles','Profiles','MeatVault™')+tile('about','About','Hambone Industries')+'</div>';}
+function renderHome(){
+ const saved=JSON.parse(baseline),name=library.profiles.find(p=>p.id===library.active).name;
+ const cards=tile('controller','Controller','Remap buttons')+tile('tuning','Tuning','Adjust input response')+tile('profiles','Profiles','Manage saved profiles')+(deviceMode?tile('diagnostics','Diagnostics','Connection & performance')+tile('network','Network','Wi-Fi settings')+tile('firmware','Firmware','Update your dongle'):tile('about','About','Help & Hambone Industries'));
+ return '<button class="hero homeProfile" data-go="profiles" title="'+esc(name)+'"><small>'+(saved.active===library.active?'ACTIVE PROFILE':'PROPOSED ACTIVE · SAVE TO APPLY')+'</small><strong>'+esc(name)+'</strong><span class="muted">'+(deviceMode?'OGX-Mini DVD · '+esc(deviceStatus?.version||'Loading'):'Standalone · browser-local profiles')+'</span></button><div class="tiles homeTiles">'+cards+'</div>';
+}
 const skinRow=()=>'<div class="row" aria-label="Controller skin">'+Object.entries(skins).map(([k,v])=>'<button data-skin="'+k+'" aria-pressed="'+(skin===k)+'">'+v.label+'</button>').join('')+'</div>';
 const mapToggle=p=>'<button id="toggleMap" '+(!editable()?'disabled':'')+' aria-pressed="'+p.custom+'">Remapping: '+(p.custom?'ON':'STOCK')+'</button>';
 function mapper(){
@@ -318,14 +503,35 @@ function renderProfiles(){
  return layerDeck(p,true);
 }
 function updateSaveBar(){
+ const home=deck==='home';
+ const primary=$('primary'),footer=primary.closest('footer');
+ footer.hidden=home&&!dirty()&&!conflict&&!busy;
+ if(deviceMode&&home){
+  $('saveState').textContent=busy?'Operation in progress…':conflict?'Device profile changed · draft retained':dirty()?'Unsaved device profile changes':'';
+  primary.textContent=conflict?'Resolve profile conflict':'Save changes';
+  primary.disabled=locked()||!!deviceError&&!conflict;
+  primary.onclick=()=>conflict?resolveConflict():saveDevice();
+  return;
+ }
+
+ if(deviceMode){
+ $('saveState').textContent=busy?'Operation in progress…':conflict?'Device profile changed · draft retained':!ready?'Loading device library…':departed?'Reconnect required':dirty()?'Unsaved device profile changes':deviceError?'Connection unavailable':'Settings saved';
+ $('primary').textContent=conflict?'Resolve profile conflict':deck==='home'?(dirty()?'Save & return to gaming':'Return to gaming'):dirty()?'Save changes':'Export profile';
+ $('primary').disabled=locked()||!!deviceError&&!conflict;
+ $('primary').onclick=()=>conflict?resolveConflict():deck==='home'?leaveGaming():dirty()?saveDevice():exportProfile();
+ return;}
  $('saveState').textContent=loadError?'Preview storage unavailable':dirty()?'Unsaved preview changes':'Preview profile saved locally';
  $('primary').textContent=dirty()?'Save changes':'Export profile';$('primary').onclick=()=>dirty()?save():exportProfile();
 }
 
 function render(){
  const focused=document.activeElement?.dataset?.key;
+ document.querySelector('.window').classList.toggle('homeScreen',deck==='home');
+ document.querySelector('.pager').hidden=deck==='home';
  const p=profile();
- content.innerHTML=deck==='home'?renderHome():deck==='controller'?mapper():deck==='profiles'?renderProfiles():deck==='tuning'?tuningEditor():'<div class="placeholder">'+icon('about')+'<h2>'+esc(panes[deck][pane])+'</h2><p>Hambone Industries<br><small>A Meat Inc. subsidiary</small></p><p class="muted">'+(pane===2?'S.H.R.E.K. — Synthetic Hierarchical Response Enablement Kernel. Controllers have layers.':pane===1?'Select Controller to try the three Hambone-style vector skins. Confirm changes in the popup, then save or export the draft.':'The competition is running stock firmware. Adorable.<br><small>The Hambone name and logo are trademarks of Hambone Industries, a subsidiary of Meat Inc. (fictional branding).</small>')+'</p><small>Local design preview · based on upstream OGX.</small></div>';
+ content.innerHTML=deviceMode&&!ready?'<div class="card"><h2>Connect to dongle</h2><p>'+esc(loadError||'Loading saved profile library…')+'</p><button id="retryDevice">Retry</button></div>':deviceMode&&departed?'<div class="card"><h2>Reconnect required</h2><p>'+esc(operationStatus)+'</p><p>Re-enter configuration mode if necessary and reload this page.</p></div>':deck==='network'?networkView():deck==='firmware'?firmwareView():deck==='diagnostics'?diagView():deck==='home'?renderHome():deck==='controller'?mapper():deck==='profiles'?renderProfiles():deck==='tuning'?tuningEditor():'<div class="placeholder">'+icon('about')+'<h2>'+esc(panes[deck][pane])+'</h2><p>Hambone Industries<br><small>A Meat Inc. subsidiary</small></p><p class="muted">'+(pane===2?'S.H.R.E.K. — Synthetic Hierarchical Response Enablement Kernel. Controllers have layers.':pane===1?'Select Controller to try the three Hambone-style vector skins. Confirm changes in the popup, then save or export the draft.':'The competition is running stock firmware. Adorable.<br><small>The Hambone name and logo are trademarks of Hambone Industries, a subsidiary of Meat Inc. (fictional branding).</small>')+'</p><small>Local design preview · based on upstream OGX.</small></div>';
+ if(deviceMode&&deviceError&&ready&&!departed&&deck!=='home'){const err=document.createElement('small');err.className='error';err.textContent='Device status unavailable; last reported values may be stale.';content.prepend(err);}
+ if(deviceMode&&operationStatus&&!departed&&deck!=='home'&&!(deck==='firmware'&&pane===3)){const note=document.createElement('small');note.className='deviceNote';note.textContent=operationStatus;content.append(note);}
  content.scrollTop=0;
  $('pick').textContent=(deck==='home'?'Home':panes[deck][pane])+' · '+(pane+1)+' / '+panes[deck].length;$('prev').disabled=pane===0;$('next').disabled=pane===panes[deck].length-1;
  updateSaveBar();bindTuning();
@@ -340,12 +546,24 @@ function render(){
  bind('openMapper',()=>go('controller',1));bind('library',()=>{group=0;go('profiles',1);});
  bind('useProfile',()=>{library.active=editing;render();});bind('export',exportProfile);
  bind('groupPrev',()=>{group=pane===3&&deck==='controller'?(group+4)%5:Math.max(0,group-1);render();});bind('groupNext',()=>{group=pane===3&&deck==='controller'?(group+1)%5:group+1;render();});
- bindProfiles();
+ bindProfiles();bindDevice();syncDeviceChrome();
+ if(deviceMode){if(locked()){for(const b of document.querySelectorAll('.window button,.window input,.window select'))b.disabled=true;}else{$('home').disabled=$('menu').disabled=$('pick').disabled=false;}
+ const retry=$('retryDevice');if(retry){retry.disabled=false;retry.onclick=()=>refreshDevice({initial:true});}
+ }
  if(focused)content.querySelector('[data-key="'+focused+'"]')?.focus({preventScroll:true});
  bind('other',()=>{if(source!==null){if(operation==='swap'){modal('Select physical input','<div class="list">'+identityMap().filter(i=>i!==source&&!isReserved(i,p.igr)).map(i=>'<button data-extra="'+i+'">'+esc(physicalName(skin,i))+'</button>').join('')+'</div>',[{label:'Cancel',run:()=>{source=null;render();}}],()=>{source=null;render();});dialog.querySelectorAll('[data-extra]').forEach(b=>b.onclick=()=>{closeModal();proposal(+b.dataset.extra);});}else showTargetPicker(source);}else{modal('Select physical input','<div class="list">'+identityMap().filter(i=>!isReserved(i,p.igr)).map(i=>'<button data-extra="'+i+'">'+esc(physicalName(skin,i))+'</button>').join('')+'</div>',[{label:'Cancel'}]);dialog.querySelectorAll('[data-extra]').forEach(b=>b.onclick=()=>{closeModal();tap(+b.dataset.extra);});}});
 }
 $('home').onclick=()=>{group=0;go('home',0);};$('prev').onclick=()=>{group=0;step(-1);};$('next').onclick=()=>{group=0;step(1);};
-function picker(workspaces){const values=workspaces?Object.keys(panes):panes[deck];modal(workspaces?'Workspaces':'Select pane','<div class="list">'+values.map((v,i)=>'<button data-pick="'+i+'">'+esc(v[0].toUpperCase()+v.slice(1))+'</button>').join('')+'</div>',[{label:'Cancel'}]);dialog.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{closeModal();group=0;if(workspaces)go(values[+b.dataset.pick]);else go(deck,+b.dataset.pick);});}
+function picker(workspaces){
+ if(locked())return;
+ const values=workspaces?Object.keys(panes):panes[deck];
+ const extras=workspaces?'<hr><button id="menuExport">Export '+(dirty()?'draft':'profile')+'</button>'+(deviceMode?'<button id="menuStatus">Connection details</button><button id="menuGaming">Return to gaming</button>':''):'';
+ modal(workspaces?'Workspaces':'Select pane','<div class="list">'+values.map((v,i)=>'<button data-pick="'+i+'">'+esc(v[0].toUpperCase()+v.slice(1))+'</button>').join('')+extras+'</div>',[{label:'Cancel'}]);
+ dialog.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{closeModal();group=0;if(workspaces)go(values[+b.dataset.pick]);else go(deck,+b.dataset.pick);});
+ if($('menuExport'))$('menuExport').onclick=()=>{closeModal();exportProfile();};
+ if($('menuStatus'))$('menuStatus').onclick=()=>{closeModal();connectionDetails();};
+ if($('menuGaming'))$('menuGaming').onclick=()=>{closeModal();leaveGaming();};
+}
 $('menu').onclick=()=>picker(true);$('pick').onclick=()=>picker(false);
 let gesture=null;
 content.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'||e.target.closest('button,input,select,textarea,svg,[data-key]')||dialog.open)return;gesture={x:e.clientX,y:e.clientY,id:e.pointerId};});
@@ -355,7 +573,7 @@ let touchOrigin=null;
 content.addEventListener('touchstart',e=>{touchOrigin=null;if(e.touches.length!==1||e.target.closest('button,input,select,textarea,svg,[data-key]')||dialog.open)return;const t=e.touches[0];touchOrigin={x:t.clientX,y:t.clientY,id:t.identifier};},{passive:true});
 content.addEventListener('touchend',e=>{const start=touchOrigin;touchOrigin=null;if(!start||dialog.open)return;const t=Array.from(e.changedTouches).find(t=>t.identifier===start.id);if(!t)return;const dx=t.clientX-start.x,dy=t.clientY-start.y;if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){group=0;step(dx<0?1:-1);}},{passive:true});
 content.addEventListener('touchcancel',()=>touchOrigin=null,{passive:true});
-setupImport();
-window.addEventListener('beforeunload',e=>{if(dirty()){e.preventDefault();e.returnValue='';}});
+setupImport();initDevice();
+window.addEventListener('beforeunload',e=>{if(dirty()||busy){e.preventDefault();e.returnValue='';}});
 render();
 </script></body></html>
