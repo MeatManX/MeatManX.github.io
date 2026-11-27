@@ -253,6 +253,62 @@ header:has(.saveCompact:not([hidden])) .brand strong{font-size:clamp(11px,3.4vw,
  .denseMonitor{grid-template-rows:repeat(2,auto);align-content:start}
  .denseMonitor .inputCard{max-height:none}
 }
+
+/* Direct-control instrument: the plot, rails and sliders share one surface. */
+.directInstrument{min-height:0;gap:5px}
+.directGraph{padding:4px;gap:3px;min-height:0;overflow:visible;display:flex}
+.directGraph .focusWidgets{position:static;flex:none;min-width:0;justify-content:flex-end}
+.directGraph .graphBody{flex:1;min-height:100px;min-width:0;display:flex;gap:3px;align-items:stretch}
+.directGraph .plotColumn{flex:1;min-width:0;min-height:0;display:flex}
+.directGraph .graphLarge{padding:0;min-height:0;width:100%;flex:1}
+.directGraph .graphLarge svg{max-height:none;max-width:none}
+.directGraph .graphControls{display:flex;flex-direction:column;gap:2px;flex:none}
+.instrumentRange{display:flex;align-items:center;gap:5px;min-width:0;font-size:11px;line-height:1.1}
+.instrumentRange .rangeLabel{font-weight:650;white-space:nowrap}
+.instrumentRange output{font-variant-numeric:tabular-nums;color:var(--accent);font-weight:750;min-width:35px;text-align:right}
+.instrumentRange input[type=range]{padding:0;border:0;background:transparent;min-width:0;min-height:36px;height:36px;flex:1;accent-color:var(--accent);touch-action:none}
+.axisRail{display:flex;flex-direction:column;flex:0 0 90px;min-height:0;gap:2px}
+.axisSliders{display:flex;flex:1;min-height:0;gap:1px;justify-content:center}
+.verticalRange{flex:1;flex-direction:column;gap:2px;min-width:44px;min-height:0}
+.verticalRange input[type=range]{writing-mode:vertical-lr;direction:rtl;appearance:auto;width:44px;min-height:44px;height:100%;flex:1}
+.verticalRange output{min-width:0;text-align:center}
+.gainX{color:var(--accent)}.gainY,.gainY output,.yKey{color:var(--info)}
+.gainY input[type=range]{accent-color:var(--info)}
+.axisRail #linkAxes{font-size:10px;min-height:36px;white-space:nowrap;padding:2px 3px}
+.axisRail #linkAxes[aria-pressed=true]{border-color:var(--accent);background:var(--burg)}
+.directGraph .outputExample{font-size:11px;min-height:14px}
+.directGraph .graphKey{font-size:9px;gap:6px}
+.directGraph .instrumentNote{font-size:10px;line-height:1.15;text-align:center}
+.directGraph .geometry button{min-height:36px}
+.directInstrument .instrumentIntro{font-size:12px}
+.directInstrument .presets button{min-height:44px}
+@media(max-height:570px){
+ .directInstrument{min-height:min-content;gap:4px}
+ .directGraph .graphBody{min-height:140px}
+ .directGraph .graphLarge svg{max-height:none}
+ .directInstrument .instrumentHeader .backInputs{min-height:36px}
+ .directInstrument .tuneTabs button{min-height:32px}
+ .directInstrument .instrumentIntro{font-size:11px}
+}
+@media(orientation:landscape) and (max-height:450px){
+ .directInstrument{display:grid;grid-template-columns:minmax(115px,30%) minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto;min-height:0;align-items:start}
+ .directInstrument .instrumentHeader{grid-column:1;grid-row:1}
+ .directInstrument .tuneTabs{grid-column:1;grid-row:2;flex-wrap:wrap}
+ .directInstrument .instrumentIntro{grid-column:1;grid-row:3}
+ .directInstrument .directGraph{grid-column:2;grid-row:1/5;align-self:stretch}
+ .directInstrument:has(.presets) .presets{grid-column:1;grid-row:4;flex-wrap:wrap}
+ .directInstrument .presets button{min-width:42%;min-height:36px}
+ .directGraph .graphBody{min-height:75px}
+ .directGraph .axisRail{flex-basis:90px}
+ .directGraph .instrumentRange input[type=range]{min-height:30px;height:30px}
+ .directGraph .verticalRange input[type=range]{min-height:44px;height:100%}
+ .directGraph .graphControls{gap:0}
+ .directGraph .geometry button{min-height:30px}
+}
+@media(max-height:570px) and (orientation:portrait){
+ .directGraph .graphBody:not(:has(.axisRail)){min-height:96px}
+ .directGraph .graphBody:not(:has(.axisRail)) svg{max-height:110px}
+}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
@@ -634,7 +690,9 @@ const modules=[
  {name:'Game vibration',brand:'HapticDrive™',i:22,kind:'motor',route:15},
  {name:'In-game reset',brand:'Guide shortcut',i:-2,kind:'igr',route:3}
 ];
-let simulated=50,axisEditor=false;
+let simulated=50;
+const linkedAxes=new Map(); // Editor-only preference, never alters saved values until a slider moves.
+const linkKey=(p,i)=>p.id+":"+i;
 const tuningPanes=['Overview','Left stick · Response','Left stick · Dead zones','Left stick · Limits','Left stick · Advanced','Right stick · Response','Right stick · Dead zones','Right stick · Limits','Right stick · Advanced','Left trigger · Response','Left trigger · Travel','Left trigger · Hair trigger','Right trigger · Response','Right trigger · Travel','Right trigger · Hair trigger','Game vibration'];
 function onLayer(p,m,a=StudioV3.decode(p.layers)){return m.i===-1?p.custom:m.i===-2?p.igr:!!a[m.i];}
 function setLayer(p,m,value){if(m.i===-1)p.custom=value;else if(m.i===-2)p.igr=value;else{const a=StudioV3.decode(p.layers);a[m.i]=+value;p.layers=StudioV3.encode(a);}}
@@ -684,36 +742,54 @@ function focusToggle(p,n,j){
  return '<button class="focusToggle '+(v.on?'lit':'dim')+'" data-widget="'+n+':'+j+'" aria-pressed="'+v.on+'" '+(!editable()?'disabled':'')+' title="'+v.desc+'">'+(v.on?'Enabled':'Bypassed')+'</button>';
 }
 
+// Native sliders keep keyboard and touch accessibility. Only the plot is replaced on input.
+function instrumentRange(label,field,v,min,max,help,vertical=false,axis=''){
+ return '<label class="instrumentRange '+(vertical?'verticalRange ':'horizontalRange ')+axis+'" title="'+esc(help)+'"><span class="rangeLabel">'+label+'</span><input type="range" aria-label="'+label+'" aria-description="'+esc(help)+'" '+(vertical?'aria-orientation="vertical" orient="vertical" ':'')+'data-tune="'+field+'" min="'+min+'" max="'+max+'" value="'+v+'" '+(!editable()&&field!=='simulation'?'disabled':'')+'><output data-value="'+field+'">'+v+'%</output></label>';
+}
 function tuningEditor(){
  const p=profile(),a=StudioV3.decode(p.layers);
  if(pane===0)return layerDeck(p,false);
  const n=pane<=4?1:pane<=8?2:pane<=11?3:pane<=14?4:pane===15?5:6,m=modules[n],i=m.i,on=onLayer(p,m,a),sub=pane-m.route;
  const resetButton='<button id="resetLayer" class="graphReset" aria-label="Reset this input" title="Reset all settings for this input" '+(!editable()?'disabled':'')+'>Reset input</button>';
  const groupToggle='<button class="focusToggle '+(on?'lit':'dim')+'" data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+(on?'Custom ON':'Stock')+'</button>';
- let html='<section class="instrumentPanel"><div class="instrumentHeader"><button data-pane="0" class="backInputs" aria-label="All inputs">‹</button><div class="instrumentTitle"><h2>'+m.name+'</h2><small>'+m.brand+'</small></div></div>';
-
+ const header='<section class="instrumentPanel directInstrument"><div class="instrumentHeader"><button data-pane="0" class="backInputs" aria-label="All inputs">‹</button><div class="instrumentTitle"><h2>'+m.name+'</h2><small>'+m.brand+'</small></div></div>';
+ if(m.kind!=='stick'&&m.kind!=='trigger'&&m.kind!=='motor')return header+'<p>Hold Guide for one second to reset supported games.</p></section>';
+ let intro='',tabs='',toggles='',side='',controls='',presets='',legend='',example='',extra='';
+ const opts=m.kind==='stick'?StudioV3.options(p,i):null,axisControls=!!opts&&sub===0&&!deviceMode;
  if(m.kind==='stick'||m.kind==='trigger'){
- const tabs=m.kind==='stick'?['Response','Dead zones','Limits']:['Response','Travel','Hair trigger'];
- const info=panelInfo[m.kind][sub];
- html+='<div class="row tuneTabs">'+tabs.map((t,k)=>'<button data-pane="'+(m.route+k)+'" aria-pressed="'+(sub===k)+'">'+t+'</button>').join('')+'</div><div class="instrumentIntro"><p><strong>'+info[0]+'</strong> — '+info[1]+'</p></div>';
- const toggles='<div class="focusWidgets">'+(deviceMode?groupToggle:widgetSpecs[m.kind].map((w,j)=>w.sub===sub?'<div class="focusState">'+(m.kind==='trigger'&&sub===1?'<small>'+w.title+'</small>':'')+focusToggle(p,n,j)+'</div>':'').join(''))+resetButton+'</div>';
- html+='<div class="graphFrame">'+toggles+'<div id="liveGraph" class="graphLarge">'+focusedGraph(p,m,sub)+'</div></div>'+(m.kind==='stick'&&(sub===3||sub===1)?'':'<div class="outputExample" id="outputExample">'+outputExample(p,m,a)+'</div><div class="graphKey"><span>— Applied'+(m.kind==='stick'?' X':'')+'</span>'+(m.kind==='stick'&&(axisEditor||StudioV3.options(p,m.i).x!==StudioV3.options(p,m.i).y)?'<span style="color:#79b4f5">— Y</span>':'')+'<span>┄ Stock</span><span class="storedKey">┈ Stored</span></div>')+(m.kind==='trigger'&&StudioV3.effective(p,i,a).hair?'<small>Hair trigger overrides sensitivity and full-output travel.</small>':'');
- const curve=m.kind==='stick'?p[m.curve]:a[i+3],cf=m.kind==='stick'?m.curve:'a'+(i+3);
- if(sub===0){
- const advanced=m.kind==='stick'&&!deviceMode,opts=StudioV3.options(p,i);
- if(advanced)html+='<div class="row axisMode"><button data-axis-mode="curve" aria-pressed="'+!axisEditor+'">Response curve</button><button data-axis-mode="gain" aria-pressed="'+axisEditor+'">X / Y sensitivity</button></div>';
- if(advanced&&axisEditor)html+=sliderField('Horizontal (X)','gainX',opts.x,25,200,'Scales left/right output. Higher reaches the output cap earlier.',100)+sliderField('Vertical (Y)','gainY',opts.y,25,200,'Scales up/down output independently.',100);
- else html+=sliderField('Curve strength',cf,curve,50,200,'100% is linear. Presets are preferences, not skill levels.',100)+'<div class="row presets">'+[['Noob',65],['Casual',100],['Pro',135],['God',175]].map(([name,v])=>'<button data-preset="'+v+'" data-field="'+cf+'" aria-pressed="'+(curve===v)+'" title="'+v+'% response" '+(!editable()?'disabled':'')+'>'+name+'<small>'+v+'%</small></button>').join('')+'</div>';
+  const names=m.kind==='stick'?['Response','Dead zones','Limits']:['Response','Travel','Hair trigger'],info=panelInfo[m.kind][sub];
+  tabs='<div class="row tuneTabs">'+names.map((t,k)=>'<button data-pane="'+(m.route+k)+'" aria-pressed="'+(sub===k)+'">'+t+'</button>').join('')+'</div>';
+  intro='<p><strong>'+info[0]+'</strong> — '+info[1]+(axisControls?' X/Y gain scales each axis separately.':'')+'</p>';
+  toggles=deviceMode?groupToggle:widgetSpecs[m.kind].map((w,j)=>w.sub===sub?'<div class="focusState">'+(m.kind==='trigger'&&sub===1?'<small>'+w.title+'</small>':'')+focusToggle(p,n,j)+'</div>':'').join('');
+  if(sub===0){
+   const curve=opts?p[m.curve]:a[i+3],cf=opts?m.curve:'a'+(i+3);
+   if(axisControls){
+    const linked=!!linkedAxes.get(linkKey(p,i));
+    side='<div class="axisRail"><div class="axisSliders">'+instrumentRange('X','gainX',opts.x,25,200,'Horizontal output gain; 100% unchanged.',true,'gainX')+instrumentRange('Y','gainY',opts.y,25,200,'Vertical output gain; 100% unchanged.',true,'gainY')+'</div><button id="linkAxes" aria-pressed="'+linked+'" title="When linked, moving either slider matches the other axis" '+(!editable()?'disabled':'')+'>'+(linked?'Linked':'Link X/Y')+'</button></div>';
+   }
+   controls=instrumentRange('Curve',cf,curve,50,200,'100% is linear; higher values increase partial output.');
+   presets='<div class="row presets" aria-label="Curve presets">'+[['Noob',65],['Casual',100],['Pro',135],['God',175]].map(([name,v])=>'<button data-preset="'+v+'" data-field="'+cf+'" aria-pressed="'+(curve===v)+'" title="Curve '+v+'%; does not alter axis gain" '+(!editable()?'disabled':'')+'>'+name+'<small>'+v+'%</small></button>').join('')+'</div>';
+  }else if(sub===1){
+   if(opts&&!deviceMode)extra='<div class="row geometry"><button data-geometry="square" aria-pressed="'+!opts.radial+'" '+(!editable()?'disabled':'')+'>Square</button><button data-geometry="radial" aria-pressed="'+opts.radial+'" '+(!editable()?'disabled':'')+'>Radial</button></div><small class="instrumentNote">Square: largest axis. Radial: distance from center.</small>';
+   controls=instrumentRange(opts?'Inner dead zone':'Activation','a'+(i+1),a[i+1],0,30,opts?'Ignore movement near center.':'Travel before input registers.')+instrumentRange(opts?'Outer dead zone':'Full output at','a'+(i+2),a[i+2],opts?0:35,opts?30:100,opts?'Reach full output earlier.':'Travel to reach full output.');
+  }else if(opts&&sub===2){
+   controls=instrumentRange('Maximum output','a'+(i+3),a[i+3],1,100,'Cap the maximum output.')+instrumentRange('Anti-dead zone','a'+(i+4),a[i+4],0,a[i+3],'Boost initial movement.');
+  }else if(opts){
+   controls='<div class="row">'+['X','Y'].map((axis,k)=>'<button data-invert="'+(1<<k)+'" aria-pressed="'+!!(a[i+5]&(1<<k))+'" '+(!editable()?'disabled':'')+'>'+(k===0?'Left/right':'Up/down')+': '+(a[i+5]&(1<<k)?'Reversed':'Normal')+'</button>').join('')+'</div>'+(!deviceMode?'<label class="advancedCheck"><input type="checkbox" id="swapAxes" '+(opts.swap?'checked':'')+' '+(!editable()?'disabled':'')+'> Swap axes</label>':'');
+  }else{
+   controls=(deviceMode?'<button data-hair aria-pressed="'+!!a[i+4]+'" '+(!editable()?'disabled':'')+'>Hair mode: '+(a[i+4]?'Instant':'Normal')+'</button>':'')+instrumentRange('Simulated press','simulation',simulated,0,100,'Preview only; not a live controller reading.');
+  }
+  if(!(opts&&(sub===1||sub===3))){
+   example='<div class="outputExample" id="outputExample">'+outputExample(p,m,a)+'</div>';
+   legend='<div class="graphKey"><span>— Applied'+(opts?' X':'')+'</span>'+(opts?'<span class="yKey">— Y</span>':'')+'<span>┄ Stock</span><span class="storedKey">┈ Stored</span></div>';
+  }
+  if(m.kind==='trigger'&&StudioV3.effective(p,i,a).hair)extra+='<small class="instrumentNote">Hair mode overrides curve and full-output travel.</small>';
+ }else{
+  intro='<p><strong>Game vibration</strong> — Adjust the strength of vibration requested by the game.</p>';
+  toggles=groupToggle;
+  controls=instrumentRange('Strong motor','a23',a[23],0,100,'Left/strong game vibration.')+instrumentRange('Weak motor','a24',a[24],0,100,'Right/weak game vibration.');
  }
- else if(sub===1){if(m.kind==='stick'&&!deviceMode){const o=StudioV3.options(p,i);html+='<div class="row geometry"><button data-geometry="square" aria-pressed="'+!o.radial+'" '+(!editable()?'disabled':'')+'>Square · stock</button><button data-geometry="radial" aria-pressed="'+o.radial+'" '+(!editable()?'disabled':'')+'>Radial</button></div><small>Square measures the largest axis; radial measures distance from center and caps diagonal output.</small>';}html+=sliderField(m.kind==='stick'?'Inner dead zone':'Activation threshold','a'+(i+1),a[i+1],0,30,m.kind==='stick'?'Increase to ignore more movement near center.':'How far to press before the game sees input.',0)+sliderField(m.kind==='stick'?'Outer dead zone':'Full output at','a'+(i+2),a[i+2],m.kind==='stick'?0:35,m.kind==='stick'?30:100,m.kind==='stick'?'Increase to reach full movement sooner.':'Lower to reach full press sooner.',m.kind==='stick'?0:100);}
- else if(m.kind==='stick'&&sub===2){html+=sliderField('Maximum output','a'+(i+3),a[i+3],1,100,'Lower to cap maximum movement sent to the game.',100)+sliderField('Anti-dead zone','a'+(i+4),a[i+4],0,a[i+3],'Boost initial movement to overcome a game’s built-in dead zone.',0);}
- else if(m.kind==='stick'){html+='<div class="row">'+['X','Y'].map((axis,k)=>'<button data-invert="'+(1<<k)+'" aria-pressed="'+!!(a[i+5]&(1<<k))+'" '+(!editable()?'disabled':'')+'>'+ (k===0?'Left / right':'Up / down')+': '+(a[i+5]&(1<<k)?'Reversed':'Normal')+'</button>').join('')+'</div>'+(!deviceMode?'<label class="advancedCheck"><input type="checkbox" id="swapAxes" '+(StudioV3.options(p,i).swap?'checked':'')+' '+(!editable()?'disabled':'')+'> Swap horizontal / vertical axes</label>':'');}
- else{html+=(deviceMode?'<div class="row"><button data-hair aria-pressed="'+!!a[i+4]+'" '+(!editable()?'disabled':'')+'>Stored hair mode: '+(a[i+4]?'Instant':'Normal')+'</button></div>':'')+sliderField('Simulated trigger press','simulation',simulated,0,100,'Preview only, not a live controller reading.',50);}
-
- }
- else if(m.kind==='motor'){html+='<div class="instrumentIntro"><p><strong>Game vibration</strong> — Adjust how strongly each motor responds to vibration requested by the game.</p></div><div class="graphFrame"><div class="focusWidgets">'+groupToggle+resetButton+'</div><div id="liveGraph" class="graphLarge">'+tuningGraph(p,m,true)+'</div></div>'+sliderField('Strong motor','a23',a[23],0,100,'Scales the left/strong game rumble request.',100)+sliderField('Weak motor','a24',a[24],0,100,'Scales the right/weak game rumble request.',100)+'<small>System feedback and physical motor tests require the device adapter.</small>';}
- else html+='<div class="card"><div class="graphLarge">'+tuningGraph(p,m,true)+'</div><h3>Physical Guide · hold 1 second</h3><p> Sends LT + RT + Start + Back. The Xbox or game must support reset.</p><small>Turn off to release the Guide shortcut. Protected system chords remain separate.</small></div>';
- return html+'</section>';
+ return header+tabs+'<div class="instrumentIntro">'+intro+'</div><div class="graphFrame directGraph"><div class="focusWidgets">'+toggles+resetButton+'</div><div class="graphBody">'+side+'<div class="plotColumn"><div id="liveGraph" class="graphLarge">'+focusedGraph(p,m,sub)+'</div></div></div><div class="graphControls">'+controls+'</div>'+example+legend+extra+'</div>'+presets+'</section>';
 }
 function bindTuning(){
  const p=profile();
@@ -728,17 +804,17 @@ function bindTuning(){
  function update(field,v){
  if(field==='simulation'){simulated=v;}
  else if(editable()){
- if(field==='gainX'||field==='gainY'){const o=StudioV3.options(p,i);o[field==='gainX'?'x':'y']=v;StudioV3.setOptions(p,i,o);}
+ if(field==='gainX'||field==='gainY'){const o=StudioV3.options(p,i);o[field==='gainX'?'x':'y']=v;if(linkedAxes.get(linkKey(p,i))){o.x=o.y=v;const other=field==='gainX'?'gainY':'gainX',el=content.querySelector('[data-tune="'+other+'"]'),out=content.querySelector('[data-value="'+other+'"]');if(el)el.value=v;if(out)out.textContent=v+'%';}StudioV3.setOptions(p,i,o);}
  else if(field==='left'||field==='right')p[field]=v;
  else{const a=StudioV3.decode(p.layers),j=+field.slice(1);a[j]=v;if(m.kind==='stick'&&j===i+3)a[i+4]=Math.min(a[i+4],v);p.layers=StudioV3.encode(a);}
  }
  const g=$('liveGraph');if(g)g.innerHTML=focusedGraph(p,m,pane-m.route);const ex=$('outputExample');if(ex)ex.innerHTML=outputExample(p,m,StudioV3.decode(p.layers));
  content.querySelectorAll('[data-preset]').forEach(b=>{if(b.dataset.field===field)b.setAttribute('aria-pressed',+b.dataset.preset===v);});
- const o=content.querySelector('[data-value="'+field+'"]');if(o)o.textContent=v+'%';
+ const o=content.querySelector('[data-value="'+field+'"]');if(o)o.textContent=v+'%';const range=content.querySelector('[data-tune="'+field+'"]');if(range&&+range.value!==v)range.value=v;
  if(m.kind==='stick'&&field==='a'+(i+3)){const anti=content.querySelector('[data-tune="a'+(i+4)+'"]');if(anti){anti.max=v;anti.value=StudioV3.decode(p.layers)[i+4];content.querySelector('[data-value="a'+(i+4)+'"]').textContent=anti.value+'%';}}
  updateSaveBar();
  }
- content.querySelectorAll('[data-axis-mode]').forEach(el=>el.onclick=()=>{axisEditor=el.dataset.axisMode==='gain';render();});
+ const link=$('linkAxes');if(link)link.onclick=()=>{if(!editable())return;const k=linkKey(p,i),v=!linkedAxes.get(k);linkedAxes.set(k,v);link.setAttribute('aria-pressed',v);link.textContent=v?'Linked':'Link X/Y';};
  content.querySelectorAll('[data-geometry]').forEach(el=>el.onclick=()=>{if(!editable()||deviceMode)return;const o=StudioV3.options(p,i);o.radial=el.dataset.geometry==='radial';StudioV3.setOptions(p,i,o);render();});
  const swap=$('swapAxes');if(swap)swap.onchange=()=>{if(!editable()||deviceMode)return;const o=StudioV3.options(p,i);o.swap=swap.checked;StudioV3.setOptions(p,i,o);render();};
  content.querySelectorAll('[data-tune]').forEach(el=>el.oninput=()=>update(el.dataset.tune,+el.value));
