@@ -216,6 +216,43 @@ header:has(.saveCompact:not([hidden])) .brand strong{font-size:clamp(11px,3.4vw,
  .denseMonitor .widgetPlot,.denseMonitor .widgetPlot svg{max-height:34px}
 }
 @media(max-width:340px){.denseMonitor .inputTitle small{font-size:9px}.denseMonitor .widgetName{font-size:10px}.denseMonitor .widgetValue{font-size:10px}.denseMonitor .widgetDesc{display:none}}
+
+/* Burger layout: 2x2 physical inputs even on portrait phones. */
+.denseMonitor{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:6px;align-items:start}
+.denseMonitor .inputCard{width:100%;height:auto;aspect-ratio:1;max-height:100%;align-self:start;gap:3px}
+.denseMonitor .widgetGrid,.denseMonitor .stickWidgets{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:3px}
+.denseMonitor .stickWidgets .miniWidget:last-child{grid-column:1/-1}
+.denseMonitor .inputTitle{min-height:32px}
+.denseMonitor .inputLabel{flex-wrap:nowrap;gap:3px}
+.denseMonitor .inputLabel .shortCaption{display:none}
+.denseMonitor .widgetPlot{min-height:14px;max-height:46px}
+.denseMonitor .widgetPlot svg{max-height:46px}
+@media(max-width:599px){
+ .denseMonitor .inputTitle strong{font-size:12px}
+ .denseMonitor .inputTitle small{font-size:9px}
+ .denseMonitor .inputLabel .longCaption{display:none}
+ .denseMonitor .inputLabel .shortCaption{display:inline}
+ .denseMonitor .inputCount{font-size:9px}
+ .denseMonitor .widgetDesc{display:none}
+ .denseMonitor .widgetName,.denseMonitor .widgetValue{font-size:10px}
+ .denseMonitor .legacyCard .inputLabel small{display:none}
+ .denseMonitor .legacyCard .inputCount{display:none}
+}
+@media(max-width:350px){
+ .denseMonitor .inputTitle small{display:none}
+ .denseMonitor .inputTitle strong{font-size:11px}
+}
+@media(orientation:landscape) and (max-height:450px){
+ .denseMonitor .inputCard{height:100%;aspect-ratio:auto}
+ .denseMonitor .inputTitle{min-height:28px}
+ .denseMonitor .widgetGrid,.denseMonitor .stickWidgets{grid-template-rows:1fr;grid-template-columns:repeat(4,minmax(0,1fr))}
+ .denseMonitor .stickWidgets{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .denseMonitor .stickWidgets .miniWidget:last-child{grid-column:auto}
+}
+@media(max-width:599px) and (orientation:portrait){
+ .denseMonitor{grid-template-rows:repeat(2,auto);align-content:start}
+ .denseMonitor .inputCard{max-height:none}
+}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
@@ -574,8 +611,8 @@ function renderAdjustmentWidget(p,n,j,{interactive=true}={}){
 function renderInputCard(p,n,interactive=true){
  const m=modules[n],mask=StudioV3.mask(StudioV3.decode(p.layers)[m.i]),visible=m.kind==='stick'?3:4,count=widgetSpecs[m.kind].slice(0,visible).filter((_,j)=>widgetModel(p,m,j).on).length;
  const caption=m.kind==='stick'?'Analog movement':'Trigger travel';
- const title='<span class="inputLabel"><strong>'+m.name+'</strong><small>'+caption+'</small></span><span class="inputCount">'+count+'/'+visible+(interactive?' ›':'')+'</span>';
- return '<section class="inputCard"><div class="inputCardHeader">'+(interactive?'<button class="inputTitle" data-edit-layer="'+n+'" aria-label="Edit '+m.name+'">'+title+'</button>':'<div class="inputTitle">'+title+'</div>')+(deviceMode&&interactive?'<button class="legacyGroup" data-layer="'+n+'" aria-pressed="'+!!mask+'" aria-label="Toggle all '+m.name+' adjustments" '+(!editable()?'disabled':'')+'>'+(mask?'ON':'OFF')+'</button>':'')+'</div><div class="widgetGrid '+m.kind+'Widgets">'+widgetSpecs[m.kind].slice(0,visible).map((_,j)=>renderAdjustmentWidget(p,n,j,{interactive})).join('')+'</div></section>';
+ const title='<span class="inputLabel"><strong>'+m.name+'</strong><small title="'+caption+'"><span class="longCaption">'+caption+'</span><span class="shortCaption">'+(m.kind==='stick'?'Analog':'Travel')+'</span></small></span><span class="inputCount">'+count+'/'+visible+(interactive?' ›':'')+'</span>';
+ return '<section class="inputCard'+(deviceMode&&interactive?' legacyCard':'')+'"><div class="inputCardHeader">'+(interactive?'<button class="inputTitle" data-edit-layer="'+n+'" aria-label="Edit '+m.name+'">'+title+'</button>':'<div class="inputTitle">'+title+'</div>')+(deviceMode&&interactive?'<button class="legacyGroup" data-layer="'+n+'" aria-pressed="'+!!mask+'" aria-label="Toggle all '+m.name+' adjustments" '+(!editable()?'disabled':'')+'>'+(mask?'ON':'OFF')+'</button>':'')+'</div><div class="widgetGrid '+m.kind+'Widgets">'+widgetSpecs[m.kind].slice(0,visible).map((_,j)=>renderAdjustmentWidget(p,n,j,{interactive})).join('')+'</div></section>';
 }
 function renderInputMonitor(p,all=false,interactive=true){
  return '<div class="inputDeck widgetDeck" tabindex="0" aria-label="Input monitors; swipe for vibration"><div class="inputSlide monitorSlide denseMonitor">'+[1,2,3,4].map(n=>renderInputCard(p,n,interactive)).join('')+'</div><div class="inputSlide motorSlide">'+renderMotorMonitor(p,all,interactive)+'</div></div><div class="swipeHint">'+(!interactive?'Saved profile · read-only. ':deviceMode?'Current firmware: adjustments enabled together. ':'Tap widget to toggle · tap input title to edit. ')+'Swipe for vibration.</div>';
