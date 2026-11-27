@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>OGX Controller Studio — Hambone preview</title><style>:root{color-scheme:dark;--desk:#12161f;--bg:#171a22;--card:#1a2433;--graph:#162234;--line:#465064;--burg:#4c0e12;--ox:#6e1012;--red:#b3000a;--accent:#f06470;--text:#e9e3da;--muted:#b8b0a5;--warn:#e9b45a;--info:#79b4f5;--success:#83c997;--danger:#ff9b9b;--stock:#9298a3;--gap:8px;--radius:16px}
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>OGX Controller Studio — Hambone preview</title><style>:root{color-scheme:dark;--desk:#12161f;--bg:#171a22;--card:#1a2433;--graph:#162234;--line:#465064;--burg:#4c0e12;--ox:#6e1012;--red:#b3000a;--accent:#f06470;--text:#e9e3da;--muted:#b8b0a5;--warn:#e9b45a;--info:#79b4f5;--success:#83c997;--danger:#ff9b9b;--stock:#9298a3;--gap:8px;--radius:16px}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font:15px/1.35 system-ui,sans-serif;color:var(--text);background:var(--desk)}body{display:grid;place-items:center;min-height:100vh;min-height:100dvh;background:radial-gradient(ellipse at 50% 48%,#40171e 0%,#171b25 55%,#12161f 85%);padding:6px;overflow-x:hidden}
 .desktop{position:fixed;inset:0;pointer-events:none;color:#8e8992;font-size:12px;padding:18px}.files{margin-top:48px;width:140px;overflow-wrap:anywhere}.deskname{letter-spacing:.12em}
 .window{position:relative;width:min(100%,900px);height:calc(100vh - 12px);height:calc(100dvh - 12px);max-height:820px;min-height:0;display:grid;grid-template-rows:56px 36px minmax(0,1fr) 44px auto;background:var(--bg);border:1px solid #8b3843;border-radius:14px;overflow:hidden;box-shadow:0 16px 52px #0009}
@@ -14,33 +14,55 @@ h2,h3,p{margin:0}h2{font-size:18px}h3{font-size:15px}small,.muted{color:var(--mu
 @media(max-height:570px){.modulegrid{flex:none;grid-auto-rows:minmax(140px,1fr)}.graphLarge{min-height:100px;flex:none}}
 .slotgrid{flex:1;display:grid;grid-template-columns:1fr 64px 1fr;grid-template-rows:repeat(3,minmax(68px,1fr));gap:6px;align-items:stretch}.slot{display:flex;flex-direction:column;align-items:center;justify-content:center;overflow-wrap:anywhere;padding:5px;font-size:12px}.slot0{grid-column:1/4;grid-row:1;width:46%;justify-self:center}.slot3{grid-row:2;grid-column:1}.slot1{grid-row:2;grid-column:3}.slot2{grid-row:3;grid-column:1/4;width:46%;justify-self:center}.slotCenter{grid-row:2;grid-column:2;display:grid;place-items:center;color:var(--accent);font-size:54px}.importGraph{width:100%;max-height:75px}.importGraph svg{width:100%;height:65px}.tile[aria-pressed=true]{border-color:var(--accent);background:#38212b}.tile[aria-pressed=false]{opacity:.75}
 @media(max-height:700px) and (min-height:571px){#content:has(.sliderField){gap:5px}.graphLarge svg{max-height:128px}.sliderField small{line-height:1.2}.sliderField input{height:32px}}
-\n.canvas .modified .hitmark{fill:#6e1012;stroke:#f06470;stroke-width:4}.canvas .shared .hitmark{stroke:#79b4f5;stroke-width:3.5}.canvas .selected .hitmark{stroke:#e9e3da;stroke-width:4.5}\n.releaseNotes{font-size:13px;max-height:145px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}.deviceNote{display:block;padding:5px 8px;background:#362029;border-radius:8px;color:var(--text)}progress{width:100%;accent-color:var(--accent)}progress[hidden]{display:none}
 
-/* Home refinement: six centered tiles, no pager or clean-state footer. */
+.canvas .modified .hitmark{fill:#6e1012;stroke:#f06470;stroke-width:4}.canvas .shared .hitmark{stroke:#79b4f5;stroke-width:3.5}.canvas .selected .hitmark{stroke:#e9e3da;stroke-width:4.5}
+.releaseNotes{font-size:13px;max-height:145px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}.deviceNote{display:block;padding:5px 8px;background:#362029;border-radius:8px;color:var(--text)}progress{width:100%;accent-color:var(--accent)}progress[hidden]{display:none}
+
+
+/* Prime cut: one shared shell, compact handset on small viewports, MeatOS on large displays. */
 [hidden]{display:none!important}
-.window>header{grid-row:1}.window>.status{grid-row:2}.window>#content{grid-row:3}.window>.pager{grid-row:4}.window>footer{grid-row:5}
-.window.homeScreen{grid-template-rows:56px 36px minmax(0,1fr) 0 auto}
-.statusButton{min-width:0;min-height:32px;height:32px;border:0;background:none;text-align:left;padding:0;color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.srOnly{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+html,body{min-height:100%;margin:0}
+body{padding:0;background:var(--bg);display:block;min-height:100vh;min-height:100dvh}
+.desktop{display:none}
+.window,.window.homeScreen{width:100%;height:100vh;height:100dvh;max-height:none;border:0;border-radius:0;box-shadow:none;grid-template-rows:auto minmax(0,1fr) auto auto;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.window>header{grid-row:1}.window>#content{grid-row:2}.window>.pager{grid-row:3}.window>footer{grid-row:4}
+header{height:44px;min-height:44px;padding:0 4px;gap:3px;background:linear-gradient(100deg,var(--burg),#2d151f)}
+header .icon,header .statusButton{height:44px;min-height:44px;width:44px;min-width:44px;flex:none;display:grid;place-items:center;background:none;border:0;border-radius:8px;padding:0}
+header .homeMark .ham{display:block;width:29px;height:27px}
+.brand{flex:1;min-width:0}
+.brand strong{font-size:clamp(12px,4vw,17px);line-height:1.15;white-space:normal}
+.statusButton{color:var(--muted);position:relative}
+.signal{width:23px;height:21px;overflow:visible}
+.signal .bars{opacity:.32}
+.signal .linkSlash,.signal .linkDot{display:none}
+.statusButton[data-link=online] .linkDot{display:block;fill:var(--success)}
+.statusButton[data-link=offline]{color:var(--danger)}
+.statusButton[data-link=offline] .linkSlash{display:block}
 .statusButton:disabled{opacity:1;cursor:default}
-.statusButton.statusError{color:var(--danger)}
-.homeScreen #content{gap:8px;padding:10px;touch-action:pan-y}
-.homeScreen .homeProfile{flex:none;min-height:64px;min-width:0;text-align:center;justify-items:center;padding:7px 9px;gap:2px}
-.homeScreen .homeProfile strong{display:block;max-width:100%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;font-size:clamp(16px,4.5vw,23px)}
-.homeScreen .homeProfile small{font-size:10px;letter-spacing:.08em}
-.homeScreen .homeProfile .muted{font-size:11px}
+.menuProfile{display:grid;gap:3px;padding:6px 0}.menuProfile strong{overflow-wrap:anywhere}
+#content{padding:8px;gap:8px}
+.homeScreen #content{padding:8px;gap:0;touch-action:pan-y}
 .homeScreen .homeTiles{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(76px,1fr);gap:8px}
 .homeScreen .homeTiles .tile{align-items:center;justify-content:center;text-align:center;padding:6px;gap:4px;min-height:0;min-width:0}
-.homeScreen .homeTiles .tile svg{width:clamp(24px,5vh,42px);height:clamp(24px,5vh,42px);flex:none}
+.homeScreen .homeTiles .tile svg{width:clamp(26px,5.8vh,44px);height:clamp(26px,5.8vh,44px);flex:none}
 .homeScreen .homeTiles .tile strong{font-size:clamp(14px,4vw,20px);line-height:1.18}
 .homeScreen .homeTiles .tile small{font-size:clamp(11px,2.9vw,13px);line-height:1.18;max-width:100%}
-@media(min-width:850px){.homeScreen .homeTiles{grid-template-columns:repeat(3,minmax(0,1fr))}.homeScreen .homeTiles .tile svg{width:48px;height:48px}.homeScreen #content{padding:16px}.homeScreen .homeProfile{min-height:76px}}
-@media(max-height:570px){.window.homeScreen{grid-template-rows:48px 30px minmax(0,1fr) 0 auto}.homeScreen #content{padding:6px;gap:6px}.homeScreen .homeTiles{gap:6px}.homeScreen .homeProfile{min-height:56px;padding:4px 6px}.homeScreen .homeTiles .tile svg{width:24px;height:24px}}
-@media(orientation:landscape) and (max-height:570px) and (min-width:500px){.homeScreen .homeTiles{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(62px,1fr)}.homeScreen .homeTiles .tile{gap:2px;padding:3px}.homeScreen .homeTiles .tile svg{width:20px;height:20px}.homeScreen .homeProfile{min-height:48px}.homeScreen .homeProfile .muted{display:none}}
+footer{padding:4px 8px 8px}.saveState{font-size:11px}.primary{min-height:44px}
+@media(min-width:850px) and (min-height:600px){
+ body{display:grid;place-items:center;padding:24px 24px 24px 160px;background:radial-gradient(ellipse at 50% 48%,#40171e 0%,#171b25 55%,#12161f 85%)}
+ .desktop{display:block}
+ .window,.window.homeScreen{width:min(100%,900px);height:calc(100dvh - 48px);max-height:820px;border:1px solid #8b3843;border-radius:14px;box-shadow:0 16px 52px #0009;padding:0}
+ .homeScreen .homeTiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .homeScreen .homeTiles .tile svg{width:48px;height:48px}
+ .homeScreen #content,#content{padding:12px}
+}
+@media(max-height:570px){.homeScreen #content{padding:6px}.homeScreen .homeTiles{gap:6px}.homeScreen .homeTiles .tile svg{width:26px;height:26px}}
+@media(orientation:landscape) and (max-height:599px) and (min-width:500px){.homeScreen .homeTiles{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(62px,1fr)}.homeScreen .homeTiles .tile{gap:2px;padding:3px}}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
-<header><button id="home" class="icon" aria-label="Home">⌂</button><svg class="ham" viewBox="0 0 110 92" aria-label="Hambone trademark"><g stroke="#f06470" stroke-width="3" stroke-linejoin="round"><path d="M16 31C29 11 50 17 67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49C73 71 49 91 25 87C3 85 1 62 16 31Z" fill="#4c0e12"/><path d="M67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49Z" fill="#e9e3da"/><path d="M17 33Q27 24 38 38Q52 58 43 77Q39 86 24 81Q5 78 10 58Z" fill="#6e1012"/><path d="M35 20Q61 32 62 68M50 22Q76 42 71 56M42 42Q55 33 69 34M48 58Q63 48 76 48M47 72Q61 65 70 58" fill="none" stroke="#b3000a" stroke-width="2.6"/><ellipse cx="26" cy="59" rx="6" ry="10" fill="none" stroke="#e9e3da" stroke-width="4" transform="rotate(-20 26 59)"/></g><text x="104" y="8" font-size="8" fill="#e9e3da" text-anchor="end">™</text></svg><div class="brand"><strong>OGX Controller Studio™</strong><small>by Hambone Industries</small></div><button id="menu" class="icon" aria-label="Workspace menu">⋯</button></header>
-<div class="status"><button id="status" type="button" class="statusButton" aria-label="Connection details" disabled>Standalone · design preview</button><span id="edition">LOCAL</span></div>
+<header><button id="home" class="icon homeMark" aria-label="Home" title="Home"><svg class="ham" viewBox="0 0 110 92" aria-hidden="true"><g stroke="#f06470" stroke-width="3" stroke-linejoin="round"><path d="M16 31C29 11 50 17 67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49C73 71 49 91 25 87C3 85 1 62 16 31Z" fill="#4c0e12"/><path d="M67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49Z" fill="#e9e3da"/><path d="M17 33Q27 24 38 38Q52 58 43 77Q39 86 24 81Q5 78 10 58Z" fill="#6e1012"/><path d="M35 20Q61 32 62 68M50 22Q76 42 71 56M42 42Q55 33 69 34M48 58Q63 48 76 48M47 72Q61 65 70 58" fill="none" stroke="#b3000a" stroke-width="2.6"/><ellipse cx="26" cy="59" rx="6" ry="10" fill="none" stroke="#e9e3da" stroke-width="4" transform="rotate(-20 26 59)"/></g><text x="104" y="8" font-size="8" fill="#e9e3da" text-anchor="end">™</text></svg></button><div class="brand"><strong>OGX Controller Studio™</strong></div><button id="status" type="button" class="statusButton" aria-label="Standalone mode, no device connected" title="Standalone mode" data-link="unknown" disabled><svg class="signal" viewBox="0 0 26 22" aria-hidden="true"><g class="bars" fill="currentColor"><rect x="1" y="16" width="4" height="5" rx="1"/><rect x="7" y="11" width="4" height="10" rx="1"/><rect x="13" y="6" width="4" height="15" rx="1"/><rect x="19" y="1" width="4" height="20" rx="1"/></g><path class="linkSlash" d="M2 2L24 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle class="linkDot" cx="24" cy="19" r="2.4" fill="currentColor"/></svg><span class="srOnly" id="linkText">Standalone · signal not measured</span></button><button id="menu" class="icon" aria-label="Workspace menu">⋯</button></header>
 <section id="content" aria-label="Workspace content"></section>
 <nav class="pager" aria-label="Panel navigation"><button id="prev" aria-label="Previous pane">‹</button><button id="pick" aria-label="Select pane"></button><button id="next" aria-label="Next pane">›</button></nav>
 <footer><div class="saveState" id="saveState" aria-live="polite"></div><button id="primary" class="primary">Export profile</button></footer>
@@ -173,16 +195,18 @@ function validLibrary(d){
 function locked(){return busy||departed||deviceMode&&(!ready||deviceLock);}
 function syncDeviceChrome(){
  if(!deviceMode)return;
- const b=$('status');
- $('edition').textContent='DVD';b.textContent=departed?'Reconnection required':deviceError?'Connection unavailable · Details':deviceStatus?(deviceStatus.ap?'Direct Wi-Fi':'Home Wi-Fi')+' · '+deviceStatus.ip:'Connecting to dongle…';
- b.classList.toggle('statusError',!!deviceError||departed);
- b.disabled=busy||departed;
- b.onclick=connectionDetails;
+ const b=$('status'),state=departed||deviceError?'offline':deviceStatus?'online':'unknown';
+ const description=departed?'Reconnection required':deviceError?'Connection unavailable':deviceStatus?(deviceStatus.ap?'Direct Wi-Fi':'Home Wi-Fi')+' · '+deviceStatus.ip:'Connecting to dongle…';
+ // Bars represent no measured strength yet. The dot indicates only API reachability.
+ b.dataset.link=state;b.classList.toggle('statusError',state==='offline');
+ $('linkText').textContent=description+' · Signal strength not measured';
+ b.title=$('linkText').textContent;b.setAttribute('aria-label',description+'; open connection details');
+ b.disabled=busy||departed;b.onclick=connectionDetails;
 }
 function connectionDetails(){
  if(!deviceMode||busy||departed)return;
  const d=deviceStatus||{};
- modal('Connection details','<p>'+esc(deviceError?'Status request failed: '+deviceError:'Last reported device status')+'</p><small>'+esc(d.ip||'IP unavailable')+' · '+esc(d.version||'Version unavailable')+'</small>'+(deviceError?'<p class="muted">Displayed values may be stale. Retry the status request; if necessary, re-enter configuration mode on the controller.</p>':'')+(operationStatus?'<p>'+esc(operationStatus)+'</p>':''),[{label:'Close'},{label:'Retry status',primary:true,run:()=>refreshDevice({initial:!ready,profileCheck:ready})}]);
+ modal('Connection details','<p>'+esc(deviceError?'Status request failed: '+deviceError:'Last reported device status')+'</p><small>'+esc(d.ip||'IP unavailable')+' · '+esc(d.version||'Version unavailable')+'</small><small>Signal strength is not measured yet. The green dot means the dongle status API responded, not a measured Wi-Fi level.</small>'+(deviceError?'<p class="muted">Displayed values may be stale. Retry the status request; if necessary, re-enter configuration mode on the controller.</p>':'')+(operationStatus?'<p>'+esc(operationStatus)+'</p>':''),[{label:'Close'},{label:'Retry status',primary:true,run:()=>refreshDevice({initial:!ready,profileCheck:ready})}]);
 }
 async function refreshDevice({initial=false,profileCheck=false}={}){
  if(!deviceMode||busy||departed||refreshing)return;
@@ -457,9 +481,8 @@ function closeModal(){if(dialog.open)dialog.close();restoreFocus?.focus?.();rest
 function save(){if(deviceMode)return saveDevice();try{if(loadError)throw Error('Preview storage error: '+loadError);const current=JSON.parse(localStorage.getItem(key)||'null');if(current&&current.revision!==library.revision)throw Error('Preview changed in another tab. Reload or export draft.');if(!library.profiles.every(StudioCodec.validProfile))throw Error('Invalid profile settings.');const next=copy(library);next.revision++;localStorage.setItem(key,JSON.stringify(next));library=next;baseline=JSON.stringify(next);render();}catch(e){modal('Save failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}}
 function exportProfile(){const p=profile(),blob=new Blob([JSON.stringify(StudioCodec.portable(p),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=p.name.replace(/[^a-zA-Z0-9_-]/g,'_')+'.ogx-profile.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 function renderHome(){
- const saved=JSON.parse(baseline),name=library.profiles.find(p=>p.id===library.active).name;
- const cards=tile('controller','Controller','Remap buttons')+tile('tuning','Tuning','Adjust input response')+tile('profiles','Profiles','Manage saved profiles')+(deviceMode?tile('diagnostics','Diagnostics','Connection & performance')+tile('network','Network','Wi-Fi settings')+tile('firmware','Firmware','Update your dongle'):tile('about','About','Help & Hambone Industries'));
- return '<button class="hero homeProfile" data-go="profiles" title="'+esc(name)+'"><small>'+(saved.active===library.active?'ACTIVE PROFILE':'PROPOSED ACTIVE · SAVE TO APPLY')+'</small><strong>'+esc(name)+'</strong><span class="muted">'+(deviceMode?'OGX-Mini DVD · '+esc(deviceStatus?.version||'Loading'):'Standalone · browser-local profiles')+'</span></button><div class="tiles homeTiles">'+cards+'</div>';
+ const cards=tile('controller','Controller','Remap buttons')+tile('tuning','Tuning','Adjust input response')+tile('profiles','Profiles','Manage saved profiles')+(deviceMode?tile('diagnostics','Diagnostics','Connection & performance')+tile('network','Network','Wi-Fi settings')+tile('firmware','Firmware','Update your dongle'):tile('about','About','Help & credits'));
+ return '<div class="tiles homeTiles">'+cards+'</div>';
 }
 const skinRow=()=>'<div class="row" aria-label="Controller skin">'+Object.entries(skins).map(([k,v])=>'<button data-skin="'+k+'" aria-pressed="'+(skin===k)+'">'+v.label+'</button>').join('')+'</div>';
 const mapToggle=p=>'<button id="toggleMap" '+(!editable()?'disabled':'')+' aria-pressed="'+p.custom+'">Remapping: '+(p.custom?'ON':'STOCK')+'</button>';
@@ -505,7 +528,7 @@ function renderProfiles(){
 function updateSaveBar(){
  const home=deck==='home';
  const primary=$('primary'),footer=primary.closest('footer');
- footer.hidden=home&&!dirty()&&!conflict&&!busy;
+ footer.hidden=!dirty()&&!conflict&&!busy;
  if(deviceMode&&home){
   $('saveState').textContent=busy?'Operation in progress…':conflict?'Device profile changed · draft retained':dirty()?'Unsaved device profile changes':'';
   primary.textContent=conflict?'Resolve profile conflict':'Save changes';
@@ -530,7 +553,6 @@ function render(){
  document.querySelector('.pager').hidden=deck==='home';
  const p=profile();
  content.innerHTML=deviceMode&&!ready?'<div class="card"><h2>Connect to dongle</h2><p>'+esc(loadError||'Loading saved profile library…')+'</p><button id="retryDevice">Retry</button></div>':deviceMode&&departed?'<div class="card"><h2>Reconnect required</h2><p>'+esc(operationStatus)+'</p><p>Re-enter configuration mode if necessary and reload this page.</p></div>':deck==='network'?networkView():deck==='firmware'?firmwareView():deck==='diagnostics'?diagView():deck==='home'?renderHome():deck==='controller'?mapper():deck==='profiles'?renderProfiles():deck==='tuning'?tuningEditor():'<div class="placeholder">'+icon('about')+'<h2>'+esc(panes[deck][pane])+'</h2><p>Hambone Industries<br><small>A Meat Inc. subsidiary</small></p><p class="muted">'+(pane===2?'S.H.R.E.K. — Synthetic Hierarchical Response Enablement Kernel. Controllers have layers.':pane===1?'Select Controller to try the three Hambone-style vector skins. Confirm changes in the popup, then save or export the draft.':'The competition is running stock firmware. Adorable.<br><small>The Hambone name and logo are trademarks of Hambone Industries, a subsidiary of Meat Inc. (fictional branding).</small>')+'</p><small>Local design preview · based on upstream OGX.</small></div>';
- if(deviceMode&&deviceError&&ready&&!departed&&deck!=='home'){const err=document.createElement('small');err.className='error';err.textContent='Device status unavailable; last reported values may be stale.';content.prepend(err);}
  if(deviceMode&&operationStatus&&!departed&&deck!=='home'&&!(deck==='firmware'&&pane===3)){const note=document.createElement('small');note.className='deviceNote';note.textContent=operationStatus;content.append(note);}
  content.scrollTop=0;
  $('pick').textContent=(deck==='home'?'Home':panes[deck][pane])+' · '+(pane+1)+' / '+panes[deck].length;$('prev').disabled=pane===0;$('next').disabled=pane===panes[deck].length-1;
@@ -557,7 +579,7 @@ $('home').onclick=()=>{group=0;go('home',0);};$('prev').onclick=()=>{group=0;ste
 function picker(workspaces){
  if(locked())return;
  const values=workspaces?Object.keys(panes):panes[deck];
- const extras=workspaces?'<hr><button id="menuExport">Export '+(dirty()?'draft':'profile')+'</button>'+(deviceMode?'<button id="menuStatus">Connection details</button><button id="menuGaming">Return to gaming</button>':''):'';
+ const extras=workspaces?'<hr><p class="menuProfile"><small>Active profile</small><strong>'+esc(JSON.parse(baseline).profiles.find(p=>p.id===JSON.parse(baseline).active)?.name||'Unavailable')+'</strong></p><button id="menuExport">Export '+(dirty()?'draft':'profile')+'</button>'+(deviceMode?'<button id="menuStatus">Connection details</button><button id="menuGaming">Return to gaming</button>':''):'';
  modal(workspaces?'Workspaces':'Select pane','<div class="list">'+values.map((v,i)=>'<button data-pick="'+i+'">'+esc(v[0].toUpperCase()+v.slice(1))+'</button>').join('')+extras+'</div>',[{label:'Cancel'}]);
  dialog.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{closeModal();group=0;if(workspaces)go(values[+b.dataset.pick]);else go(deck,+b.dataset.pick);});
  if($('menuExport'))$('menuExport').onclick=()=>{closeModal();exportProfile();};
