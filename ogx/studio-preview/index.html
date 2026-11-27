@@ -123,7 +123,7 @@ footer{padding:4px 8px 8px}.saveState{font-size:11px}.primary{min-height:44px}
 /* One instrument panel; global save uses no extra row. Controller sizing uses measured pixels, no cqh dependency. */
 .window,.window.homeScreen{grid-template-rows:auto minmax(0,1fr) auto}
 header .saveCompact{height:36px;min-height:36px;min-width:44px;width:auto;flex:none;padding:4px 7px;font-size:12px;font-weight:700;color:var(--text);background:var(--burg);border:1px solid var(--accent);border-radius:7px}
-header:has(.saveCompact:not([hidden])) .brand strong{font-size:clamp(11px,3.4vw,16px)}
+
 .mapperCard .canvas{container-type:normal;display:flex;align-items:center;justify-content:center;min-width:0}
 .controllerStage{position:relative;flex:none;width:100%;height:auto;aspect-ratio:500/366;max-width:100%;max-height:none}
 .mapperCard .controllerStage svg{display:block;position:static;width:100%;height:100%;max-height:none}
@@ -326,10 +326,23 @@ header:has(.saveCompact:not([hidden])) .brand strong{font-size:clamp(11px,3.4vw,
 .mapperCard .mapperHint .textAction[aria-hidden=true],.mapperCard .mapLegend[aria-hidden=true]{visibility:hidden}
 .mapperCard .mapLegend{height:26px;min-height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:center;line-height:1.2}
 .mapperCard .mapPill{width:96px;min-width:96px;max-width:96px}
+
+/* Stable application chrome: reserve one fixed action slot, never resize title on dirty state. */
+.window>header{height:44px;min-height:44px;max-height:44px}
+header .brand{min-width:0;flex:1}
+header .brand strong{font-size:clamp(12px,3.4vw,17px);line-height:1.15;overflow-wrap:normal}
+header .saveSlot{flex:0 0 58px;width:58px;min-width:58px;height:44px;display:grid;place-items:center}
+header .saveSlot .saveCompact{width:58px;min-width:58px;max-width:58px;height:36px;padding:2px 3px;font-size:11px;white-space:nowrap}
+@media(max-width:350px){header .brand strong{font-size:12px}}
+
+/* Stable tuning toolbar; changing state does not change the control's footprint. */
+.directGraph .focusToggle{width:64px;min-width:64px;max-width:64px;padding:2px 3px}
+.directGraph .graphReset{width:68px;min-width:68px;max-width:68px;padding:2px 3px}
+@media(max-width:350px){.directGraph .focusToggle{width:58px;min-width:58px;max-width:58px}.directGraph .graphReset{width:62px;min-width:62px;max-width:62px}}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
-<header><button id="home" class="icon homeMark" aria-label="Home" title="Home"><svg class="ham" viewBox="0 0 110 92" aria-hidden="true"><g stroke="#f06470" stroke-width="3" stroke-linejoin="round"><path d="M16 31C29 11 50 17 67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49C73 71 49 91 25 87C3 85 1 62 16 31Z" fill="#4c0e12"/><path d="M67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49Z" fill="#e9e3da"/><path d="M17 33Q27 24 38 38Q52 58 43 77Q39 86 24 81Q5 78 10 58Z" fill="#6e1012"/><path d="M35 20Q61 32 62 68M50 22Q76 42 71 56M42 42Q55 33 69 34M48 58Q63 48 76 48M47 72Q61 65 70 58" fill="none" stroke="#b3000a" stroke-width="2.6"/><ellipse cx="26" cy="59" rx="6" ry="10" fill="none" stroke="#e9e3da" stroke-width="4" transform="rotate(-20 26 59)"/></g><text x="104" y="8" font-size="8" fill="#e9e3da" text-anchor="end">™</text></svg></button><div class="brand"><strong>OGX Controller Studio™</strong></div><button id="status" type="button" class="statusButton" aria-label="Standalone mode, no device connected" title="Standalone mode" data-link="unknown" disabled><svg class="signal" viewBox="0 0 26 22" aria-hidden="true"><g class="bars" fill="currentColor"><rect x="1" y="16" width="4" height="5" rx="1"/><rect x="7" y="11" width="4" height="10" rx="1"/><rect x="13" y="6" width="4" height="15" rx="1"/><rect x="19" y="1" width="4" height="20" rx="1"/></g><path class="linkSlash" d="M2 2L24 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle class="linkDot" cx="24" cy="19" r="2.4" fill="currentColor"/></svg><span class="srOnly" id="linkText">Standalone · signal not measured</span></button><button id="primary" class="saveCompact" hidden>Save</button><span id="saveState" class="srOnly" aria-live="polite"></span><button id="menu" class="icon" aria-label="Workspace menu">⋯</button></header>
+<header><button id="home" class="icon homeMark" aria-label="Home" title="Home"><svg class="ham" viewBox="0 0 110 92" aria-hidden="true"><g stroke="#f06470" stroke-width="3" stroke-linejoin="round"><path d="M16 31C29 11 50 17 67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49C73 71 49 91 25 87C3 85 1 62 16 31Z" fill="#4c0e12"/><path d="M67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49Z" fill="#e9e3da"/><path d="M17 33Q27 24 38 38Q52 58 43 77Q39 86 24 81Q5 78 10 58Z" fill="#6e1012"/><path d="M35 20Q61 32 62 68M50 22Q76 42 71 56M42 42Q55 33 69 34M48 58Q63 48 76 48M47 72Q61 65 70 58" fill="none" stroke="#b3000a" stroke-width="2.6"/><ellipse cx="26" cy="59" rx="6" ry="10" fill="none" stroke="#e9e3da" stroke-width="4" transform="rotate(-20 26 59)"/></g><text x="104" y="8" font-size="8" fill="#e9e3da" text-anchor="end">™</text></svg></button><div class="brand"><strong>OGX Controller Studio™</strong></div><button id="status" type="button" class="statusButton" aria-label="Standalone mode, no device connected" title="Standalone mode" data-link="unknown" disabled><svg class="signal" viewBox="0 0 26 22" aria-hidden="true"><g class="bars" fill="currentColor"><rect x="1" y="16" width="4" height="5" rx="1"/><rect x="7" y="11" width="4" height="10" rx="1"/><rect x="13" y="6" width="4" height="15" rx="1"/><rect x="19" y="1" width="4" height="20" rx="1"/></g><path class="linkSlash" d="M2 2L24 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle class="linkDot" cx="24" cy="19" r="2.4" fill="currentColor"/></svg><span class="srOnly" id="linkText">Standalone · signal not measured</span></button><div class="saveSlot"><button id="primary" class="saveCompact" hidden>Save</button></div><span id="saveState" class="srOnly" aria-live="polite"></span><button id="menu" class="icon" aria-label="Workspace menu">⋯</button></header>
 <section id="content" aria-label="Workspace content"></section>
 <nav class="pager" aria-label="Panel navigation"><button id="prev" aria-label="Previous pane">‹</button><button id="pick" aria-label="Select pane"></button><button id="next" aria-label="Next pane">›</button></nav>
 
@@ -801,7 +814,7 @@ function tuningEditor(){
    example='<div class="outputExample" id="outputExample">'+outputExample(p,m,a)+'</div>';
    legend='<div class="graphKey"><span>— Applied'+(opts?' X':'')+'</span>'+(opts?'<span class="yKey">— Y</span>':'')+'<span>┄ Stock</span><span class="storedKey">┈ Stored</span></div>';
   }
-  if(m.kind==='trigger'&&StudioV3.effective(p,i,a).hair)extra+='<small class="instrumentNote">Hair mode overrides curve and full-output travel.</small>';
+  if(m.kind==='trigger')extra+='<small class="instrumentNote">Hair mode overrides curve and full-output travel.</small>';
  }else{
   intro='<p><strong>Game vibration</strong> — Adjust the strength of vibration requested by the game.</p>';
   toggles=groupToggle;
@@ -996,7 +1009,7 @@ function render(){
  document.querySelector('.pager').hidden=deck==='home'||deck==='controller'||deck==='tuning';
  const p=profile();
  content.innerHTML=deviceMode&&!ready?'<div class="card"><h2>Connect to dongle</h2><p>'+esc(loadError||'Loading saved profile library…')+'</p><button id="retryDevice">Retry</button></div>':deviceMode&&departed?'<div class="card"><h2>Reconnect required</h2><p>'+esc(operationStatus)+'</p><p>Re-enter configuration mode if necessary and reload this page.</p></div>':deck==='network'?networkView():deck==='firmware'?firmwareView():deck==='diagnostics'?diagView():deck==='home'?renderHome():deck==='controller'?mapper():deck==='profiles'?renderProfiles():deck==='tuning'?tuningEditor():'<div class="placeholder">'+icon('about')+'<h2>'+esc(panes[deck][pane])+'</h2><p>Hambone Industries<br><small>A Meat Inc. subsidiary</small></p><p class="muted">'+(pane===2?'S.H.R.E.K. — Synthetic Hierarchical Response Enablement Kernel. Controllers have layers.':pane===1?'Select Controller to try the three Hambone-style vector skins. Confirm changes in the popup, then save or export the draft.':'The competition is running stock firmware. Adorable.<br><small>The Hambone name and logo are trademarks of Hambone Industries, a subsidiary of Meat Inc. (fictional branding).</small>')+'</p><small>Local design preview · based on upstream OGX.</small></div>';
- if(deviceMode&&operationStatus&&!departed&&deck!=='home'&&!(deck==='firmware'&&pane===3)){const note=document.createElement('small');note.className='deviceNote';note.textContent=operationStatus;content.append(note);}
+ if(deviceMode&&operationStatus&&!departed&&['network','diagnostics','firmware'].includes(deck)&&!(deck==='firmware'&&pane===3)){const note=document.createElement('small');note.className='deviceNote';note.textContent=operationStatus;content.append(note);}
  if(deck==='controller'&&pane!==0){const back=document.createElement('button');back.className='controllerBack';back.textContent='‹ Controller';back.onclick=()=>go('controller',0);content.prepend(back);}
  content.scrollTop=0;
  const monitor=content.querySelector('.widgetDeck');if(monitor){monitor.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&!e.ctrlKey){e.preventDefault();monitor.scrollLeft+=e.deltaY;}},{passive:false});monitor.addEventListener('keydown',e=>{if(e.target===monitor&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();monitor.scrollBy({left:(e.key==='ArrowRight'?1:-1)*monitor.clientWidth,behavior:'smooth'});}});}
