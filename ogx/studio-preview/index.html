@@ -90,6 +90,35 @@ footer{padding:4px 8px 8px}.saveState{font-size:11px}.primary{min-height:44px}
 .mapperCard .controllerStage .mapPill{bottom:1%;z-index:1}
 .controllerBack{align-self:flex-start;min-height:44px;background:transparent;border:0;color:var(--muted);padding:0 6px}
 .inputDeck .moduleTitle:focus-visible,.inputDeck .graphTap:focus-visible{outline-offset:-2px}
+
+/* Independent instrumentation widgets: reusable, dense, centered, no external switches. */
+.widgetDeck{gap:0;scrollbar-width:thin}
+.monitorSlide{display:grid;grid-template-columns:1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:6px}
+.inputCard{min-width:0;min-height:0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:5px;display:flex;flex-direction:column;gap:4px}
+.inputTitle{flex:none;display:flex;align-items:center;justify-content:space-between;text-align:left;background:none;border:0;min-height:44px;padding:2px 5px}
+.inputTitle span:first-child{display:grid;gap:1px}.inputTitle strong{font-size:14px}.inputTitle small{font-size:10px}.inputCount{font-size:11px;color:var(--muted)}
+.widgetGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;flex:1;min-height:0}
+.miniWidget{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px;min-width:0;min-height:44px;padding:4px 2px;background:#20242d;border:1px solid #465064;border-radius:9px;color:#aab0b9}
+.miniWidget.lit{background:#401820;border-color:#f06470;color:#e9e3da}
+.miniWidget.dim svg{opacity:.66}
+.widgetName{font-size:11px;font-weight:650;line-height:1.15;overflow-wrap:anywhere}
+.widgetValue{font-size:12px;font-weight:750;line-height:1.15;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.widgetState{font-size:9px;line-height:1.1;color:#b8b0a5}
+.miniWidget.lit .widgetValue,.miniWidget.lit .widgetState{color:#f06470}
+.miniWidget svg{display:block;width:100%;height:auto;max-height:65px;min-height:0}
+.focusWidgets{display:flex;gap:5px;flex:none}.focusWidgets .miniWidget{flex:1;flex-direction:row;justify-content:space-around;min-height:44px;gap:5px}.focusWidgets .miniWidget svg{width:64px;max-height:32px}.focusWidgets .widgetName,.focusWidgets .widgetValue{font-size:11px}
+.legacyGroup{min-height:44px;font-size:12px}
+.monitorHeading{flex:none}.monitorHeading h2{font-size:16px}
+@media(min-width:700px) and (min-height:600px){.monitorSlide{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:1fr}.widgetGrid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:7px}.widgetName{font-size:14px}.widgetValue{font-size:18px}.widgetState{font-size:11px}.miniWidget svg{max-height:100px}.inputTitle strong{font-size:18px}}
+@media(max-height:450px) and (orientation:landscape){.monitorSlide{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:1fr}.widgetGrid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}.miniWidget svg{max-height:35px}.inputTitle small{display:none}}
+.widgetDesc{font-size:10px;line-height:1.1;color:var(--muted)}
+.focusWidgets .widgetDesc{display:none}
+.outputExample{font-size:12px;display:flex;align-items:center;justify-content:center;gap:5px;flex:none}
+.outputExample small{font-size:10px}
+.profileFlags{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.profileFlags .miniWidget strong{font-size:12px}
+@media(max-height:570px){.widgetDesc{font-size:9px}.miniWidget{gap:2px}.widgetGrid .miniWidget svg{max-height:48px}}
+@media(min-width:700px) and (min-height:600px){.widgetDesc{font-size:12px}}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
@@ -124,6 +153,41 @@ const StudioCodec=(()=>{
  return {defaults,valid,encode,decode,portable,fromFile,validProfile,response};
 })();
 if(typeof module!=='undefined')module.exports=StudioCodec;
+
+// Extend the v2 codec without altering existing deployed consumers.
+// 0/1 preserve legacy all-off/all-on; 0x81..0x8e encode partial group masks.
+// Group bit order: stick curve/dead zones/limits/invert; trigger curve/activation/full/hair.
+const StudioV3=(()=>{
+ const V2=typeof module!=='undefined'?require('../studio/profile-v2'):StudioCodec;
+ const indices=[0,6,12,17],mask=v=>v===0?0:v===1?15:v&15;
+ const flag=m=>m===0?0:m===15?1:128|m;
+ const validFlag=v=>v===0||v===1||Number.isInteger(v)&&v>=129&&v<=142;
+ const valid=a=>Array.isArray(a)&&a.length===25&&indices.every(i=>validFlag(a[i]))&&V2.valid(a.map((v,i)=>indices.includes(i)?+!!v:v));
+ function decode(h){if(typeof h!=='string'||!/^[0-9a-f]{50}$/.test(h))throw Error('Invalid tuning data');const a=h.match(/../g).map(v=>parseInt(v,16));if(!valid(a))throw Error('Invalid tuning range');return a;}
+ function encode(a){if(!valid(a))throw Error('Invalid tuning layers');return a.map(v=>v.toString(16).padStart(2,'0')).join('');}
+ function validProfile(p){try{const a=decode(p.layers);return V2.validProfile({...p,layers:V2.encode(a.map((v,i)=>indices.includes(i)?+!!v:v))});}catch{return false;}}
+ function effective(p,i,a=decode(p.layers)){
+  const m=mask(a[i]),stick=i<12;
+  if(stick)return {curve:m&1?p[i===0?'left':'right']:100,inner:m&2?a[i+1]:0,outer:m&2?a[i+2]:0,max:m&4?a[i+3]:100,anti:m&4?a[i+4]:0,invert:m&8?a[i+5]:0};
+  return {curve:m&1?a[i+3]:100,inner:m&2?a[i+1]:0,outer:m&4?100-a[i+2]:0,max:100,anti:0,hair:!!(m&8&&a[i+4])};
+ }
+ function response(p,i,x,a){const t=effective(p,i,a);if(t.hair)return x>t.inner/100?1:0;return V2.response(x,t.inner,t.outer,t.curve,t.max,t.anti);}
+ function portable(p){const a=decode(p.layers),old={...p,layers:V2.encode(a.map((v,i)=>indices.includes(i)?+!!v:v))},d=V2.portable(old);
+ if(indices.every(i=>a[i]<=1))return d;
+ d.version=3;
+ ['left_stick','right_stick','left_trigger','right_trigger'].forEach((k,j)=>{d.tuning[k].groups=mask(a[indices[j]]);});
+ return d;
+ }
+ function fromFile(d){
+  if(d?.version!==3)return V2.fromFile(d);
+  const p=V2.fromFile({...d,version:2}),a=decode(p.layers);
+  ['left_stick','right_stick','left_trigger','right_trigger'].forEach((k,j)=>{const t=d.tuning[k],m=t.groups;if(!Number.isInteger(m)||m<0||m>15||t.enabled!==!!m)throw Error('Invalid adjustment groups');a[indices[j]]=flag(m);});
+  p.layers=encode(a);return p;
+ }
+ const legacyCompatible=p=>indices.every(i=>decode(p.layers)[i]<=1);
+ return {defaults:V2.defaults,encode,decode,valid,validProfile,mask,flag,effective,response,portable,fromFile,legacyCompatible};
+})();
+if(typeof module!=='undefined')module.exports=StudioV3;
 
 const names=['Disabled','D-pad Up','D-pad Down','D-pad Left','D-pad Right','A','B','X','Y','White','Black','Left stick click','Right stick click','Back','Start','Guide','Capture','LT','RT'];
 const identityMap=()=>Array.from({length:18},(_,i)=>i+1);
@@ -220,7 +284,7 @@ async function request(url,options={}){
 const post=(url,data)=>request(url,{method:'POST',...(data===undefined?{}:{headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})});
 function validLibrary(d){
  if(!d||d.schema!==2||!Number.isInteger(d.revision)||d.revision<1||d.revision>0xffffffff||!Array.isArray(d.profiles)||d.profiles.length>12||!Array.isArray(d.slots)||d.slots.length!==4)return false;
- const ids=new Set();for(const p of d.profiles){if(!StudioCodec.validProfile(p)||!Number.isInteger(p.id)||p.id<0||p.id>=12||ids.has(p.id))return false;ids.add(p.id);}
+ const ids=new Set();for(const p of d.profiles){if(!StudioV3.validProfile(p)||!StudioV3.legacyCompatible(p)||!Number.isInteger(p.id)||p.id<0||p.id>=12||ids.has(p.id))return false;ids.add(p.id);}
  return ids.has(0)&&ids.has(1)&&ids.has(d.active)&&d.slots.every(x=>x===255||ids.has(x));
 }
 function locked(){return busy||departed||deviceMode&&(!ready||deviceLock);}
@@ -355,6 +419,57 @@ function initDevice(){
 }
 function activity(){if(!deviceMode||locked()||Date.now()-lastActivity<15000)return;lastActivity=Date.now();post('/api/activity').catch(()=>{});}
 
+// Presentation-independent widget registry. Inputs: profile, module, group and display mode.
+// No DOM reads, no persistence or hardware access in the renderer.
+const widgetSpecs={
+ stick:[
+  {title:'Sensitivity',short:'Partial output',desc:'Output for partial movement',bit:1,sub:0},
+  {title:'Dead zones',short:'Ignore drift',desc:'Ignore drift / reach full travel',bit:2,sub:1},
+  {title:'Output limits',short:'Min / max',desc:'Cap or boost initial output',bit:4,sub:2},
+  {title:'Direction',short:'Reverse axes',desc:'Reverse X or Y axes',bit:8,sub:3}],
+ trigger:[
+  {title:'Sensitivity',short:'Partial output',desc:'Output for partial squeeze',bit:1,sub:0},
+  {title:'Activation',short:'Before input',desc:'Travel before input registers',bit:2,sub:1},
+  {title:'Full output',short:'100% travel',desc:'Travel to reach 100%',bit:4,sub:1},
+  {title:'Hair trigger',short:'Instant output',desc:'Full output after activation',bit:8,sub:2}]
+};
+function widgetModel(p,m,j){
+ const a=StudioV3.decode(p.layers),i=m.i,s=widgetSpecs[m.kind][j],on=!!(StudioV3.mask(a[i])&s.bit),stick=m.kind==='stick',curve=stick?p[m.curve]:a[i+3];
+ let value='',art='',stroke=on?'#f06470':'#9298a3';
+ const line=(d,c=stroke,w=2.4)=>'<path d="'+d+'" stroke="'+c+'" stroke-width="'+w+'" fill="none" stroke-linecap="round" stroke-linejoin="round"/>';
+ const rect=(x,y,w,h,c)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="2" fill="'+c+'"/>';
+ const graph=(fn)=>{let d='';for(let k=0;k<=40;k++){const x=k/40;d+=(k?'L':'M')+(5+90*x).toFixed(1)+' '+(39-33*fn(x)).toFixed(1);}return rect(5,6,90,33,'#12161f')+line('M5 39L95 6','#626976',1)+line(d);};
+ if(j===0){value=curve+'%';art=graph(x=>Math.pow(x,100/curve));}
+ else if(stick&&j===1){value=a[i+1]+' / '+a[i+2]+'%';const r=a[i+1]/100*35,outer=35*(1-a[i+2]/100);art='<rect x="31" y="3" width="38" height="38" rx="4" fill="#12161f" stroke="#626976"/><path d="M50 3V41M31 22H69" stroke="#465064" stroke-width=".8"/><rect x="'+(50-outer/2)+'" y="'+(22-outer/2)+'" width="'+outer+'" height="'+outer+'" rx="1" fill="none" stroke="'+stroke+'"/><rect x="'+(50-r/2)+'" y="'+(22-r/2)+'" width="'+Math.max(1,r)+'" height="'+Math.max(1,r)+'" fill="'+stroke+'"/>';}
+ else if(stick&&j===2){value=a[i+4]+'–'+a[i+3]+'%';art=rect(5,13,90,18,'#12161f')+rect(5,13,.9*a[i+3],18,stroke)+line('M'+(5+.9*a[i+4])+' 9V35','#e9e3da',1.5);}
+ else if(stick){value=a[i+5]===0?'Normal':a[i+5]===3?'X + Y':a[i+5]===1?'X reversed':'Y reversed';art=line('M25 22H75M50 3V41','#626976',1)+line('M50 22L'+(a[i+5]&1?30:70)+' '+(a[i+5]&2?36:8))+ '<circle cx="'+(a[i+5]&1?30:70)+'" cy="'+(a[i+5]&2?36:8)+'" r="3" fill="'+stroke+'"/>';}
+ else if(j===1){value=a[i+1]+'%';art=graph(x=>x<=a[i+1]/100?0:(x-a[i+1]/100)/(1-a[i+1]/100));}
+ else if(j===2){value=a[i+2]+'%';art=graph(x=>Math.min(1,x/(a[i+2]/100)));}
+ else {value=a[i+4]?'Instant':'Normal';art=graph(x=>a[i+4]?(x>0?1:0):x);}
+ const overridden=!stick&&(j===0||j===2)&&on&&StudioV3.effective(p,i,a).hair;
+ return {...s,on,overridden,value,svg:'<svg viewBox="0 0 100 44" aria-hidden="true">'+art+'</svg>'};
+}
+function renderAdjustmentWidget(p,n,j,{interactive=true}={}){
+ const m=modules[n],v=widgetModel(p,m,j),canToggle=interactive&&!deviceMode&&editable(),action=canToggle?' data-widget="'+n+':'+j+'" aria-pressed="'+v.on+'"':'';
+ const content='<span class="widgetName">'+v.title+'</span>'+v.svg+'<span class="widgetValue">'+v.value+'</span><span class="widgetDesc">'+v.short+'</span><span class="widgetState">'+(v.overridden?'Hair priority':v.on?'Enabled':'Bypassed')+'</span>';
+ const label=m.name+' '+v.title+': '+v.value+', '+(v.overridden?'enabled, overridden by hair trigger':v.on?'enabled':'bypassed')+'. '+v.desc;
+ return canToggle?'<button class="miniWidget '+(v.on?'lit':'dim')+'"'+action+' aria-label="'+label+'" title="'+v.desc+'">'+content+'</button>':'<div class="miniWidget '+(v.on?'lit':'dim')+'" aria-label="'+label+'">'+content+'</div>';
+}
+function renderInputCard(p,n,interactive=true){
+ const m=modules[n],mask=StudioV3.mask(StudioV3.decode(p.layers)[m.i]),count=[1,2,4,8].filter(b=>mask&b).length;
+ return '<section class="inputCard">'+(interactive?'<button class="inputTitle" data-edit-layer="'+n+'" aria-label="Edit '+m.name+'">':'<div class="inputTitle">')+'<span><strong>'+m.name+'</strong><small>'+ (m.kind==='stick'?'Analog movement':'Trigger travel')+'</small></span><span class="inputCount">'+count+'/4 '+(interactive?'<span aria-hidden="true">›</span>':'')+'</span>'+(interactive?'</button>':'</div>')+'<div class="widgetGrid">'+widgetSpecs[m.kind].map((_,j)=>renderAdjustmentWidget(p,n,j,{interactive})).join('')+'</div>'+(deviceMode&&interactive?'<button class="legacyGroup" data-layer="'+n+'" aria-pressed="'+!!mask+'" '+(!editable()?'disabled':'')+'>All adjustments '+(mask?'ON':'OFF')+'</button>':'')+'</section>';
+}
+function renderInputMonitor(p,all=false,interactive=true){
+ const ids=[1,2,3,4];
+ return '<div class="inputDeck widgetDeck" tabindex="0" aria-label="Swipe through input monitors"><div class="inputSlide monitorSlide">'+ids.slice(0,2).map(n=>renderInputCard(p,n,interactive)).join('')+'</div><div class="inputSlide monitorSlide">'+ids.slice(2).map(n=>renderInputCard(p,n,interactive)).join('')+'</div><div class="inputSlide motorSlide">'+renderMotorMonitor(p,all,interactive)+'</div></div><div class="swipeHint">'+(!interactive?'Saved profile · read-only. ':deviceMode?'Current firmware: adjustments enabled together. ':'Tap widget to enable/bypass · tap input name to edit. ')+'Swipe for more.</div>';
+}
+function renderMotorMonitor(p,all,interactive=true){
+ const a=StudioV3.decode(p.layers),m=modules[5],muted=a[22]&&a[23]===0&&a[24]===0;
+ const title='<strong>Game vibration</strong><small>HapticDrive™</small>',graph=tuningGraph(p,m),values='<small>Strong '+(a[22]?a[23]:100)+'% · Weak '+(a[22]?a[24]:100)+'%</small>';
+ const other=all?'<div class="profileFlags">'+[0,6].map(n=>{const q=modules[n],on=onLayer(p,q),html='<strong>'+q.name+'</strong><small>'+(on?'Enabled':'Bypassed')+'</small>';return interactive?'<button class="miniWidget '+(on?'lit':'dim')+'" data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+html+'</button>':'<div class="miniWidget '+(on?'lit':'dim')+'">'+html+'</div>';}).join('')+'</div>':'';
+ return '<div class="module '+(onLayer(p,m,a)?'on':'')+'">'+(interactive?'<button class="moduleTitle" data-edit-layer="5">'+title+'</button><button class="graphTap" data-layer="5" aria-pressed="'+!!a[22]+'" aria-label="Toggle custom vibration strength" '+(!editable()?'disabled':'')+'>'+graph+'</button>'+values+'<button id="muteRumble" aria-pressed="'+muted+'" '+(!editable()?'disabled':'')+'>'+(muted?'Enable game vibration':'Mute game vibration')+'</button>':'<div class="moduleTitle">'+title+'</div><div class="graphTap">'+graph+'</div>'+values)+other+'</div>';
+}
+
 // Presentation only: reuse the existing portable layer codec and response math.
 const modules=[
  {name:'Button mapping',brand:'ReFlex Mapping™',i:-1,kind:'map',route:0},
@@ -367,37 +482,37 @@ const modules=[
 ];
 let simulated=50;
 const tuningPanes=['Overview','Left stick · Response','Left stick · Dead zones','Left stick · Limits','Left stick · Direction','Right stick · Response','Right stick · Dead zones','Right stick · Limits','Right stick · Direction','Left trigger · Response','Left trigger · Travel','Left trigger · Preview','Right trigger · Response','Right trigger · Travel','Right trigger · Preview','Game vibration'];
-function onLayer(p,m,a=StudioCodec.decode(p.layers)){return m.i===-1?p.custom:m.i===-2?p.igr:!!a[m.i];}
-function setLayer(p,m,value){if(m.i===-1)p.custom=value;else if(m.i===-2)p.igr=value;else{const a=StudioCodec.decode(p.layers);a[m.i]=+value;p.layers=StudioCodec.encode(a);}}
-function responseValue(p,m,a,x){let i=m.i;if(m.kind==='stick')return StudioCodec.response(x,a[i+1],a[i+2],p[m.curve],a[i+3],a[i+4]);if(m.kind==='trigger'){if(a[i+4])return x>a[i+1]/100?1:0;return StudioCodec.response(x,a[i+1],100-a[i+2],a[i+3]);}return x;}
+function onLayer(p,m,a=StudioV3.decode(p.layers)){return m.i===-1?p.custom:m.i===-2?p.igr:!!a[m.i];}
+function setLayer(p,m,value){if(m.i===-1)p.custom=value;else if(m.i===-2)p.igr=value;else{const a=StudioV3.decode(p.layers);a[m.i]=+value;p.layers=StudioV3.encode(a);}}
+function responseValue(p,m,a,x){return StudioV3.response(p,m.i,x,a);}
 function tuningGraph(p,m,large=false){
- const a=StudioCodec.decode(p.layers),on=onLayer(p,m,a),w=large?280:140,h=large?118:61,l=large?22:4,r=w-5,t=6,b=h-14;
+ const a=StudioV3.decode(p.layers),on=onLayer(p,m,a),w=large?280:140,h=large?118:61,l=large?22:4,r=w-5,t=6,b=h-14;
  if(m.kind==='motor')return '<svg viewBox="0 0 140 61" aria-hidden="true"><text x="4" y="11" fill="#b8b0a5" font-size="9">Strong</text><rect x="4" y="15" width="132" height="9" rx="4" fill="#465064"/><rect x="4" y="15" width="'+132*(on?a[23]:100)/100+'" height="9" rx="4" fill="'+(on?'#f06470':'#9298a3')+'"/><text x="4" y="39" fill="#b8b0a5" font-size="9">Weak</text><rect x="4" y="43" width="132" height="9" rx="4" fill="#465064"/><rect x="4" y="43" width="'+132*(on?a[24]:100)/100+'" height="9" rx="4" fill="'+(on?'#f06470':'#9298a3')+'"/></svg>';
  if(m.kind==='map'||m.kind==='igr')return '<svg viewBox="0 0 140 61" aria-hidden="true"><g stroke="'+(on?'#f06470':'#9298a3')+'" fill="none" stroke-width="2.5">'+(m.kind==='map'?'<path d="M30 16H110Q120 16 125 29L130 45Q133 55 123 55L108 43H32L17 55Q7 55 10 45L15 29Q20 16 30 16Z"/><path d="M37 23V37M30 30H44"/><circle cx="103" cy="25" r="4"/><circle cx="113" cy="34" r="4"/>':'<circle cx="70" cy="30" r="23"/><path d="M56 19L84 41M84 19L56 41"/>')+'</g></svg>';
  const x=v=>l+(r-l)*v,y=v=>b-(b-t)*v;
  let grid='';for(const z of [.25,.5,.75])grid+='<path d="M'+x(z)+' '+t+'V'+b+' M'+l+' '+y(z)+'H'+r+'" fill="none" stroke="#465064" stroke-width=".6"/>';
- const pts=Array.from({length:101},(_,k)=>x(k/100)+','+y(responseValue(p,m,a,k/100))).join(' ');
+ const pts=Array.from({length:101},(_,k)=>x(k/100)+','+y(responseValue(p,m,on?a:a.map((v,i)=>i===m.i?1:v),k/100))).join(' ');
  const v=simulated/100;
- return '<svg viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><rect x="'+l+'" y="'+t+'" width="'+(r-l)+'" height="'+(b-t)+'" rx="3" fill="#12161f"/>'+grid+'<rect x="'+l+'" y="'+t+'" width="'+(r-l)*a[m.i+1]/100+'" height="'+(b-t)+'" fill="#e9b45a" opacity=".16"/><path d="M'+l+' '+b+'L'+r+' '+t+'" stroke="#b8b0a5" fill="none" stroke-width="'+(on?1:2.2)+'" stroke-dasharray="'+(on?'3 3':'0')+'"/><polyline points="'+pts+'" stroke="'+(on?'#f06470':'#626976')+'" stroke-width="2.3" stroke-dasharray="'+(on?'0':'4 3')+'" fill="none"/>'+(large?'<circle cx="'+x(v)+'" cy="'+y(on?responseValue(p,m,a,v):v)+'" r="3.6" fill="#e9e3da"/><text x="'+l+'" y="'+(h-3)+'" font-size="9" fill="#b8b0a5">0% · Physical input</text><text x="'+r+'" y="'+(h-3)+'" font-size="9" text-anchor="end" fill="#b8b0a5">100%</text><text x="7" y="'+((t+b)/2)+'" font-size="8" text-anchor="middle" transform="rotate(-90 7 '+((t+b)/2)+')" fill="#b8b0a5">Xbox output</text>':'')+'</svg>';
+ return '<svg viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><rect x="'+l+'" y="'+t+'" width="'+(r-l)+'" height="'+(b-t)+'" rx="3" fill="#12161f"/>'+grid+'<rect x="'+l+'" y="'+t+'" width="'+(r-l)*StudioV3.effective(p,m.i,a).inner/100+'" height="'+(b-t)+'" fill="#e9b45a" opacity=".16"/><path d="M'+l+' '+b+'L'+r+' '+t+'" stroke="#b8b0a5" fill="none" stroke-width="'+(on?1:2.2)+'" stroke-dasharray="'+(on?'3 3':'0')+'"/><polyline points="'+pts+'" stroke="'+(on?'#f06470':'#626976')+'" stroke-width="2.3" stroke-dasharray="'+(on?'0':'4 3')+'" fill="none"/>'+(large?'<circle cx="'+x(v)+'" cy="'+y(on?responseValue(p,m,a,v):v)+'" r="3.6" fill="#e9e3da"/><text x="'+l+'" y="'+(h-3)+'" font-size="9" fill="#b8b0a5">0% · Physical input</text><text x="'+r+'" y="'+(h-3)+'" font-size="9" text-anchor="end" fill="#b8b0a5">100%</text><text x="7" y="'+((t+b)/2)+'" font-size="8" text-anchor="middle" transform="rotate(-90 7 '+((t+b)/2)+')" fill="#b8b0a5">Xbox output</text>':'')+'</svg>';
 }
 function moduleSummary(p,m,a){const i=m.i;if(m.kind==='map')return p.map.filter((v,k)=>v!==k+1).length+' stored changes';if(m.kind==='igr')return 'Hold Guide 1 second';if(m.kind==='motor')return a[23]+'% / '+a[24]+'%';if(m.kind==='stick')return p[m.curve]+'% curve · DZ '+a[i+1]+'/'+a[i+2];return a[i+4]?'Hair trigger':a[i+3]+'% curve · full '+a[i+2]+'%';}
 function layerDeck(p,all){
- const a=StudioCodec.decode(p.layers),ids=all?[0,1,2,3,4,5,6]:[1,2,3,4,5],pages=Math.ceil(ids.length/4),pg=Math.min(group,pages-1);
- const card=n=>{const m=modules[n],on=onLayer(p,m,a);return '<div class="module '+(on?'on':'')+'"><button class="moduleTitle" data-edit-layer="'+n+'"><strong>'+m.name+'</strong><small>'+(on?'CUSTOM':m.kind==='igr'?'OFF':'STOCK')+'</small></button><button class="graphTap" data-layer="'+n+'" aria-label="Toggle '+m.name+' customization" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+tuningGraph(p,m)+'</button><small>'+moduleSummary(p,m,a)+'</small></div>';};
- if(!all)return '<div class="heading"><h2>Input tuning</h2><small>Tap graph to enable/bypass</small></div><div class="inputDeck" tabindex="0" aria-label="Input tuning, swipe for vibration"><div class="inputSlide modulegrid">'+ids.slice(0,4).map(card).join('')+'</div><div class="inputSlide motorSlide"><div class="module '+(onLayer(p,modules[5],a)?'on':'')+'"><button class="moduleTitle" data-edit-layer="5"><strong>Game vibration</strong><small>HapticDrive™</small></button><button class="graphTap" data-layer="5" aria-label="Toggle custom vibration strength" aria-pressed="'+onLayer(p,modules[5],a)+'" '+(!editable()?'disabled':'')+'>'+tuningGraph(p,modules[5])+'</button><small>'+moduleSummary(p,modules[5],a)+'</small><button id="muteRumble" aria-pressed="'+(onLayer(p,modules[5],a)&&a[23]===0&&a[24]===0)+'" '+(!editable()?'disabled':'')+'>'+(onLayer(p,modules[5],a)&&a[23]===0&&a[24]===0?'Enable game vibration':'Mute game vibration')+'</button></div></div></div><div class="swipeHint">Swipe for vibration · tap input name to edit</div>';
- return '<div class="heading"><h2>Profile layers</h2><small>'+esc(p.name)+'</small></div><div class="modulegrid">'+ids.slice(pg*4,pg*4+4).map(card).join('')+'</div><div class="row subnav"><button id="groupPrev" '+(!pg?'disabled':'')+'>‹</button><small>Modules '+(pg+1)+' / '+pages+'</small><button id="groupNext" '+(pg+1>=pages?'disabled':'')+'>›</button></div>';
+ return '<div class="heading monitorHeading"><h2>'+(all?'Profile monitor':'Input tuning')+'</h2><small>'+esc(all?'Editing '+p.name:'Precision control')+'</small></div>'+renderInputMonitor(p,all);
 }
 function sliderField(label,field,v,min,max,help,def){
  return '<label class="sliderField"><span><strong>'+label+'</strong><output data-value="'+field+'">'+v+'%</output></span><input type="range" data-tune="'+field+'" min="'+min+'" max="'+max+'" value="'+v+'" '+(!editable()&&field!=='simulation'?'disabled':'')+'><small>'+help+' Factory: '+def+'%.</small></label>';
 }
 function tuningEditor(){
- const p=profile(),a=StudioCodec.decode(p.layers);
+ const p=profile(),a=StudioV3.decode(p.layers);
  if(pane===0)return layerDeck(p,false);
  const n=pane<=4?1:pane<=8?2:pane<=11?3:pane<=14?4:pane===15?5:6,m=modules[n],i=m.i,on=onLayer(p,m,a),sub=pane-m.route;
- let html='<div class="heading"><button data-pane="0" class="backInputs" aria-label="All inputs">‹</button><div><h2>'+m.name+'</h2><small>'+m.brand+'</small></div><button data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+(on?'CUSTOM ON':m.kind==='igr'?'OFF':'STOCK')+'</button></div>';
+ let html='<div class="heading"><button data-pane="0" class="backInputs" aria-label="All inputs">‹</button><div><h2>'+m.name+'</h2><small>'+m.brand+'</small></div>'+(deviceMode||m.kind==='motor'?'<button data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+(on?'CUSTOM ON':'STOCK')+'</button>':'')+'</div>';
+ if(!deviceMode&&(m.kind==='stick'||m.kind==='trigger'))html+='<div class="focusWidgets">'+widgetSpecs[m.kind].map((w,j)=>w.sub===sub?renderAdjustmentWidget(p,n,j):'').join('')+'</div>';
+
  if(m.kind==='stick'||m.kind==='trigger'){
  const tabs=m.kind==='stick'?['Response','Dead zones','Limits','Direction']:['Response','Travel','Preview'];
  html+='<div class="row tuneTabs">'+tabs.map((t,k)=>'<button data-pane="'+(m.route+k)+'" aria-pressed="'+(sub===k)+'">'+t+'</button>').join('')+'</div><div id="liveGraph" class="graphLarge">'+tuningGraph(p,m,true)+'</div>';
+ html+='<div class="outputExample" id="outputExample">At '+simulated+'% input → '+Math.round(100*responseValue(p,m,a,simulated/100))+'% Xbox output <small>Simulated</small></div>'+(m.kind==='trigger'&&StudioV3.effective(p,i,a).hair?'<small>Hair trigger overrides sensitivity and full-output travel.</small>':'');
  const curve=m.kind==='stick'?p[m.curve]:a[i+3],cf=m.kind==='stick'?m.curve:'a'+(i+3);
  if(sub===0){html+=sliderField('Response curve',cf,curve,50,200,'Higher increases output for partial movement; lower makes it more gradual.',100)+'<div class="row presets">'+[['Noob',65],['Casual',100],['Pro',135],['God',175]].map(([name,v])=>'<button data-preset="'+v+'" data-field="'+cf+'" aria-pressed="'+(curve===v)+'" title="'+v+'% response" '+(!editable()?'disabled':'')+'>'+name+'</button>').join('')+'</div>';}
  else if(sub===1){html+=sliderField(m.kind==='stick'?'Inner dead zone':'Activation threshold','a'+(i+1),a[i+1],0,30,m.kind==='stick'?'Ignores small stick movement; higher reduces drift and fine control.':'Ignores initial trigger travel.',0)+sliderField(m.kind==='stick'?'Outer dead zone':'Full output at','a'+(i+2),a[i+2],m.kind==='stick'?0:35,m.kind==='stick'?30:100,m.kind==='stick'?'Higher reaches maximum earlier.':'Lower reaches full output sooner.',m.kind==='stick'?0:100);}
@@ -406,32 +521,34 @@ function tuningEditor(){
  }
  else if(m.kind==='motor'){html+='<div id="liveGraph" class="graphLarge">'+tuningGraph(p,m,true)+'</div>'+sliderField('Strong motor','a23',a[23],0,100,'Scales the left/strong game rumble request.',100)+sliderField('Weak motor','a24',a[24],0,100,'Scales the right/weak game rumble request.',100)+'<small>System feedback and physical motor tests require the device adapter.</small>';}
  else html+='<div class="card"><div class="graphLarge">'+tuningGraph(p,m,true)+'</div><h3>Physical Guide · hold 1 second</h3><p> Sends LT + RT + Start + Back. The Xbox or game must support reset.</p><small>Turn off to release the Guide shortcut. Protected system chords remain separate.</small></div>';
- return html+'<div class="row"><small id="layerState">'+(on?'Custom values enabled':'Stored values · not applied')+'</small><button id="resetLayer" '+(!editable()?'disabled':'')+'>Restore layer</button></div>';
+ return html+'<div class="row"><small id="layerState">'+(on?'Custom groups enabled':'Stored values · not applied')+'</small><button id="resetLayer" '+(!editable()?'disabled':'')+'>Restore layer</button></div>';
 }
 function bindTuning(){
  const p=profile();
+ content.querySelectorAll('[data-widget]').forEach(b=>b.onclick=()=>{if(deviceMode||!editable())return;const [n,j]=b.dataset.widget.split(':').map(Number),m=modules[n],a=StudioV3.decode(p.layers);a[m.i]=StudioV3.flag(StudioV3.mask(a[m.i])^widgetSpecs[m.kind][j].bit);p.layers=StudioV3.encode(a);const x=content.querySelector('.inputDeck')?.scrollLeft||0;render();const d=content.querySelector('.inputDeck');if(d)d.scrollLeft=x;});
+
  content.querySelectorAll('[data-layer]').forEach(b=>b.onclick=()=>{if(editable()){const m=modules[+b.dataset.layer];setLayer(p,m,!onLayer(p,m));const x=content.querySelector('.inputDeck')?.scrollLeft||0;render();const d=content.querySelector('.inputDeck');if(d)d.scrollLeft=x;}});
  content.querySelectorAll('[data-edit-layer]').forEach(b=>b.onclick=()=>{const m=modules[+b.dataset.editLayer];group=0;go(m.kind==='map'||m.kind==='igr'?'controller':'tuning',m.kind==='map'?0:m.route);});
  content.querySelectorAll('[data-pane]').forEach(b=>b.onclick=()=>go('tuning',+b.dataset.pane));
- const mute=$('muteRumble');if(mute)mute.onclick=()=>{if(!editable())return;const a=StudioCodec.decode(p.layers),muted=a[22]&&a[23]===0&&a[24]===0;const apply=()=>{if(muted)a[22]=0;else{a[22]=1;a[23]=a[24]=0;}p.layers=StudioCodec.encode(a);render();const d=content.querySelector('.inputDeck');if(d)d.scrollLeft=d.clientWidth;};if(!muted&&(a[23]!==0||a[24]!==0))modal('Mute game vibration?','<p>Set both stored motor strengths to 0%. You can adjust them again in Game vibration.</p>',[{label:'Cancel'},{label:'Mute',primary:true,run:apply}]);else apply();};
+ const mute=$('muteRumble');if(mute)mute.onclick=()=>{if(!editable())return;const a=StudioV3.decode(p.layers),muted=a[22]&&a[23]===0&&a[24]===0;const apply=()=>{if(muted)a[22]=0;else{a[22]=1;a[23]=a[24]=0;}p.layers=StudioV3.encode(a);render();const d=content.querySelector('.inputDeck');if(d)d.scrollLeft=d.scrollWidth-d.clientWidth;};if(!muted&&(a[23]!==0||a[24]!==0))modal('Mute game vibration?','<p>Set both stored motor strengths to 0%. You can adjust them again in Game vibration.</p>',[{label:'Cancel'},{label:'Mute',primary:true,run:apply}]);else apply();};
  if(deck!=='tuning'||pane===0)return;
  const n=pane<=4?1:pane<=8?2:pane<=11?3:pane<=14?4:pane===15?5:6,m=modules[n],i=m.i;
  function update(field,v){
  if(field==='simulation'){simulated=v;}
  else if(editable()){
  if(field==='left'||field==='right')p[field]=v;
- else{const a=StudioCodec.decode(p.layers),j=+field.slice(1);a[j]=v;if(m.kind==='stick'&&j===i+3)a[i+4]=Math.min(a[i+4],v);p.layers=StudioCodec.encode(a);}
+ else{const a=StudioV3.decode(p.layers),j=+field.slice(1);a[j]=v;if(m.kind==='stick'&&j===i+3)a[i+4]=Math.min(a[i+4],v);p.layers=StudioV3.encode(a);}
  }
- const g=$('liveGraph');if(g)g.innerHTML=tuningGraph(p,m,true);
+ const g=$('liveGraph');if(g)g.innerHTML=tuningGraph(p,m,true);const ex=$('outputExample');if(ex)ex.innerHTML='At '+simulated+'% input → '+Math.round(100*responseValue(p,m,StudioV3.decode(p.layers),simulated/100))+'% Xbox output <small>Simulated</small>';const fw=content.querySelector('.focusWidgets');if(fw){fw.querySelectorAll('[data-widget]').forEach(el=>{const j=+el.dataset.widget.split(':')[1],v=widgetModel(p,m,j);el.querySelector('.widgetValue').textContent=v.value;el.querySelector('svg').outerHTML=v.svg;el.setAttribute('aria-label',m.name+' '+v.title+': '+v.value+', '+(v.on?'enabled':'bypassed')+'. '+v.desc);});}
  const o=content.querySelector('[data-value="'+field+'"]');if(o)o.textContent=v+'%';
- if(m.kind==='stick'&&field==='a'+(i+3)){const anti=content.querySelector('[data-tune="a'+(i+4)+'"]');if(anti){anti.max=v;anti.value=StudioCodec.decode(p.layers)[i+4];content.querySelector('[data-value="a'+(i+4)+'"]').textContent=anti.value+'%';}}
+ if(m.kind==='stick'&&field==='a'+(i+3)){const anti=content.querySelector('[data-tune="a'+(i+4)+'"]');if(anti){anti.max=v;anti.value=StudioV3.decode(p.layers)[i+4];content.querySelector('[data-value="a'+(i+4)+'"]').textContent=anti.value+'%';}}
  updateSaveBar();
  }
  content.querySelectorAll('[data-tune]').forEach(el=>el.oninput=()=>update(el.dataset.tune,+el.value));
  content.querySelectorAll('[data-preset]').forEach(el=>el.onclick=()=>{update(el.dataset.field,+el.dataset.preset);render();});
- content.querySelectorAll('[data-invert]').forEach(el=>el.onclick=()=>{const a=StudioCodec.decode(p.layers);update('a'+(i+5),a[i+5]^+el.dataset.invert);render();});
- const hair=content.querySelector('[data-hair]');if(hair)hair.onclick=()=>{update('a'+(i+4),+!StudioCodec.decode(p.layers)[i+4]);render();};
- const reset=$('resetLayer');if(reset)reset.onclick=()=>modal('Restore '+m.name+'?','<p>Only this layer returns to factory settings. Other profile settings remain unchanged.</p>',[{label:'Cancel'},{label:'Restore',primary:true,run:()=>{const a=StudioCodec.decode(p.layers),d=StudioCodec.defaults();if(m.kind==='igr')p.igr=true;else{const count=m.kind==='stick'?6:m.kind==='trigger'?5:3;a.splice(i,count,...d.slice(i,i+count));p.layers=StudioCodec.encode(a);if(m.kind==='stick')p[m.curve]=100;}render();}}]);
+ content.querySelectorAll('[data-invert]').forEach(el=>el.onclick=()=>{const a=StudioV3.decode(p.layers);update('a'+(i+5),a[i+5]^+el.dataset.invert);render();});
+ const hair=content.querySelector('[data-hair]');if(hair)hair.onclick=()=>{update('a'+(i+4),+!StudioV3.decode(p.layers)[i+4]);render();};
+ const reset=$('resetLayer');if(reset)reset.onclick=()=>modal('Restore '+m.name+'?','<p>Only this layer returns to factory settings. Other profile settings remain unchanged.</p>',[{label:'Cancel'},{label:'Restore',primary:true,run:()=>{const a=StudioV3.decode(p.layers),d=StudioV3.defaults();if(m.kind==='igr')p.igr=true;else{const count=m.kind==='stick'?6:m.kind==='trigger'?5:3;a.splice(i,count,...d.slice(i,i+count));p.layers=StudioV3.encode(a);if(m.kind==='stick')p[m.curve]=100;}render();}}]);
 }
 
 // Shared v2 schema; profile changes are draft-only until save.
@@ -461,14 +578,14 @@ function slotDialog(index){
 let importDraft=null,importChoices=[],importPage=0;
 function importProfile(p){if(nextId()===undefined){modal('Library full','<p>Delete an editable profile before importing.</p>',[{label:'Close'}]);return;}importDraft=p;importChoices=modules.map(()=>true);importPage=0;go('profiles',5);}
 function importView(){
- if(!importDraft)return '<h2>Import profile</h2><div class="card"><p>Choose a portable v2, v1 or legacy DVD profile file.</p><button id="import">Choose file</button></div>';
+ if(!importDraft)return '<h2>Import profile</h2><div class="card"><p>Choose a portable v3, v2, v1 or legacy DVD profile file.</p><button id="import">Choose file</button></div>';
  return '<h2>Import '+esc(importDraft.name)+'</h2><p class="muted">Creates a new draft. Unselected layers retain settings from '+esc(profile().name)+'.</p><div class="modulegrid">'+modules.slice(importPage*4,importPage*4+4).map((m,k)=>{const i=importPage*4+k;return '<button class="tile" data-import-layer="'+i+'" aria-pressed="'+importChoices[i]+'"><strong>'+m.name+'</strong><small>'+(importChoices[i]?'IMPORT ✓':'KEEP CURRENT')+'</small><div class="importGraph">'+tuningGraph(importDraft,m)+'</div></button>';}).join('')+'</div><div class="row"><button id="importPrev" '+(!importPage?'disabled':'')+'>‹</button><small>'+ (importPage+1)+'/2 · '+importChoices.filter(Boolean).length+' selected</small><button id="importNext" '+(importPage?'disabled':'')+'>›</button></div><div class="row"><button id="importCancel">Cancel</button><button id="importApply" '+(!importChoices.some(Boolean)?'disabled':'')+'>Create imported profile</button></div>';
 }
 function finishImport(){
  if(!importDraft||!importChoices.some(Boolean))return;
- const dst=copy(profile()),src=importDraft,a=StudioCodec.decode(dst.layers),b=StudioCodec.decode(src.layers);
+ const dst=copy(profile()),src=importDraft,a=StudioV3.decode(dst.layers),b=StudioV3.decode(src.layers);
  modules.forEach((m,k)=>{if(!importChoices[k])return;if(m.kind==='map'){dst.custom=src.custom;dst.map=src.map.slice();}else if(m.kind==='igr')dst.igr=src.igr;else{const n=m.kind==='stick'?6:m.kind==='trigger'?5:3;a.splice(m.i,n,...b.slice(m.i,m.i+n));if(m.kind==='stick')dst[m.curve]=src[m.curve];}});
- dst.layers=StudioCodec.encode(a);importDraft=null;addProfile(dst,src.name);
+ dst.layers=StudioV3.encode(a);importDraft=null;addProfile(dst,src.name);
 }
 function bindProfiles(){
  const bind=(id,fn)=>{const el=$(id);if(el)el.onclick=fn;};
@@ -483,7 +600,7 @@ function bindProfiles(){
  bind('resetMap',()=>{if(editable())modal('Restore button mapping?','<p>Only the stored button map is reset. Other tuning layers are unchanged.</p>',[{label:'Cancel'},{label:'Restore',primary:true,run:()=>{profile().map=identityMap();render();}}]);});
 }
 function setupImport(){
- $('importFile').onchange=async()=>{const f=$('importFile').files[0];if(!f)return;try{if(f.size>8192)throw Error('Profile file exceeds 8 KiB.');const p=StudioCodec.fromFile(JSON.parse(await f.text()));importProfile(p);}catch(e){modal('Import failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}};
+ $('importFile').onchange=async()=>{const f=$('importFile').files[0];if(!f)return;try{if(f.size>8192)throw Error('Profile file exceeds 8 KiB.');const p=StudioV3.fromFile(JSON.parse(await f.text()));if(deviceMode&&!StudioV3.legacyCompatible(p))throw Error('Independent adjustment groups require a newer device firmware. This profile was not changed.');importProfile(p);}catch(e){modal('Import failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}};
 }
 
 'use strict';
@@ -491,14 +608,14 @@ const $=id=>document.getElementById(id),content=$('content'),dialog=$('modal');
 const key='ogx-studio-next-review-v1';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const copy=o=>JSON.parse(JSON.stringify(o));
-const base=(id,name,custom,map)=>({id,name,custom,left:100,right:100,igr:true,map,layers:StudioCodec.encode(StudioCodec.defaults())});
+const base=(id,name,custom,map)=>({id,name,custom,left:100,right:100,igr:true,map,layers:StudioV3.encode(StudioV3.defaults())});
 const initial=()=>({schema:2,revision:1,active:2,slots:[0,1,2,255],profiles:[base(0,'Default Xbox',false,identityMap()),base(1,'Rainbow Six 3',true,identityMap().map(i=>({3:9,9:3,4:10,10:4})[i]||i)),base(2,'My profile',false,identityMap())]});
 let library=initial(),loadError='';
-try{const raw=deviceMode?null:localStorage.getItem(key);if(raw){const d=JSON.parse(raw);if(d.schema!==2||!Array.isArray(d.profiles)||!d.profiles.every(StudioCodec.validProfile)||!d.profiles.some(p=>p.id===d.active))throw Error('Invalid preview library');library=d;}}catch(e){loadError=e.message;}
+try{const raw=deviceMode?null:localStorage.getItem(key);if(raw){const d=JSON.parse(raw);if(d.schema!==2||!Array.isArray(d.profiles)||!d.profiles.every(StudioV3.validProfile)||!d.profiles.some(p=>p.id===d.active))throw Error('Invalid preview library');library=d;}}catch(e){loadError=e.message;}
 let baseline=JSON.stringify(library),editing=library.active,deck='home',pane=0,skin='modern',source=null,group=0,restoreFocus=null;
 const last={};
 const profile=()=>library.profiles.find(p=>p.id===editing),editable=()=>editing>=2&&!locked(),dirty=()=>JSON.stringify(library)!==baseline;
-const panes={home:['Dashboard'],controller:['Visual remapper','Assignment summary','Advanced mapping','In-game reset','Transfer'],tuning:tuningPanes,profiles:['Active profile','Library','Quick slots','Manage profiles','Profile layers','Import review'],about:['About','Help','Desktop files']};
+const panes={home:['Dashboard'],controller:['Visual remapper','Assignment summary','Advanced mapping','In-game reset','Transfer'],tuning:tuningPanes,profiles:['Active profile','Library','Quick slots','Manage profiles','Profile layers','Import review','Saved profile monitor'],about:['About','Help','Desktop files']};
 const icons={controller:'<path d="M7 7h10q3 0 4 4l1 5q0 4-3 3l-4-4H9l-4 4q-3 1-3-3l1-5q1-4 4-4Z"/><path d="M7 10v5m-2.5-2.5h5m6-1h.1m3 2h.1"/>',tuning:'<path d="M3 5h18M3 12h18M3 19h18M8 2v6m8 1v6m-5 1v6"/>',profiles:'<rect x="5" y="3" width="16" height="14" rx="2"/><path d="M3 7v12q0 2 2 2h12M9 8h8m-8 4h5"/>',about:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.1"/>'};
 if(deviceMode){panes.network=networkPanes;panes.firmware=firmwarePanes;panes.diagnostics=diagPanes;icons.network='<path d="M2 8q10-9 20 0M6 12q6-5 12 0M10 16q2-2 4 0M12 20h.1"/>';icons.firmware='<path d="M12 2v13m-5-5 5 5 5-5M4 16v5h16v-5"/>';icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';}
 const icon=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[k]+'</svg>';
@@ -512,8 +629,8 @@ function modal(title,body,actions,after){
  dialog.oncancel=e=>{e.preventDefault();closeModal();after?.();};dialog.showModal();(dialog.querySelector('#modalBody button')||$('modalActions').querySelector('button'))?.focus({preventScroll:true});dialog.scrollTop=0;
 }
 function closeModal(){if(dialog.open)dialog.close();restoreFocus?.focus?.();restoreFocus=null;}
-function save(){if(deviceMode)return saveDevice();try{if(loadError)throw Error('Preview storage error: '+loadError);const current=JSON.parse(localStorage.getItem(key)||'null');if(current&&current.revision!==library.revision)throw Error('Preview changed in another tab. Reload or export draft.');if(!library.profiles.every(StudioCodec.validProfile))throw Error('Invalid profile settings.');const next=copy(library);next.revision++;localStorage.setItem(key,JSON.stringify(next));library=next;baseline=JSON.stringify(next);render();}catch(e){modal('Save failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}}
-function exportProfile(){const p=profile(),blob=new Blob([JSON.stringify(StudioCodec.portable(p),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=p.name.replace(/[^a-zA-Z0-9_-]/g,'_')+'.ogx-profile.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function save(){if(deviceMode)return saveDevice();try{if(loadError)throw Error('Preview storage error: '+loadError);const current=JSON.parse(localStorage.getItem(key)||'null');if(current&&current.revision!==library.revision)throw Error('Preview changed in another tab. Reload or export draft.');if(!library.profiles.every(StudioV3.validProfile))throw Error('Invalid profile settings.');const next=copy(library);next.revision++;localStorage.setItem(key,JSON.stringify(next));library=next;baseline=JSON.stringify(next);render();}catch(e){modal('Save failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}}
+function exportProfile(){const p=profile(),blob=new Blob([JSON.stringify(StudioV3.portable(p),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=p.name.replace(/[^a-zA-Z0-9_-]/g,'_')+'.ogx-profile.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 function renderHome(){
  const cards=tile('controller','Controller','Remap buttons')+tile('tuning','Tuning','Adjust input response')+tile('profiles','Profiles','Manage saved profiles')+(deviceMode?tile('diagnostics','Diagnostics','Connection & performance')+tile('network','Network','Wi-Fi settings')+tile('firmware','Firmware','Update your dongle'):tile('about','About','Help & credits'));
  return '<div class="tiles homeTiles">'+cards+'</div>';
@@ -526,7 +643,7 @@ function mapper(){
  if(pane===1){let rows=p.map.map((t,i)=>t!==i+1?'<div class="item">'+esc(physicalName(skin,i+1))+' → Xbox '+esc(names[t])+'</div>':'').filter(Boolean);rows.push(...a.missing.map(i=>'<div class="item warning">Xbox '+esc(names[i])+' has no assigned input.</div>'),...a.duplicates.map(i=>'<div class="item info">Xbox '+esc(names[i])+' shared by '+a.owners[i].length+' inputs.</div>'));return '<h2>Assignment summary</h2><div class="row"><div class="card"><small>Changed</small><span class="metric">'+p.map.filter((t,i)=>t!==i+1).length+'</span></div><div class="card"><small>Missing</small><span class="metric warning">'+a.missing.length+'</span></div><div class="card"><small>Shared</small><span class="metric info">'+a.duplicates.length+'</span></div></div><div class="card"><small>'+(p.custom?'Custom mapping':'Stored map; bypassed')+'</small><div class="list">'+(rows.length?rows.slice(group*4,group*4+4).join(''):'No modified assignments.')+'</div><div class="row"><button id="groupPrev" '+(!group?'disabled':'')+'>‹</button><small>'+Math.min(group+1,Math.max(1,Math.ceil(rows.length/4)))+' / '+Math.max(1,Math.ceil(rows.length/4))+'</small><button id="groupNext" '+((group+1)*4>=rows.length?'disabled':'')+'>›</button></div><button id="resetMap" '+(!editable()?'disabled':'')+'>Restore stock map</button></div>';}
  if(pane===2){const ids=[[5,6,7,8],[1,2,3,4],[9,10,17,18],[11,12,13,14],[15,16]][group%5];return '<h2>Advanced mapping</h2><div class="row"><button id="groupPrev">‹</button><span class="muted">'+['Face','D-pad','Shoulders','System / sticks','Extras'][group%5]+'</span><button id="groupNext">›</button></div><div class="card">'+ids.map(i=>'<div class="maprow"><span>'+esc(physicalName(skin,i))+'</span><button data-advanced="'+i+'" '+(!editable()||!p.custom||isReserved(i,p.igr)?'disabled':'')+'>'+esc(names[p.map[i-1]])+'</button></div>').join('')+'</div>';}
  if(pane===3)return '<div class="card"><h2>In-game reset</h2><small>Controller shortcut</small><p>Hold the physical Guide / PS button for one second to send LT + RT + Start + Back. Requires Xbox or game reset support.</p><button id="toggleIgr" aria-pressed="'+p.igr+'" '+(!editable()?'disabled':'')+'>Guide reset '+(p.igr?'ON':'OFF')+'</button><small>'+ (p.igr?'Guide is reserved for reset.':'Guide is available for mapping.')+'</small></div>';
- return '<h2>Portable profile</h2><div class="card"><h3>Export '+esc(p.name)+'</h3><p class="muted">Portable v2 JSON includes mapping and tuning layers. This preview exports the current draft.</p><button id="export">Export profile</button></div><div class="card"><h3>Import profile</h3><p class="muted">Select the layers to bring into a new profile.</p><button id="import">Choose file</button></div>';
+ return '<h2>Portable profile</h2><div class="card"><h3>Export '+esc(p.name)+'</h3><p class="muted">Portable JSON includes mapping and tuning layers. This preview exports the current draft.</p><button id="export">Export profile</button></div><div class="card"><h3>Import profile</h3><p class="muted">Select the layers to bring into a new profile.</p><button id="import">Choose file</button></div>';
 }
 function showTargetPicker(i){
  source=i;
@@ -553,11 +670,12 @@ function tap(i){
 }
 function renderProfiles(){
  const p=profile();
- if(pane===0)return '<h2>MeatVault™</h2><div class="hero"><small>'+ (JSON.parse(baseline).active===library.active?'ACTIVE PROFILE':'PROPOSED ACTIVE · SAVE TO APPLY')+'</small><strong>'+esc(library.profiles.find(p=>p.id===library.active).name)+'</strong><span>Editing '+esc(p.name)+'</span></div><div class="card"><h3>'+esc(p.name)+'</h3><small>'+(editable()?'Editable profile':'Protected preset')+'</small><button id="useProfile" '+(library.active===editing?'disabled':'')+'>Use selected profile on save</button><button id="duplicate">Duplicate profile</button></div><button id="library">Browse library</button>';
+ if(pane===0)return '<h2>MeatVault™</h2><div class="hero"><small>'+ (JSON.parse(baseline).active===library.active?'ACTIVE PROFILE':'PROPOSED ACTIVE · SAVE TO APPLY')+'</small><strong>'+esc(library.profiles.find(p=>p.id===library.active).name)+'</strong><span>Editing '+esc(p.name)+'</span></div><div class="card"><h3>'+esc(p.name)+'</h3><small>'+(editable()?'Editable profile':'Protected preset')+'</small><button id="useProfile" '+(library.active===editing?'disabled':'')+'>Use selected profile on save</button><button id="duplicate">Duplicate profile</button></div><div class="row"><button id="library">Browse library</button><button id="activeMonitor">Saved profile monitor</button></div>';
  if(pane===1){const list=library.profiles.slice(group*3,group*3+3);return '<h2>Profile library · '+library.profiles.length+'/12</h2><div class="list">'+list.map(x=>'<button data-profile="'+x.id+'"><strong>'+esc(x.name)+'</strong><br><small>'+(x.id===editing?'Editing · ':'')+(x.id===library.active?'Selected active · ':'')+(x.id<2?'Protected':'Custom')+'</small></button>').join('')+'</div><div class="row"><button id="groupPrev" '+(!group?'disabled':'')+'>‹</button><span>'+ (group+1) +'/'+Math.ceil(library.profiles.length/3)+'</span><button id="groupNext" '+((group+1)*3>=library.profiles.length?'disabled':'')+'>›</button></div><button id="duplicate">Duplicate selected</button>';}
  if(pane===2)return '<h2>QuadSlot™</h2><div class="slotgrid">'+[0,3,1,2].map(j=>'<button class="card slot slot'+j+'" data-slot="'+j+'"><small>'+['↑','→','↓','←'][j]+' Slot '+(j+1)+'</small><strong>'+esc(library.profiles.find(p=>p.id===library.slots[j])?.name||'Unassigned')+'</strong></button>').join('')+'<div class="slotCenter">✚</div></div><small>Local slot assignments only. Physical Start + Back shortcut is pending firmware integration.</small>';
  if(pane===3)return '<h2>Manage profiles</h2><div class="card"><strong>'+esc(p.name)+'</strong><small>'+(editable()?'Editable':'Protected preset')+'</small></div><div class="tiles"><button id="newProfile" class="tile"><strong>New profile</strong><small>Factory values</small></button><button id="duplicate" class="tile"><strong>Duplicate</strong><small>Copy selected</small></button><button id="rename" class="tile" '+(!editable()?'disabled':'')+'><strong>Rename</strong></button><button id="deleteProfile" class="tile" '+(!editable()?'disabled':'')+'><strong>Delete</strong></button></div><button id="import">Import profile</button>';
  if(pane===5)return importView();
+ if(pane===6){const saved=JSON.parse(baseline),active=saved.profiles.find(x=>x.id===saved.active);return '<div class="heading monitorHeading"><h2>Saved profile</h2><small>'+esc(active.name)+'</small></div>'+renderInputMonitor(active,true,false);}
  return layerDeck(p,true);
 }
 function updateSaveBar(){
@@ -591,6 +709,7 @@ function render(){
  if(deviceMode&&operationStatus&&!departed&&deck!=='home'&&!(deck==='firmware'&&pane===3)){const note=document.createElement('small');note.className='deviceNote';note.textContent=operationStatus;content.append(note);}
  if(deck==='controller'&&pane!==0){const back=document.createElement('button');back.className='controllerBack';back.textContent='‹ Controller';back.onclick=()=>go('controller',0);content.prepend(back);}
  content.scrollTop=0;
+ const monitor=content.querySelector('.widgetDeck');if(monitor){monitor.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&!e.ctrlKey){e.preventDefault();monitor.scrollLeft+=e.deltaY;}},{passive:false});monitor.addEventListener('keydown',e=>{if(e.target===monitor&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();monitor.scrollBy({left:(e.key==='ArrowRight'?1:-1)*monitor.clientWidth,behavior:'smooth'});}});}
  $('pick').textContent=(deck==='home'?'Home':panes[deck][pane])+' · '+(pane+1)+' / '+panes[deck].length;$('prev').disabled=pane===0;$('next').disabled=pane===panes[deck].length-1;
  updateSaveBar();bindTuning();
  content.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{group=0;go(b.dataset.go,['controller','tuning'].includes(b.dataset.go)?0:undefined);});
@@ -601,7 +720,7 @@ function render(){
  content.querySelectorAll('[data-profile]').forEach(b=>b.onclick=()=>{editing=+b.dataset.profile;go('profiles',0);});
  const bind=(id,fn)=>{const e=$(id);if(e)e.onclick=fn;};
  bind('toggleMap',()=>{if(editable()){p.custom=!p.custom;source=null;render();}});
- bind('toggleIgr',()=>{if(editable()){p.igr=!p.igr;render();}});bind('library',()=>{group=0;go('profiles',1);});
+ bind('toggleIgr',()=>{if(editable()){p.igr=!p.igr;render();}});bind('library',()=>{group=0;go('profiles',1);});bind('activeMonitor',()=>go('profiles',6));
  bind('useProfile',()=>{library.active=editing;render();});bind('export',exportProfile);
  bind('groupPrev',()=>{group=pane===2&&deck==='controller'?(group+4)%5:Math.max(0,group-1);render();});bind('groupNext',()=>{group=pane===2&&deck==='controller'?(group+1)%5:group+1;render();});
  bindProfiles();bindDevice();syncDeviceChrome();
