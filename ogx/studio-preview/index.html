@@ -119,13 +119,45 @@ footer{padding:4px 8px 8px}.saveState{font-size:11px}.primary{min-height:44px}
 .profileFlags .miniWidget strong{font-size:12px}
 @media(max-height:570px){.widgetDesc{font-size:9px}.miniWidget{gap:2px}.widgetGrid .miniWidget svg{max-height:48px}}
 @media(min-width:700px) and (min-height:600px){.widgetDesc{font-size:12px}}
-</style></head><body>
+
+/* One instrument panel; global save uses no extra row. Controller sizing uses measured pixels, no cqh dependency. */
+.window,.window.homeScreen{grid-template-rows:auto minmax(0,1fr) auto}
+header .saveCompact{height:36px;min-height:36px;min-width:44px;width:auto;flex:none;padding:4px 7px;font-size:12px;font-weight:700;color:var(--text);background:var(--burg);border:1px solid var(--accent);border-radius:7px}
+header:has(.saveCompact:not([hidden])) .brand strong{font-size:clamp(11px,3.4vw,16px)}
+.mapperCard .canvas{container-type:normal;display:flex;align-items:center;justify-content:center;min-width:0}
+.controllerStage{position:relative;flex:none;width:100%;height:auto;aspect-ratio:500/366;max-width:100%;max-height:none}
+.mapperCard .controllerStage svg{display:block;position:static;width:100%;height:100%;max-height:none}
+.instrumentPanel{display:flex;flex-direction:column;flex:1;min-height:0;gap:6px;padding:8px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.instrumentHeader{display:flex;align-items:center;gap:6px;flex:none}
+.instrumentHeader>div{flex:1}.instrumentHeader h2{font-size:16px}.instrumentHeader small{font-size:10px}
+.instrumentHeader .backInputs{background:transparent;border:0;min-height:44px;font-size:24px;padding:0}
+.instrumentIntro{font-size:13px;line-height:1.35;flex:none;color:var(--muted)}
+.instrumentIntro strong{color:var(--text)}
+.instrumentPanel .tuneTabs{flex:none;gap:4px}
+.instrumentPanel .tuneTabs button{min-height:36px}
+.instrumentPanel .graphLarge{flex:1;min-height:82px;border:0;background:#12161f}
+.instrumentPanel .graphLarge svg{max-height:220px;min-height:0;max-width:650px}
+.instrumentPanel .focusWidgets{gap:4px;justify-content:flex-end}
+.focusState{display:flex;align-items:center;gap:5px}
+.focusToggle{min-height:36px;font-size:11px;padding:4px 8px;background:#23242d;color:var(--muted)}
+.focusToggle.lit{border-color:var(--accent);background:var(--burg);color:var(--text)}
+.instrumentPanel .sliderField{flex:none;gap:2px}
+.instrumentPanel .sliderHelp{font-size:11px;line-height:1.25}
+.instrumentPanel .sliderLabel{font-size:13px}
+.instrumentPanel .sliderField input{height:36px;min-height:36px}
+.instrumentPanel .presets{flex:none}
+.instrumentPanel .presets button{display:grid;place-items:center;gap:1px;min-height:40px}
+.instrumentPanel .presets small{font-size:10px}
+.instrumentPanel #resetLayer{min-height:36px;font-size:11px;background:transparent}
+.instrumentPanel #layerState{font-size:11px}
+@media(max-height:570px){.instrumentPanel{gap:4px;padding:5px;min-height:min-content}.instrumentPanel .graphLarge{min-height:84px}.instrumentPanel .graphLarge svg{max-height:110px}.instrumentIntro{font-size:12px}}
+\n.graphKey{display:flex;justify-content:center;gap:10px;font-size:10px;color:var(--muted);flex:none}.graphKey span:first-child{color:var(--text)}\n</style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
-<header><button id="home" class="icon homeMark" aria-label="Home" title="Home"><svg class="ham" viewBox="0 0 110 92" aria-hidden="true"><g stroke="#f06470" stroke-width="3" stroke-linejoin="round"><path d="M16 31C29 11 50 17 67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49C73 71 49 91 25 87C3 85 1 62 16 31Z" fill="#4c0e12"/><path d="M67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49Z" fill="#e9e3da"/><path d="M17 33Q27 24 38 38Q52 58 43 77Q39 86 24 81Q5 78 10 58Z" fill="#6e1012"/><path d="M35 20Q61 32 62 68M50 22Q76 42 71 56M42 42Q55 33 69 34M48 58Q63 48 76 48M47 72Q61 65 70 58" fill="none" stroke="#b3000a" stroke-width="2.6"/><ellipse cx="26" cy="59" rx="6" ry="10" fill="none" stroke="#e9e3da" stroke-width="4" transform="rotate(-20 26 59)"/></g><text x="104" y="8" font-size="8" fill="#e9e3da" text-anchor="end">™</text></svg></button><div class="brand"><strong>OGX Controller Studio™</strong></div><button id="status" type="button" class="statusButton" aria-label="Standalone mode, no device connected" title="Standalone mode" data-link="unknown" disabled><svg class="signal" viewBox="0 0 26 22" aria-hidden="true"><g class="bars" fill="currentColor"><rect x="1" y="16" width="4" height="5" rx="1"/><rect x="7" y="11" width="4" height="10" rx="1"/><rect x="13" y="6" width="4" height="15" rx="1"/><rect x="19" y="1" width="4" height="20" rx="1"/></g><path class="linkSlash" d="M2 2L24 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle class="linkDot" cx="24" cy="19" r="2.4" fill="currentColor"/></svg><span class="srOnly" id="linkText">Standalone · signal not measured</span></button><button id="menu" class="icon" aria-label="Workspace menu">⋯</button></header>
+<header><button id="home" class="icon homeMark" aria-label="Home" title="Home"><svg class="ham" viewBox="0 0 110 92" aria-hidden="true"><g stroke="#f06470" stroke-width="3" stroke-linejoin="round"><path d="M16 31C29 11 50 17 67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49C73 71 49 91 25 87C3 85 1 62 16 31Z" fill="#4c0e12"/><path d="M67 26L78 18C77 5 90 1 96 11Q100 16 98 21C111 22 109 37 98 40Q93 42 88 38L76 49Z" fill="#e9e3da"/><path d="M17 33Q27 24 38 38Q52 58 43 77Q39 86 24 81Q5 78 10 58Z" fill="#6e1012"/><path d="M35 20Q61 32 62 68M50 22Q76 42 71 56M42 42Q55 33 69 34M48 58Q63 48 76 48M47 72Q61 65 70 58" fill="none" stroke="#b3000a" stroke-width="2.6"/><ellipse cx="26" cy="59" rx="6" ry="10" fill="none" stroke="#e9e3da" stroke-width="4" transform="rotate(-20 26 59)"/></g><text x="104" y="8" font-size="8" fill="#e9e3da" text-anchor="end">™</text></svg></button><div class="brand"><strong>OGX Controller Studio™</strong></div><button id="status" type="button" class="statusButton" aria-label="Standalone mode, no device connected" title="Standalone mode" data-link="unknown" disabled><svg class="signal" viewBox="0 0 26 22" aria-hidden="true"><g class="bars" fill="currentColor"><rect x="1" y="16" width="4" height="5" rx="1"/><rect x="7" y="11" width="4" height="10" rx="1"/><rect x="13" y="6" width="4" height="15" rx="1"/><rect x="19" y="1" width="4" height="20" rx="1"/></g><path class="linkSlash" d="M2 2L24 21" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle class="linkDot" cx="24" cy="19" r="2.4" fill="currentColor"/></svg><span class="srOnly" id="linkText">Standalone · signal not measured</span></button><button id="primary" class="saveCompact" hidden>Save</button><span id="saveState" class="srOnly" aria-live="polite"></span><button id="menu" class="icon" aria-label="Workspace menu">⋯</button></header>
 <section id="content" aria-label="Workspace content"></section>
 <nav class="pager" aria-label="Panel navigation"><button id="prev" aria-label="Previous pane">‹</button><button id="pick" aria-label="Select pane"></button><button id="next" aria-label="Next pane">›</button></nav>
-<footer><div class="saveState" id="saveState" aria-live="polite"></div><button id="primary" class="primary">Export profile</button></footer>
+
 </main>
 <dialog id="modal" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><div id="modalBody"></div><div id="modalActions" class="actions"></div></dialog>
 <input type="file" id="firmwareFile" accept=".bin,application/octet-stream" hidden><input type="file" id="importFile" accept=".json,application/json" hidden><script>// Shared wire codec and portable format. All bytes match the packed C++ Layers.
@@ -491,37 +523,54 @@ function tuningGraph(p,m,large=false){
  if(m.kind==='map'||m.kind==='igr')return '<svg viewBox="0 0 140 61" aria-hidden="true"><g stroke="'+(on?'#f06470':'#9298a3')+'" fill="none" stroke-width="2.5">'+(m.kind==='map'?'<path d="M30 16H110Q120 16 125 29L130 45Q133 55 123 55L108 43H32L17 55Q7 55 10 45L15 29Q20 16 30 16Z"/><path d="M37 23V37M30 30H44"/><circle cx="103" cy="25" r="4"/><circle cx="113" cy="34" r="4"/>':'<circle cx="70" cy="30" r="23"/><path d="M56 19L84 41M84 19L56 41"/>')+'</g></svg>';
  const x=v=>l+(r-l)*v,y=v=>b-(b-t)*v;
  let grid='';for(const z of [.25,.5,.75])grid+='<path d="M'+x(z)+' '+t+'V'+b+' M'+l+' '+y(z)+'H'+r+'" fill="none" stroke="#465064" stroke-width=".6"/>';
- const pts=Array.from({length:101},(_,k)=>x(k/100)+','+y(responseValue(p,m,on?a:a.map((v,i)=>i===m.i?1:v),k/100))).join(' ');
- const v=simulated/100;
- return '<svg viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><rect x="'+l+'" y="'+t+'" width="'+(r-l)+'" height="'+(b-t)+'" rx="3" fill="#12161f"/>'+grid+'<rect x="'+l+'" y="'+t+'" width="'+(r-l)*StudioV3.effective(p,m.i,a).inner/100+'" height="'+(b-t)+'" fill="#e9b45a" opacity=".16"/><path d="M'+l+' '+b+'L'+r+' '+t+'" stroke="#b8b0a5" fill="none" stroke-width="'+(on?1:2.2)+'" stroke-dasharray="'+(on?'3 3':'0')+'"/><polyline points="'+pts+'" stroke="'+(on?'#f06470':'#626976')+'" stroke-width="2.3" stroke-dasharray="'+(on?'0':'4 3')+'" fill="none"/>'+(large?'<circle cx="'+x(v)+'" cy="'+y(on?responseValue(p,m,a,v):v)+'" r="3.6" fill="#e9e3da"/><text x="'+l+'" y="'+(h-3)+'" font-size="9" fill="#b8b0a5">0% · Physical input</text><text x="'+r+'" y="'+(h-3)+'" font-size="9" text-anchor="end" fill="#b8b0a5">100%</text><text x="7" y="'+((t+b)/2)+'" font-size="8" text-anchor="middle" transform="rotate(-90 7 '+((t+b)/2)+')" fill="#b8b0a5">Xbox output</text>':'')+'</svg>';
+ const pts=Array.from({length:101},(_,k)=>x(k/100)+','+y(responseValue(p,m,a,k/100))).join(' ');
+ const v=simulated/100,stored=a.map((v,i)=>i===m.i?1:v),ghost=StudioV3.mask(a[m.i])!==15?Array.from({length:101},(_,k)=>x(k/100)+','+y(responseValue(p,m,stored,k/100))).join(' '):'';
+ return '<svg viewBox="0 0 '+w+' '+h+'" aria-hidden="true"><rect x="'+l+'" y="'+t+'" width="'+(r-l)+'" height="'+(b-t)+'" rx="3" fill="#12161f"/>'+grid+'<rect x="'+l+'" y="'+t+'" width="'+(r-l)*StudioV3.effective(p,m.i,a).inner/100+'" height="'+(b-t)+'" fill="#e9b45a" opacity=".16"/><path d="M'+l+' '+b+'L'+r+' '+t+'" stroke="#b8b0a5" fill="none" stroke-width="'+(on?1:2.2)+'" stroke-dasharray="'+(on?'3 3':'0')+'"/>'+(ghost?'<polyline points="'+ghost+'" stroke="#626976" stroke-width="1.3" stroke-dasharray="3 3" fill="none"/>':'')+'<polyline points="'+pts+'" stroke="'+(on?'#f06470':'#626976')+'" stroke-width="2.3" stroke-dasharray="0" fill="none"/>'+(large?'<circle cx="'+x(v)+'" cy="'+y(on?responseValue(p,m,a,v):v)+'" r="3.6" fill="#e9e3da"/><text x="'+l+'" y="'+(h-3)+'" font-size="9" fill="#b8b0a5">0% · Stick / trigger travel</text><text x="'+r+'" y="'+(h-3)+'" font-size="9" text-anchor="end" fill="#b8b0a5">100%</text><text x="7" y="'+((t+b)/2)+'" font-size="8" text-anchor="middle" transform="rotate(-90 7 '+((t+b)/2)+')" fill="#b8b0a5">Game receives</text>':'')+'</svg>';
 }
 function moduleSummary(p,m,a){const i=m.i;if(m.kind==='map')return p.map.filter((v,k)=>v!==k+1).length+' stored changes';if(m.kind==='igr')return 'Hold Guide 1 second';if(m.kind==='motor')return a[23]+'% / '+a[24]+'%';if(m.kind==='stick')return p[m.curve]+'% curve · DZ '+a[i+1]+'/'+a[i+2];return a[i+4]?'Hair trigger':a[i+3]+'% curve · full '+a[i+2]+'%';}
 function layerDeck(p,all){
  return '<div class="heading monitorHeading"><h2>'+(all?'Profile monitor':'Input tuning')+'</h2><small>'+esc(all?'Editing '+p.name:'Precision control')+'</small></div>'+renderInputMonitor(p,all);
 }
 function sliderField(label,field,v,min,max,help,def){
- return '<label class="sliderField"><span><strong>'+label+'</strong><output data-value="'+field+'">'+v+'%</output></span><input type="range" data-tune="'+field+'" min="'+min+'" max="'+max+'" value="'+v+'" '+(!editable()&&field!=='simulation'?'disabled':'')+'><small>'+help+' Factory: '+def+'%.</small></label>';
+ return '<label class="sliderField"><span class="sliderLabel"><strong>'+label+'</strong><output data-value="'+field+'">'+v+'%</output></span>'+(help?'<small class="sliderHelp">'+help+' <span class="factory">Default '+def+'%.</span></small>':'')+'<input type="range" aria-label="'+label+'" data-tune="'+field+'" min="'+min+'" max="'+max+'" value="'+v+'" '+(!editable()&&field!=='simulation'?'disabled':'')+'></label>';
 }
+const panelInfo={
+ stick:[
+ ['Response curve','Adjust how much movement the game receives when you move the stick. Above 100% makes small movements stronger; below 100% makes fine movements gentler.'],
+ ['Dead zones','Ignore unwanted stick movement near the center, or reach full output before the stick hits its edge.'],
+ ['Output limits','Control the weakest and strongest movement the game receives.'],
+ ['Direction','Reverse horizontal or vertical movement. The magnitude graph does not show direction.']],
+ trigger:[
+ ['Response curve','Adjust how quickly the game reacts as you squeeze the trigger. Above 100% sends more input with a lighter press; below 100% gives a gentler response.'],
+ ['Trigger travel','Choose how far to squeeze before input begins and before the game receives a full press.'],
+ ['Hair trigger','Send a full press as soon as the activation threshold is crossed. This removes proportional trigger control.']]
+};
+function focusToggle(p,n,j){
+ const m=modules[n],v=widgetModel(p,m,j);
+ return '<button class="focusToggle '+(v.on?'lit':'dim')+'" data-widget="'+n+':'+j+'" aria-pressed="'+v.on+'" '+(!editable()?'disabled':'')+' title="'+v.desc+'">'+(v.on?'Enabled':'Bypassed')+'</button>';
+}
+
 function tuningEditor(){
  const p=profile(),a=StudioV3.decode(p.layers);
  if(pane===0)return layerDeck(p,false);
  const n=pane<=4?1:pane<=8?2:pane<=11?3:pane<=14?4:pane===15?5:6,m=modules[n],i=m.i,on=onLayer(p,m,a),sub=pane-m.route;
- let html='<div class="heading"><button data-pane="0" class="backInputs" aria-label="All inputs">‹</button><div><h2>'+m.name+'</h2><small>'+m.brand+'</small></div>'+(deviceMode||m.kind==='motor'?'<button data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+(on?'CUSTOM ON':'STOCK')+'</button>':'')+'</div>';
- if(!deviceMode&&(m.kind==='stick'||m.kind==='trigger'))html+='<div class="focusWidgets">'+widgetSpecs[m.kind].map((w,j)=>w.sub===sub?renderAdjustmentWidget(p,n,j):'').join('')+'</div>';
+ let html='<section class="instrumentPanel"><div class="instrumentHeader"><button data-pane="0" class="backInputs" aria-label="All inputs">‹</button><div><h2>'+m.name+'</h2><small>'+m.brand+'</small></div>'+(deviceMode||m.kind==='motor'?'<button data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+(on?'CUSTOM ON':'STOCK')+'</button>':'')+'</div>';
 
  if(m.kind==='stick'||m.kind==='trigger'){
- const tabs=m.kind==='stick'?['Response','Dead zones','Limits','Direction']:['Response','Travel','Preview'];
- html+='<div class="row tuneTabs">'+tabs.map((t,k)=>'<button data-pane="'+(m.route+k)+'" aria-pressed="'+(sub===k)+'">'+t+'</button>').join('')+'</div><div id="liveGraph" class="graphLarge">'+tuningGraph(p,m,true)+'</div>';
- html+='<div class="outputExample" id="outputExample">At '+simulated+'% input → '+Math.round(100*responseValue(p,m,a,simulated/100))+'% Xbox output <small>Simulated</small></div>'+(m.kind==='trigger'&&StudioV3.effective(p,i,a).hair?'<small>Hair trigger overrides sensitivity and full-output travel.</small>':'');
+ const tabs=m.kind==='stick'?['Response','Dead zones','Limits','Direction']:['Response','Travel','Hair trigger'];
+ const info=panelInfo[m.kind][sub];
+ html+='<div class="row tuneTabs">'+tabs.map((t,k)=>'<button data-pane="'+(m.route+k)+'" aria-pressed="'+(sub===k)+'">'+t+'</button>').join('')+'</div><div class="instrumentIntro"><p><strong>'+info[0]+'</strong> — '+info[1]+'</p></div>';
+ if(!deviceMode)html+='<div class="focusWidgets">'+widgetSpecs[m.kind].map((w,j)=>w.sub===sub?'<div class="focusState">'+(m.kind==='trigger'&&sub===1?'<small>'+w.title+'</small>':'')+focusToggle(p,n,j)+'</div>':'').join('')+'</div>';
+ html+='<div id="liveGraph" class="graphLarge">'+tuningGraph(p,m,true)+'</div><div class="outputExample" id="outputExample">At '+simulated+'% input → '+Math.round(100*responseValue(p,m,a,simulated/100))+'% Xbox output <small>Simulated</small></div><div class="graphKey"><span>— Effective output</span><span>┄ Factory / stored preview</span></div>'+(m.kind==='trigger'&&StudioV3.effective(p,i,a).hair?'<small>Hair trigger overrides sensitivity and full-output travel.</small>':'');
  const curve=m.kind==='stick'?p[m.curve]:a[i+3],cf=m.kind==='stick'?m.curve:'a'+(i+3);
- if(sub===0){html+=sliderField('Response curve',cf,curve,50,200,'Higher increases output for partial movement; lower makes it more gradual.',100)+'<div class="row presets">'+[['Noob',65],['Casual',100],['Pro',135],['God',175]].map(([name,v])=>'<button data-preset="'+v+'" data-field="'+cf+'" aria-pressed="'+(curve===v)+'" title="'+v+'% response" '+(!editable()?'disabled':'')+'>'+name+'</button>').join('')+'</div>';}
- else if(sub===1){html+=sliderField(m.kind==='stick'?'Inner dead zone':'Activation threshold','a'+(i+1),a[i+1],0,30,m.kind==='stick'?'Ignores small stick movement; higher reduces drift and fine control.':'Ignores initial trigger travel.',0)+sliderField(m.kind==='stick'?'Outer dead zone':'Full output at','a'+(i+2),a[i+2],m.kind==='stick'?0:35,m.kind==='stick'?30:100,m.kind==='stick'?'Higher reaches maximum earlier.':'Lower reaches full output sooner.',m.kind==='stick'?0:100);}
- else if(m.kind==='stick'&&sub===2){html+=sliderField('Maximum output','a'+(i+3),a[i+3],1,100,'Caps the output magnitude.',100)+sliderField('Anti-dead zone','a'+(i+4),a[i+4],0,a[i+3],'Minimum nonzero output; can overcome game dead zones.',0);}
+ if(sub===0){html+=sliderField('Curve strength',cf,curve,50,200,'',100)+'<div class="row presets">'+[['Noob',65],['Casual',100],['Pro',135],['God',175]].map(([name,v])=>'<button data-preset="'+v+'" data-field="'+cf+'" aria-pressed="'+(curve===v)+'" title="'+v+'% response" '+(!editable()?'disabled':'')+'>'+name+'<small>'+v+'%</small></button>').join('')+'</div>';}
+ else if(sub===1){html+=sliderField(m.kind==='stick'?'Inner dead zone':'Activation threshold','a'+(i+1),a[i+1],0,30,m.kind==='stick'?'Increase to ignore more movement near center.':'How far to press before the game sees input.',0)+sliderField(m.kind==='stick'?'Outer dead zone':'Full output at','a'+(i+2),a[i+2],m.kind==='stick'?0:35,m.kind==='stick'?30:100,m.kind==='stick'?'Increase to reach full movement sooner.':'Lower to reach full press sooner.',m.kind==='stick'?0:100);}
+ else if(m.kind==='stick'&&sub===2){html+=sliderField('Maximum output','a'+(i+3),a[i+3],1,100,'Lower to cap maximum movement sent to the game.',100)+sliderField('Anti-dead zone','a'+(i+4),a[i+4],0,a[i+3],'Boost initial movement to overcome a game’s built-in dead zone.',0);}
  else{html+='<div class="row">'+(m.kind==='stick'?['X','Y'].map((axis,k)=>'<button data-invert="'+(1<<k)+'" aria-pressed="'+!!(a[i+5]&(1<<k))+'" '+(!editable()?'disabled':'')+'>Invert '+axis+': '+(a[i+5]&(1<<k)?'ON':'OFF')+'</button>').join(''):'<button data-hair aria-pressed="'+!!a[i+4]+'" '+(!editable()?'disabled':'')+'>Hair trigger: '+(a[i+4]?'ON':'OFF')+'</button>')+'</div>'+sliderField('Simulated input','simulation',simulated,0,100,'Visual preview only; not a physical measurement.',50)+'<small>'+(m.kind==='stick'?'Inversion changes axis direction, not magnitude.':'Hair trigger sends full output after the threshold, losing proportional control.')+'</small>';}
  }
- else if(m.kind==='motor'){html+='<div id="liveGraph" class="graphLarge">'+tuningGraph(p,m,true)+'</div>'+sliderField('Strong motor','a23',a[23],0,100,'Scales the left/strong game rumble request.',100)+sliderField('Weak motor','a24',a[24],0,100,'Scales the right/weak game rumble request.',100)+'<small>System feedback and physical motor tests require the device adapter.</small>';}
+ else if(m.kind==='motor'){html+='<div class="instrumentIntro"><p><strong>Game vibration</strong> — Adjust how strongly each motor responds to vibration requested by the game.</p></div><div id="liveGraph" class="graphLarge">'+tuningGraph(p,m,true)+'</div>'+sliderField('Strong motor','a23',a[23],0,100,'Scales the left/strong game rumble request.',100)+sliderField('Weak motor','a24',a[24],0,100,'Scales the right/weak game rumble request.',100)+'<small>System feedback and physical motor tests require the device adapter.</small>';}
  else html+='<div class="card"><div class="graphLarge">'+tuningGraph(p,m,true)+'</div><h3>Physical Guide · hold 1 second</h3><p> Sends LT + RT + Start + Back. The Xbox or game must support reset.</p><small>Turn off to release the Guide shortcut. Protected system chords remain separate.</small></div>';
- return html+'<div class="row"><small id="layerState">'+(on?'Custom groups enabled':'Stored values · not applied')+'</small><button id="resetLayer" '+(!editable()?'disabled':'')+'>Restore layer</button></div>';
+ return html+'<div class="row"><small id="layerState">'+(on?'Enabled groups affect the output':'Bypassed · changes are stored only')+'</small><button id="resetLayer" '+(!editable()?'disabled':'')+'>Restore defaults</button></div></section>';
 }
 function bindTuning(){
  const p=profile();
@@ -539,7 +588,7 @@ function bindTuning(){
  if(field==='left'||field==='right')p[field]=v;
  else{const a=StudioV3.decode(p.layers),j=+field.slice(1);a[j]=v;if(m.kind==='stick'&&j===i+3)a[i+4]=Math.min(a[i+4],v);p.layers=StudioV3.encode(a);}
  }
- const g=$('liveGraph');if(g)g.innerHTML=tuningGraph(p,m,true);const ex=$('outputExample');if(ex)ex.innerHTML='At '+simulated+'% input → '+Math.round(100*responseValue(p,m,StudioV3.decode(p.layers),simulated/100))+'% Xbox output <small>Simulated</small>';const fw=content.querySelector('.focusWidgets');if(fw){fw.querySelectorAll('[data-widget]').forEach(el=>{const j=+el.dataset.widget.split(':')[1],v=widgetModel(p,m,j);el.querySelector('.widgetValue').textContent=v.value;el.querySelector('svg').outerHTML=v.svg;el.setAttribute('aria-label',m.name+' '+v.title+': '+v.value+', '+(v.on?'enabled':'bypassed')+'. '+v.desc);});}
+ const g=$('liveGraph');if(g)g.innerHTML=tuningGraph(p,m,true);const ex=$('outputExample');if(ex)ex.innerHTML='At '+simulated+'% input → '+Math.round(100*responseValue(p,m,StudioV3.decode(p.layers),simulated/100))+'% Xbox output <small>Simulated</small>';
  const o=content.querySelector('[data-value="'+field+'"]');if(o)o.textContent=v+'%';
  if(m.kind==='stick'&&field==='a'+(i+3)){const anti=content.querySelector('[data-tune="a'+(i+4)+'"]');if(anti){anti.max=v;anti.value=StudioV3.decode(p.layers)[i+4];content.querySelector('[data-value="a'+(i+4)+'"]').textContent=anti.value+'%';}}
  updateSaveBar();
@@ -639,7 +688,7 @@ const skinRow=()=>'<div class="skinPicker" aria-label="Controller appearance">'+
 const mapToggle=p=>'<button id="toggleMap" class="mapPill" '+(!editable()?'disabled':'')+' aria-pressed="'+p.custom+'">Remap '+(p.custom?'ON':'OFF')+'</button>';
 function mapper(){
  const p=profile(),a=analyzeMap(p.map,p.igr);
- if(pane===0)return '<div class="mapperCard"><div class="mapperTop">'+skinRow()+'</div><div class="canvas" id="canvas"><div class="controllerStage">'+controllerSvg(skin,p,source,'remap')+mapToggle(p)+'</div></div><div class="mapperHint"><span class="prompt" role="status">'+(!editable()?'Factory preset — duplicate to edit.':!p.custom?'Turn on Remap to customize buttons.':source===null?'Tap a button to change its output.':'<strong>'+esc(physicalName(skin,source))+'</strong> → choose Xbox output.')+'</span>'+(source!==null?'<button id="other" class="textAction">Other / disable</button>':p.custom?'<button id="other" class="textAction">Other inputs</button>':'')+'</div>'+(p.custom?'<div class="mapLegend">* Missing · blue: shared · × disabled · R: reset</div>':'')+'</div>';
+ if(pane===0)return '<div class="mapperCard"><div class="mapperTop">'+skinRow()+'</div><div class="canvas" id="canvas"><div class="controllerStage">'+controllerSvg(skin,p,source,'remap')+mapToggle(p)+'</div></div><div class="mapperHint"><span class="prompt" role="status">'+(!editable()?'Factory preset — duplicate to edit.':!p.custom?'Turn on Remap to customize buttons.':source===null?'Tap a button to change its output.':'<strong>'+esc(physicalName(skin,source))+'</strong> → choose Xbox output.')+'</span>'+(source!==null?'<button id="other" class="textAction">Other / disable</button>':p.custom?'<button id="other" class="textAction">Choose input</button>':'')+'</div>'+(p.custom?'<div class="mapLegend">* Missing · blue: shared · × disabled · R: reset</div>':'')+'</div>';
  if(pane===1){let rows=p.map.map((t,i)=>t!==i+1?'<div class="item">'+esc(physicalName(skin,i+1))+' → Xbox '+esc(names[t])+'</div>':'').filter(Boolean);rows.push(...a.missing.map(i=>'<div class="item warning">Xbox '+esc(names[i])+' has no assigned input.</div>'),...a.duplicates.map(i=>'<div class="item info">Xbox '+esc(names[i])+' shared by '+a.owners[i].length+' inputs.</div>'));return '<h2>Assignment summary</h2><div class="row"><div class="card"><small>Changed</small><span class="metric">'+p.map.filter((t,i)=>t!==i+1).length+'</span></div><div class="card"><small>Missing</small><span class="metric warning">'+a.missing.length+'</span></div><div class="card"><small>Shared</small><span class="metric info">'+a.duplicates.length+'</span></div></div><div class="card"><small>'+(p.custom?'Custom mapping':'Stored map; bypassed')+'</small><div class="list">'+(rows.length?rows.slice(group*4,group*4+4).join(''):'No modified assignments.')+'</div><div class="row"><button id="groupPrev" '+(!group?'disabled':'')+'>‹</button><small>'+Math.min(group+1,Math.max(1,Math.ceil(rows.length/4)))+' / '+Math.max(1,Math.ceil(rows.length/4))+'</small><button id="groupNext" '+((group+1)*4>=rows.length?'disabled':'')+'>›</button></div><button id="resetMap" '+(!editable()?'disabled':'')+'>Restore stock map</button></div>';}
  if(pane===2){const ids=[[5,6,7,8],[1,2,3,4],[9,10,17,18],[11,12,13,14],[15,16]][group%5];return '<h2>Advanced mapping</h2><div class="row"><button id="groupPrev">‹</button><span class="muted">'+['Face','D-pad','Shoulders','System / sticks','Extras'][group%5]+'</span><button id="groupNext">›</button></div><div class="card">'+ids.map(i=>'<div class="maprow"><span>'+esc(physicalName(skin,i))+'</span><button data-advanced="'+i+'" '+(!editable()||!p.custom||isReserved(i,p.igr)?'disabled':'')+'>'+esc(names[p.map[i-1]])+'</button></div>').join('')+'</div>';}
  if(pane===3)return '<div class="card"><h2>In-game reset</h2><small>Controller shortcut</small><p>Hold the physical Guide / PS button for one second to send LT + RT + Start + Back. Requires Xbox or game reset support.</p><button id="toggleIgr" aria-pressed="'+p.igr+'" '+(!editable()?'disabled':'')+'>Guide reset '+(p.igr?'ON':'OFF')+'</button><small>'+ (p.igr?'Guide is reserved for reset.':'Guide is available for mapping.')+'</small></div>';
@@ -679,26 +728,25 @@ function renderProfiles(){
  return layerDeck(p,true);
 }
 function updateSaveBar(){
- const home=deck==='home';
- const primary=$('primary'),footer=primary.closest('footer');
- footer.hidden=!dirty()&&!conflict&&!busy;
- if(deviceMode&&home){
-  $('saveState').textContent=busy?'Operation in progress…':conflict?'Device profile changed · draft retained':dirty()?'Unsaved device profile changes':'';
-  primary.textContent=conflict?'Resolve profile conflict':'Save changes';
-  primary.disabled=locked()||!!deviceError&&!conflict;
-  primary.onclick=()=>conflict?resolveConflict():saveDevice();
-  return;
- }
-
- if(deviceMode){
- $('saveState').textContent=busy?'Operation in progress…':conflict?'Device profile changed · draft retained':!ready?'Loading device library…':departed?'Reconnect required':dirty()?'Unsaved device profile changes':deviceError?'Connection unavailable':'Settings saved';
- $('primary').textContent=conflict?'Resolve profile conflict':deck==='home'?(dirty()?'Save & return to gaming':'Return to gaming'):dirty()?'Save changes':'Export profile';
- $('primary').disabled=locked()||!!deviceError&&!conflict;
- $('primary').onclick=()=>conflict?resolveConflict():deck==='home'?leaveGaming():dirty()?saveDevice():exportProfile();
- return;}
- $('saveState').textContent=loadError?'Preview storage unavailable':dirty()?'Unsaved preview changes':'Preview profile saved locally';
- $('primary').textContent=dirty()?'Save changes':'Export profile';$('primary').onclick=()=>dirty()?save():exportProfile();
+ const primary=$('primary'),pending=dirty()||conflict;
+ primary.hidden=!pending&&!busy;
+ primary.textContent=busy?'Busy':conflict?'Resolve':'Save';
+ primary.title=conflict?'Resolve profile conflict':'Save changes';
+ primary.setAttribute('aria-label',primary.title);
+ primary.disabled=locked()||!pending||deviceMode&&!!deviceError&&!conflict;
+ $('saveState').textContent=busy?'Operation in progress':conflict?'Device profile changed; draft retained':dirty()?'Unsaved changes':loadError?'Storage unavailable':'Settings saved';
+ primary.onclick=()=>conflict?resolveConflict():save();
 }
+let canvasObserver;
+function fitController(){
+ canvasObserver?.disconnect();
+ const canvas=$('canvas'),stage=canvas?.querySelector('.controllerStage');
+ if(!stage)return;
+ const resize=()=>{const w=Math.min(canvas.clientWidth,canvas.clientHeight*500/366);if(w>0){stage.style.width=w+'px';stage.style.height=(w*366/500)+'px';}};
+ resize();
+ if(typeof ResizeObserver!=='undefined'){canvasObserver=new ResizeObserver(resize);canvasObserver.observe(canvas);}
+}
+window.addEventListener('resize',fitController);
 
 function render(){
  const focused=document.activeElement?.dataset?.key;
@@ -711,7 +759,7 @@ function render(){
  content.scrollTop=0;
  const monitor=content.querySelector('.widgetDeck');if(monitor){monitor.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&!e.ctrlKey){e.preventDefault();monitor.scrollLeft+=e.deltaY;}},{passive:false});monitor.addEventListener('keydown',e=>{if(e.target===monitor&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();monitor.scrollBy({left:(e.key==='ArrowRight'?1:-1)*monitor.clientWidth,behavior:'smooth'});}});}
  $('pick').textContent=(deck==='home'?'Home':panes[deck][pane])+' · '+(pane+1)+' / '+panes[deck].length;$('prev').disabled=pane===0;$('next').disabled=pane===panes[deck].length-1;
- updateSaveBar();bindTuning();
+ updateSaveBar();fitController();bindTuning();
  content.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{group=0;go(b.dataset.go,['controller','tuning'].includes(b.dataset.go)?0:undefined);});
  content.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{skin=b.dataset.skin;source=null;render();});
 
