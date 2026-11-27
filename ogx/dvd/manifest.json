@@ -3,6 +3,20 @@
   "product": "ogx-dvd-wireless",
   "releases": [
     {
+      "version": "v1.0.0-dev.12",
+      "channel": "experimental",
+      "size": 1376244,
+      "sha256": "47ac43f650cac6807c6b426b5f8112f34a559e125ba7f121846b1314fd969d2d",
+      "notes": "EXPERIMENTAL: shared Hambone Controller Studio, independent stick/trigger/rumble tuning layers, portable v2 profiles and graph previews. Build and simulated storage/browser tests passed; physical hardware testing pending. Retains dev.11 profile storage for downgrade."
+    },
+    {
+      "version": "v1.0.0-dev.11",
+      "channel": "experimental",
+      "size": 1310708,
+      "sha256": "7af780038591f94dfe9abee8897153084e9c46d3ff9d7746adca425d42a9ae1c",
+      "notes": "Owner-tested installation: named profiles, dual-skin two-tap visual remapper and simple local hostname. Recovery checkpoint before Controller Studio."
+    },
+    {
       "version": "v1.0.0-dev.7",
       "channel": "experimental",
       "size": 1245172,
