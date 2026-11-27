@@ -309,6 +309,15 @@ header:has(.saveCompact:not([hidden])) .brand strong{font-size:clamp(11px,3.4vw,
  .directGraph .graphBody:not(:has(.axisRail)){min-height:96px}
  .directGraph .graphBody:not(:has(.axisRail)) svg{max-height:110px}
 }
+
+/* Compact response toolbar and curve preset pills. */
+.directGraph .focusWidgets #linkAxes{margin-right:auto;width:90px;min-width:0;min-height:32px;border-radius:16px;padding:2px 5px;font-size:10px;white-space:nowrap}
+.directGraph #linkAxes[aria-pressed=true]{border-color:var(--accent);background:var(--burg)}
+.directInstrument .presets{gap:5px}
+.directInstrument .presets button{display:flex;align-items:center;justify-content:center;gap:3px;min-height:28px;height:28px;border-radius:999px;padding:2px 4px;font-size:11px;white-space:nowrap}
+.directInstrument .presets small{font-size:9px}
+@media(max-width:350px){.directInstrument .presets button{font-size:10px;gap:2px}.directInstrument .presets small{font-size:8px}}
+@media(orientation:landscape) and (max-height:450px){.directInstrument .presets button{min-height:28px}}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
@@ -754,7 +763,7 @@ function tuningEditor(){
  const groupToggle='<button class="focusToggle '+(on?'lit':'dim')+'" data-layer="'+n+'" aria-pressed="'+on+'" '+(!editable()?'disabled':'')+'>'+(on?'Custom ON':'Stock')+'</button>';
  const header='<section class="instrumentPanel directInstrument"><div class="instrumentHeader"><button data-pane="0" class="backInputs" aria-label="All inputs">‹</button><div class="instrumentTitle"><h2>'+m.name+'</h2><small>'+m.brand+'</small></div></div>';
  if(m.kind!=='stick'&&m.kind!=='trigger'&&m.kind!=='motor')return header+'<p>Hold Guide for one second to reset supported games.</p></section>';
- let intro='',tabs='',toggles='',side='',controls='',presets='',legend='',example='',extra='';
+ let intro='',tabs='',toggles='',side='',controls='',presets='',legend='',example='',extra='',linkControl='';
  const opts=m.kind==='stick'?StudioV3.options(p,i):null,axisControls=!!opts&&sub===0&&!deviceMode;
  if(m.kind==='stick'||m.kind==='trigger'){
   const names=m.kind==='stick'?['Response','Dead zones','Limits']:['Response','Travel','Hair trigger'],info=panelInfo[m.kind][sub];
@@ -765,7 +774,8 @@ function tuningEditor(){
    const curve=opts?p[m.curve]:a[i+3],cf=opts?m.curve:'a'+(i+3);
    if(axisControls){
     const linked=!!linkedAxes.get(linkKey(p,i));
-    side='<div class="axisRail"><div class="axisSliders">'+instrumentRange('X','gainX',opts.x,25,200,'Horizontal output gain; 100% unchanged.',true,'gainX')+instrumentRange('Y','gainY',opts.y,25,200,'Vertical output gain; 100% unchanged.',true,'gainY')+'</div><button id="linkAxes" aria-pressed="'+linked+'" title="When linked, moving either slider matches the other axis" '+(!editable()?'disabled':'')+'>'+(linked?'Linked':'Link X/Y')+'</button></div>';
+    linkControl='<button id="linkAxes" aria-pressed="'+linked+'" title="When linked, moving either slider matches the other axis" '+(!editable()?'disabled':'')+'>'+(linked?'Linked':'Link X/Y')+'</button>';
+    side='<div class="axisRail"><div class="axisSliders">'+instrumentRange('X','gainX',opts.x,25,200,'Horizontal output gain; 100% unchanged.',true,'gainX')+instrumentRange('Y','gainY',opts.y,25,200,'Vertical output gain; 100% unchanged.',true,'gainY')+'</div></div>';
    }
    controls=instrumentRange('Curve',cf,curve,50,200,'100% is linear; higher values increase partial output.');
    presets='<div class="row presets" aria-label="Curve presets">'+[['Noob',65],['Casual',100],['Pro',135],['God',175]].map(([name,v])=>'<button data-preset="'+v+'" data-field="'+cf+'" aria-pressed="'+(curve===v)+'" title="Curve '+v+'%; does not alter axis gain" '+(!editable()?'disabled':'')+'>'+name+'<small>'+v+'%</small></button>').join('')+'</div>';
@@ -789,7 +799,7 @@ function tuningEditor(){
   toggles=groupToggle;
   controls=instrumentRange('Strong motor','a23',a[23],0,100,'Left/strong game vibration.')+instrumentRange('Weak motor','a24',a[24],0,100,'Right/weak game vibration.');
  }
- return header+tabs+'<div class="instrumentIntro">'+intro+'</div><div class="graphFrame directGraph"><div class="focusWidgets">'+toggles+resetButton+'</div><div class="graphBody">'+side+'<div class="plotColumn"><div id="liveGraph" class="graphLarge">'+focusedGraph(p,m,sub)+'</div></div></div><div class="graphControls">'+controls+'</div>'+example+legend+extra+'</div>'+presets+'</section>';
+ return header+tabs+'<div class="instrumentIntro">'+intro+'</div><div class="graphFrame directGraph"><div class="focusWidgets">'+linkControl+toggles+resetButton+'</div><div class="graphBody">'+side+'<div class="plotColumn"><div id="liveGraph" class="graphLarge">'+focusedGraph(p,m,sub)+'</div></div></div><div class="graphControls">'+controls+'</div>'+example+legend+extra+'</div>'+presets+'</section>';
 }
 function bindTuning(){
  const p=profile();
