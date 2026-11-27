@@ -450,7 +450,7 @@ function controllerSvg(s,p,source,operation){
  const cls=[source===i?'selected':'',changed?'modified':'',shared?'shared':''].join(' '),dark=s==='classic'&&i===9,fill=dark?'#e9e3da':type==='face'&&i>=5&&i<=8?faceColors[i]:'#23242d';
  const label=source!==null&&operation==='remap'?names[i]:physicalName(s,i);
  const ar=label+(reserved&&source===null?' (reserved for IGR)':'');
- svg+='<g class="'+cls+'" data-key="'+i+'" tabindex="0" role="button" aria-label="'+ar+'"><meta name="robots" content="noindex,nofollow"><title>'+ar+'</title>';
+ svg+='<g class="'+cls+'" data-key="'+i+'" tabindex="0" role="button" aria-label="'+ar+'"><title>'+ar+'</title>';
  if(type==='dpad'){
  const rot=({1:0,2:180,3:-90,4:90})[i];
  svg+='<path class="hitmark" transform="translate('+x+' '+y+') rotate('+rot+')" d="M-12 -17Q0 -21 12 -17L12 0L0 12L-12 0Z" fill="'+fill+'" stroke="#f06470" stroke-width="2.5" stroke-linejoin="round"/>';
