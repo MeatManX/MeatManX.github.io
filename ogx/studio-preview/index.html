@@ -366,6 +366,37 @@ header .saveSlot .saveCompact{width:58px;min-width:58px;max-width:58px;height:36
 .statusButton[data-strength]:not([data-strength="0"]) .bars rect{opacity:.35}
 .statusButton[data-strength="1"] .bars rect:nth-child(1),.statusButton[data-strength="2"] .bars rect:nth-child(-n+2),.statusButton[data-strength="3"] .bars rect:nth-child(-n+3),.statusButton[data-strength="4"] .bars rect{opacity:1}
 @media(orientation:landscape) and (max-height:450px){.scopeGrid,.vaultTools{grid-template-columns:repeat(3,minmax(0,1fr))}.vaultEdit{padding:3px}.vaultSummary>div{min-height:32px}}
+
+/* Direct library and explicit instrument navigation; no profile page carousel. */
+.vaultHeading{display:flex;align-items:center;gap:6px;flex:none;min-height:38px}
+.vaultHeading h2{font-size:17px}.vaultHeading small{font-size:11px}
+.vaultBack{min-width:40px;width:40px;min-height:38px;padding:0;font-size:24px}
+.vaultActiveLine{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--card);flex:none;min-width:0}
+.vaultActiveLine>div{display:grid;gap:1px;min-width:0}.vaultActiveLine strong{overflow-wrap:anywhere;font-size:15px}.vaultActiveLine small{font-size:10px}
+.vaultActiveLine button{min-height:38px;flex:none;padding:4px 9px;font-size:11px}
+.vaultLibrary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(44px,1fr);gap:5px;flex:1;min-height:0;align-content:start;overflow:auto}
+.vaultProfile{min-width:0;min-height:44px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;padding:4px 6px;text-align:left;background:var(--card);border-color:var(--line)}
+.vaultProfile[aria-current=true]{border-color:var(--accent)}
+.vaultProfileName{font-size:12px;overflow-wrap:anywhere;line-height:1.1}
+.vaultProfile small{font-size:10px;line-height:1.1}
+.vaultLibrary:has(.vaultProfile:nth-child(7)){grid-template-columns:repeat(3,minmax(0,1fr))}
+.vaultActionBar{display:flex;gap:4px;flex:none}
+.vaultActionBar button{flex:1;min-width:0;min-height:40px;font-size:11px;padding:3px}
+.vaultDetailGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(58px,1fr));gap:6px;flex:1;min-height:0}
+.vaultInstrument{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--card);border-color:var(--line);padding:4px;min-width:0}
+.vaultInstrument strong{font-size:14px}.vaultInstrument small{font-size:10px}.vaultInstrument svg{width:32px;height:32px;color:var(--accent)}.slotGlyph{font-size:27px;color:var(--accent)}
+.scopeTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;flex:none}
+.scopeTabs button{font-size:10px;min-height:36px;min-width:0;padding:3px;white-space:normal}
+.scopeTabs button[aria-pressed=true]{border-color:var(--accent);background:var(--burg)}
+.scopeConnection{min-height:49px}
+@media(orientation:landscape) and (max-height:450px){
+ .vaultLibrary{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .vaultLibrary:has(.vaultProfile:nth-child(7)){grid-template-columns:repeat(4,minmax(0,1fr))}
+ .vaultDetailGrid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:1fr}
+ .scopeCard{min-height:52px;gap:2px}.scopeGrid{grid-auto-rows:minmax(52px,1fr)}
+ .scopeConnection{min-height:38px;padding:3px}
+}
+.homeScreen .homeTiles:not(:has([data-go=network])){grid-template-columns:repeat(2,minmax(0,1fr))}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
@@ -540,7 +571,7 @@ const deviceMode=false;
 let busy=false,departed=false,ready=!deviceMode,deviceStatus=null,otaStatus=null,networkCache=[],networkPage=0,netLoaded=false,releaseList=[],releaseIndex=0,operationStatus='',uploadPercent=null,lastActivity=0,deviceError='',conflict=false,deviceLock=false,refreshing=false,uncertainUpload=false;
 const networkPanes=['Overview','Direct Wi-Fi','Home Wi-Fi','Local access','Advanced'];
 const firmwarePanes=['Installed','Available releases','Release notes','Update operation','Recovery'];
-const diagPanes=['Overview','Device resources','Bluetooth','Controller handoff'];
+const diagPanes=['Overview','Hardware','Controller','Xbox handoff'];
 const releaseBase='https://meatmanmods.com/ogx/dvd/';
 async function request(url,options={}){
  if(!deviceMode)throw Error('Hardware unavailable in standalone');
@@ -625,12 +656,20 @@ function scopeCard(label,value,detail,kind='',target=null){
  const inner='<div class="scopeCardTitle"><strong>'+esc(label)+'</strong></div><div class="scopeValue">'+esc(value)+'</div><small>'+esc(detail)+'</small>';
  return target===null?'<div class="scopeCard '+kind+'">'+inner+'</div>':'<button class="scopeCard '+kind+'" data-device-pane="'+target+'">'+inner+'</button>';
 }
+// Demo data is a separate, explicitly labelled presentation fixture.
+const scopeDemo={ip:'192.168.1.228',ap:false,heap:102400,idle_seconds:240,wifi_rssi_dbm:-62,scope:{connected:true,model:'Xbox One / Series',transport:'BLE',battery_pct:80,ble_interval_us:10000,sampled:true,reports:100,window_ms:1000,intervals:99,mean_us:10000,min_us:9000,max_us:11000}};
+let scopeExample=false;
 function diagView(){
- const d=deviceStatus||{},m=scopeMetrics(d,!!deviceError),head='<div class="heading utilityHeading"><div><h2>SignalScope™</h2><small>'+esc(diagPanes[pane])+'</small></div><button id="refreshStatus" class="compactAction">Refresh</button></div>';
- if(pane===0)return head+'<div class="scopeConnection"><strong>'+esc(m.link)+'</strong><small>'+esc(m.transport+' · '+m.state)+'</small></div><div class="scopeGrid">'+scopeCard('Battery',m.battery,'Controller-reported', '',2)+scopeCard('Input reports',m.rate,'Decoded callbacks / s','',2)+scopeCard('Report interval',m.mean,'Mean within sample','',2)+scopeCard('BLE interval',m.ble,'Negotiated radio interval','',2)+scopeCard('Home Wi-Fi',m.wifi,'Dongle to router','',1)+scopeCard('Free memory',m.heap,'ESP32 heap','',1)+'</div><small class="utilityNote">Bluetooth RSSI and Xbox handoff timing are not yet measured.</small>';
- if(pane===1)return head+'<div class="scopeGrid">'+scopeCard('Free memory',m.heap,'ESP32 heap')+scopeCard('Wi-Fi auto-off',m.idle,'Configuration idle timer')+scopeCard('Home Wi-Fi',m.wifi,'Router RSSI; unavailable in direct AP')+scopeCard('Address',d.ip||'Unavailable',d.ap?'Direct AP':'Home Wi-Fi')+'</div><small class="utilityNote">'+esc(m.state)+'</small>';
- if(pane===2)return head+'<div class="scopeConnection"><strong>'+esc(m.link)+'</strong><small>'+esc(m.transport+' · '+m.state)+'</small></div><div class="scopeGrid">'+scopeCard('Battery',m.battery,'Controller-reported')+scopeCard('Input reports',m.rate,'Callbacks per second')+scopeCard('Mean interval',m.mean,'Within sample')+scopeCard('Shortest',m.min,'Within sample')+scopeCard('Longest',m.max,'Within sample')+scopeCard('BLE interval',m.ble,'Not input latency')+'</div><small class="utilityNote">Report cadence may vary with activity. It is not packet loss, polling rate or end-to-end latency. Bluetooth RSSI is not measured.</small>';
- return head+'<div class="card"><h3>Xbox handoff</h3><p>I2C queue/write timing and errors are not measured yet. No end-to-end latency estimate is available.</p></div>';
+ const d=deviceMode?(deviceStatus||{}):scopeExample?scopeDemo:{},m=scopeMetrics(d,!!deviceError);
+ const head='<div class="heading utilityHeading"><div><h2>SignalScope™</h2><small>'+esc(diagPanes[pane])+'</small></div>'+(deviceMode?'<button id="refreshStatus" class="compactAction">Refresh</button>':'<button id="scopeExample" class="compactAction" aria-pressed="'+scopeExample+'">'+(scopeExample?'Example ON':'Show example')+'</button>')+'</div>';
+ const tabs='<div class="scopeTabs">'+diagPanes.map((n,i)=>'<button data-device-pane="'+i+'" aria-pressed="'+(pane===i)+'">'+n+'</button>').join('')+'</div>';
+ const state=deviceMode?m.state:scopeExample?'SIMULATED EXAMPLE · NOT LIVE':'Standalone preview · no device attached';
+ const connection='<div class="scopeConnection"><strong>'+esc(deviceMode||scopeExample?m.link:'No device connected')+'</strong><small>'+esc((deviceMode||scopeExample?m.transport+' · ':'')+state)+'</small></div>';
+ const hardware=scopeCard('ESP32 temp','Unavailable','No supported sensor driver')+scopeCard('RP2040 temp','Unavailable','Firmware support required')+scopeCard('Voltage','Unavailable','Sensing circuit required')+scopeCard('Current','Unavailable','Current sensor required')+scopeCard('Power','Unavailable','Voltage × current')+scopeCard('Free memory',m.heap,'ESP32 heap');
+ if(pane===0)return head+tabs+connection+'<div class="scopeGrid">'+scopeCard('Battery',m.battery,'Controller-reported','',2)+scopeCard('Input reports',m.rate,'Decoded callbacks / s','',2)+scopeCard('Report interval',m.mean,'Mean within sample','',2)+scopeCard('BLE interval',m.ble,'Negotiated radio interval','',2)+scopeCard('Home Wi-Fi',m.wifi,'Dongle to router','',1)+scopeCard('Free memory',m.heap,'ESP32 heap','',1)+'</div><small class="utilityNote">Tap a reading or select an instrument group.</small>';
+ if(pane===1)return head+tabs+connection+'<div class="scopeGrid">'+hardware+'</div><small class="utilityNote">Temperature and power readings require additional support. No estimates substituted.</small>';
+ if(pane===2)return head+tabs+connection+'<div class="scopeGrid">'+scopeCard('Battery',m.battery,'Controller-reported')+scopeCard('Input reports',m.rate,'Callbacks per second')+scopeCard('Mean interval',m.mean,'Within sample')+scopeCard('Shortest',m.min,'Within sample')+scopeCard('Longest',m.max,'Within sample')+scopeCard('BLE interval',m.ble,'Not input latency')+'</div><small class="utilityNote">Report cadence is not packet loss or end-to-end latency. Bluetooth RSSI is not measured.</small>';
+ return head+tabs+connection+'<div class="scopeGrid">'+scopeCard('I²C write time','Unavailable','Instrumentation pending')+scopeCard('Queue delay','Unavailable','Instrumentation pending')+scopeCard('Write errors','Unavailable','Instrumentation pending')+scopeCard('Wi-Fi auto-off',m.idle,'Configuration timer')+'</div><small class="utilityNote">Xbox handoff timing is not end-to-end latency.</small>';
 }
 function firmwareView(){
  const o=otaStatus||{},d=deviceStatus||{},r=releaseList[releaseIndex],head='<div class="heading"><h2>MeatLink™ updates</h2><small>'+firmwarePanes[pane]+'</small></div>';
@@ -677,9 +716,10 @@ async function installFirmware(r,file){
  }catch(e){updatePhase('Update failed: '+e.message);if(uploadStarted){uncertainUpload=true;deviceLock=true;operationStatus+=' Reload and check device status before retrying.';}}finally{busy=false;render();}
 }
 function bindDevice(){
+ content.querySelectorAll('[data-device-pane]').forEach(b=>b.onclick=()=>go(deck,+b.dataset.devicePane));
+ const demo=$('scopeExample');if(demo)demo.onclick=()=>{scopeExample=!scopeExample;render();};
  if(!deviceMode)return;
  const bind=(id,fn)=>{const e=$(id);if(e)e.onclick=fn;};
- content.querySelectorAll('[data-device-pane]').forEach(b=>b.onclick=()=>go(deck,+b.dataset.devicePane));
  content.querySelectorAll('[data-network]').forEach(b=>b.onclick=()=>wifiDialog(networkCache[+b.dataset.network].ssid));
  bind('useDirect',()=>afterDraft(()=>transition('/wifi/local',undefined,deviceStatus?.ap?'Direct Wi-Fi is now preferred.':'Switch accepted. Join OGX-DVD and reopen 192.168.4.1.',!!deviceStatus?.ap)));
  bind('manualWifi',()=>wifiDialog());bind('scanCache',scanCache);bind('connectSaved',()=>afterDraft(()=>transition('/wifi/connect',undefined,'Connecting to saved network. Rejoin it and reopen the dongle.')));
@@ -901,7 +941,7 @@ function nameDialog(title,initial,apply){
 }
 function addProfile(src,name){
  const id=nextId();if(id===undefined){modal('Library full','<p>All ten editable slots are occupied.</p>',[{label:'Close'}]);return;}
- const p=copy(src);p.id=id;p.name=name;library.profiles.push(p);library.profiles.sort((a,b)=>a.id-b.id);editing=id;go('profiles',0);
+ const p=copy(src);p.id=id;p.name=name;library.profiles.push(p);library.profiles.sort((a,b)=>a.id-b.id);editing=id;go('profiles',1);
 }
 function createProfile(duplicate=false){
  if(nextId()===undefined){modal('Library full','<p>Delete an editable profile before adding another.</p>',[{label:'Close'}]);return;}
@@ -957,12 +997,12 @@ try{const raw=deviceMode?null:localStorage.getItem(key);if(raw){const d=JSON.par
 let baseline=JSON.stringify(library),editing=library.active,deck='home',pane=0,skin='modern',source=null,group=0,restoreFocus=null;
 const last={};
 const profile=()=>library.profiles.find(p=>p.id===editing),editable=()=>editing>=2&&!locked(),dirty=()=>JSON.stringify(library)!==baseline;
-const panes={home:['Dashboard'],controller:['Visual remapper','Assignment summary','Advanced mapping','In-game reset','Transfer'],tuning:tuningPanes,profiles:['Active profile','Library','Quick slots','Manage profiles','Profile layers','Import review','Saved profile monitor'],about:['About','Help','Desktop files']};
+const panes={home:['Dashboard'],controller:['Visual remapper','Assignment summary','Advanced mapping','In-game reset','Transfer'],tuning:tuningPanes,profiles:['Library','Profile details','Quick slots','Manage profile','Profile layers','Import review','Saved profile monitor'],about:['About','Help','Desktop files']};
 const icons={controller:'<path d="M7 7h10q3 0 4 4l1 5q0 4-3 3l-4-4H9l-4 4q-3 1-3-3l1-5q1-4 4-4Z"/><path d="M7 10v5m-2.5-2.5h5m6-1h.1m3 2h.1"/>',tuning:'<path d="M3 5h18M3 12h18M3 19h18M8 2v6m8 1v6m-5 1v6"/>',profiles:'<rect x="5" y="3" width="16" height="14" rx="2"/><path d="M3 7v12q0 2 2 2h12M9 8h8m-8 4h5"/>',about:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.1"/>'};
-if(deviceMode){panes.network=networkPanes;panes.firmware=firmwarePanes;panes.diagnostics=diagPanes;icons.network='<path d="M2 8q10-9 20 0M6 12q6-5 12 0M10 16q2-2 4 0M12 20h.1"/>';icons.firmware='<path d="M12 2v13m-5-5 5 5 5-5M4 16v5h16v-5"/>';icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';}
+panes.diagnostics=diagPanes;icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';if(deviceMode){panes.network=networkPanes;panes.firmware=firmwarePanes;icons.network='<path d="M2 8q10-9 20 0M6 12q6-5 12 0M10 16q2-2 4 0M12 20h.1"/>';icons.firmware='<path d="M12 2v13m-5-5 5 5 5-5M4 16v5h16v-5"/>';icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';}
 const icon=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[k]+'</svg>';
 function go(d,i){if(dialog.open||locked())return;source=null;group=0;deck=d;pane=i===undefined?(last[d]||0):i;last[d]=pane;render();}
-function step(n){if(deck==='controller'||deck==='tuning')return;if(pane+n>=0&&pane+n<panes[deck].length)go(deck,pane+n);}
+function step(n){if(['controller','tuning','profiles','diagnostics'].includes(deck))return;if(pane+n>=0&&pane+n<panes[deck].length)go(deck,pane+n);}
 function tile(d,title,desc){return '<button class="tile" data-go="'+d+'">'+icon(d)+'<strong>'+title+'</strong><small>'+desc+'</small></button>';}
 function modal(title,body,actions,after){
  restoreFocus=document.activeElement;
@@ -974,7 +1014,7 @@ function closeModal(){if(dialog.open)dialog.close();restoreFocus?.focus?.();rest
 function save(){if(deviceMode)return saveDevice();try{if(loadError)throw Error('Preview storage error: '+loadError);const current=JSON.parse(localStorage.getItem(key)||'null');if(current&&current.revision!==library.revision)throw Error('Preview changed in another tab. Reload or export draft.');if(!library.profiles.every(StudioV3.validProfile))throw Error('Invalid profile settings.');const next=copy(library);next.revision++;localStorage.setItem(key,JSON.stringify(next));library=next;baseline=JSON.stringify(next);render();}catch(e){modal('Save failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}}
 function exportProfile(){const p=profile(),blob=new Blob([JSON.stringify(StudioV3.portable(p),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=p.name.replace(/[^a-zA-Z0-9_-]/g,'_')+'.ogx-profile.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 function renderHome(){
- const cards=tile('controller','Controller','Remap buttons')+tile('tuning','Tuning','Adjust input response')+tile('profiles','Profiles','Manage saved profiles')+(deviceMode?tile('diagnostics','Diagnostics','Connection & performance')+tile('network','Network','Wi-Fi settings')+tile('firmware','Firmware','Update your dongle'):tile('about','About','Help & credits'));
+ const cards=tile('controller','Controller','Remap buttons')+tile('tuning','Tuning','Adjust input response')+tile('profiles','MeatVault','Profiles & quick slots')+tile('diagnostics','SignalScope','Device instruments')+(deviceMode?tile('network','Network','Wi-Fi settings')+tile('firmware','Firmware','Update your dongle'):'');
  return '<div class="tiles homeTiles">'+cards+'</div>';
 }
 const skinRow=()=>'<div class="skinPicker" aria-label="Controller appearance">'+Object.entries(skins).map(([k,v])=>'<button data-skin="'+k+'" aria-pressed="'+(skin===k)+'" title="'+v.label+' appearance only">'+({classic:'Xbox S',modern:'Series X/S',dual:'PS5'})[k]+'</button>').join('')+'</div>';
@@ -1010,19 +1050,24 @@ function tap(i){
  if(source===null){source=i;render();}
  else proposal(i);
 }
+function vaultHeading(title,subtitle,back=true){
+ return '<div class="vaultHeading">'+(back?'<button class="vaultBack" data-vault-pane="0" aria-label="Back to MeatVault">‹</button>':'')+'<div><h2>'+title+'</h2><small>'+subtitle+'</small></div></div>';
+}
 function renderProfiles(){
- const p=profile();
+ const p=profile(),saved=JSON.parse(baseline),active=saved.profiles.find(x=>x.id===saved.active);
  if(pane===0){
-  const saved=JSON.parse(baseline),active=saved.profiles.find(x=>x.id===saved.active),t=StudioV3.decode(active.layers),muted=t[22]&&t[23]===0&&t[24]===0,customCount=[0,6,12,17].filter(i=>StudioV3.mask(t[i])).length;
-  return '<div class="heading utilityHeading"><div><h2>MeatVault™</h2><small>Profile management</small></div></div><div class="vaultActive"><div class="vaultTitle"><small>SAVED ACTIVE PROFILE</small><strong>'+esc(active.name)+'</strong></div><button id="activeMonitor" class="vaultSummary" aria-label="Open saved profile monitor"><div><small>Mapping</small><strong>'+(active.custom?'Custom':'Stock')+'</strong></div><div><small>Tuned inputs</small><strong>'+customCount+'/4</strong></div><div><small>Vibration</small><strong>'+(muted?'Muted':t[22]?'Custom':'Stock')+'</strong></div><div><small>Reset</small><strong>'+(active.igr?'On':'Off')+'</strong></div></button></div><div class="vaultEdit"><div><small>EDITING '+(editable()?'· CUSTOM':'· PROTECTED')+'</small><strong>'+esc(p.name)+'</strong></div><div class="row"><button id="useProfile" '+(library.active===editing?'disabled':'')+'>'+ (library.active===editing?(saved.active===editing?'Active':'Pending save'):'Use on save')+'</button><button id="duplicate">Duplicate</button></div></div><div class="vaultTools">'+[['Library','Browse profiles','library',null],['Quick slots','Assign profiles','',2],['Manage','New / rename / delete','',3],['Import','Load profile file','import',null],['Export','Download selected','export',null],['Profile layers','Edit instruments','',4]].map(([title,desc,id,route])=>'<button class="vaultTool" '+(id?'id="'+id+'"':'data-vault-pane="'+route+'"')+'><strong>'+title+'</strong><small>'+desc+'</small></button>').join('')+'</div>';
+  const rows=library.profiles.map(x=>'<button class="vaultProfile" data-profile="'+x.id+'" aria-label="Open '+esc(x.name)+'" aria-current="'+(x.id===editing?'true':'false')+'"><span class="vaultProfileName">'+esc(x.name)+'</span><small>'+(x.id===saved.active?'● Active':x.id===library.active?'Pending active':x.id<2?'Protected':'Custom')+'</small></button>').join('');
+  return vaultHeading('MeatVault™','Profile library · '+library.profiles.length+'/12',false)+'<div class="vaultActiveLine"><div><small>Saved active</small><strong>'+esc(active.name)+'</strong></div><button id="activeMonitor" title="Inspect saved active profile">Inspect</button></div><div class="vaultLibrary">'+rows+'</div><div class="vaultActionBar"><button id="newProfile">+ New</button><button id="import">Import</button><button data-vault-pane="2">Quick slots</button></div>';
  }
-
- if(pane===1){const list=library.profiles.slice(group*3,group*3+3);return '<h2>Profile library · '+library.profiles.length+'/12</h2><div class="list">'+list.map(x=>'<button data-profile="'+x.id+'"><strong>'+esc(x.name)+'</strong><br><small>'+(x.id===editing?'Editing · ':'')+(x.id===library.active?'Selected active · ':'')+(x.id<2?'Protected':'Custom')+'</small></button>').join('')+'</div><div class="row"><button id="groupPrev" '+(!group?'disabled':'')+'>‹</button><span>'+ (group+1) +'/'+Math.ceil(library.profiles.length/3)+'</span><button id="groupNext" '+((group+1)*3>=library.profiles.length?'disabled':'')+'>›</button></div><button id="duplicate">Duplicate selected</button>';}
- if(pane===2)return '<h2>QuadSlot™</h2><div class="slotgrid">'+[0,3,1,2].map(j=>'<button class="card slot slot'+j+'" data-slot="'+j+'"><small>'+['↑','→','↓','←'][j]+' Slot '+(j+1)+'</small><strong>'+esc(library.profiles.find(p=>p.id===library.slots[j])?.name||'Unassigned')+'</strong></button>').join('')+'<div class="slotCenter">✚</div></div><small>Local slot assignments only. Physical Start + Back shortcut is pending firmware integration.</small>';
- if(pane===3)return '<h2>Manage profiles</h2><div class="card"><strong>'+esc(p.name)+'</strong><small>'+(editable()?'Editable':'Protected preset')+'</small></div><div class="tiles"><button id="newProfile" class="tile"><strong>New profile</strong><small>Factory values</small></button><button id="duplicate" class="tile"><strong>Duplicate</strong><small>Copy selected</small></button><button id="rename" class="tile" '+(!editable()?'disabled':'')+'><strong>Rename</strong></button><button id="deleteProfile" class="tile" '+(!editable()?'disabled':'')+'><strong>Delete</strong></button></div><button id="import">Import profile</button>';
- if(pane===5)return importView();
- if(pane===6){const saved=JSON.parse(baseline),active=saved.profiles.find(x=>x.id===saved.active);return '<div class="heading monitorHeading"><h2>Saved profile</h2><small>'+esc(active.name)+'</small></div>'+renderInputMonitor(active,true,false);}
- return layerDeck(p,true);
+ if(pane===1||pane===3){
+  const t=StudioV3.decode(p.layers),count=[0,6,12,17].filter(i=>StudioV3.mask(t[i])).length;
+  const status=p.id===saved.active?'Saved active':p.id===library.active?'Pending activation':'Not active';
+  return vaultHeading('Profile details',p.id<2?'Protected preset':'Editable profile')+'<div class="vaultActiveLine"><div><small>'+status+'</small><strong>'+esc(p.name)+'</strong></div><button id="useProfile" '+(library.active===editing?'disabled':'')+'>'+ (library.active===editing?(saved.active===editing?'Active':'Pending save'):'Use on save')+'</button></div><div class="vaultDetailGrid"><button class="vaultInstrument" data-go="controller"><strong>Controller</strong><small>'+(p.custom?'Custom mapping':'Stock mapping')+'</small>'+icon('controller')+'</button><button class="vaultInstrument" data-go="tuning"><strong>Tuning</strong><small>'+count+'/4 inputs tuned</small>'+icon('tuning')+'</button><button class="vaultInstrument" data-vault-pane="4"><strong>Profile layers</strong><small>Inspect adjustments</small>'+icon('profiles')+'</button><button class="vaultInstrument" data-vault-pane="2"><strong>Quick slots</strong><small>'+library.slots.filter(x=>x===p.id).length+' assigned</small><span class="slotGlyph">✚</span></button></div><div class="vaultActionBar"><button id="duplicate">Duplicate</button><button id="rename" '+(!editable()?'disabled':'')+'>Rename</button><button id="export">Export</button><button id="deleteProfile" '+(!editable()?'disabled':'')+'>Delete</button></div>';
+ }
+ if(pane===2)return vaultHeading('QuadSlot™','Assign saved profile shortcuts')+'<div class="slotgrid">'+[0,3,1,2].map(j=>'<button class="card slot slot'+j+'" data-slot="'+j+'"><small>'+['↑','→','↓','←'][j]+' Slot '+(j+1)+'</small><strong>'+esc(library.profiles.find(p=>p.id===library.slots[j])?.name||'Unassigned')+'</strong></button>').join('')+'<div class="slotCenter">✚</div></div><small>Slot assignments require Save. Physical shortcut support pending.</small>';
+ if(pane===5)return vaultHeading('Import profile','Review selected layers')+importView();
+ if(pane===6)return vaultHeading('Saved profile',esc(active.name))+renderInputMonitor(active,true,false);
+ return vaultHeading('Profile layers',esc(p.name))+layerDeck(p,true);
 }
 function updateSaveBar(){
  const primary=$('primary'),pending=dirty()||conflict;
@@ -1048,7 +1093,7 @@ window.addEventListener('resize',fitController);
 function render(){
  const focused=document.activeElement?.dataset?.key;
  document.querySelector('.window').classList.toggle('homeScreen',deck==='home');
- document.querySelector('.pager').hidden=deck==='home'||deck==='controller'||deck==='tuning';
+ document.querySelector('.pager').hidden=['home','controller','tuning','profiles','diagnostics'].includes(deck);
  const p=profile();
  content.innerHTML=deviceMode&&!ready?'<div class="card"><h2>Connect to dongle</h2><p>'+esc(loadError||'Loading saved profile library…')+'</p><button id="retryDevice">Retry</button></div>':deviceMode&&departed?'<div class="card"><h2>Reconnect required</h2><p>'+esc(operationStatus)+'</p><p>Re-enter configuration mode if necessary and reload this page.</p></div>':deck==='network'?networkView():deck==='firmware'?firmwareView():deck==='diagnostics'?diagView():deck==='home'?renderHome():deck==='controller'?mapper():deck==='profiles'?renderProfiles():deck==='tuning'?tuningEditor():'<div class="placeholder">'+icon('about')+'<h2>'+esc(panes[deck][pane])+'</h2><p>Hambone Industries<br><small>A Meat Inc. subsidiary</small></p><p class="muted">'+(pane===2?'S.H.R.E.K. — Synthetic Hierarchical Response Enablement Kernel. Controllers have layers.':pane===1?'Select Controller to try the three Hambone-style vector skins. Confirm changes in the popup, then save or export the draft.':'The competition is running stock firmware. Adorable.<br><small>The Hambone name and logo are trademarks of Hambone Industries, a subsidiary of Meat Inc. (fictional branding).</small>')+'</p><small>Local design preview · based on upstream OGX.</small></div>';
  if(deviceMode&&operationStatus&&!departed&&['network','diagnostics','firmware'].includes(deck)&&!(deck==='firmware'&&pane===3)){const note=document.createElement('small');note.className='deviceNote';note.textContent=operationStatus;content.append(note);}
@@ -1057,13 +1102,13 @@ function render(){
  const monitor=content.querySelector('.widgetDeck');if(monitor){monitor.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&!e.ctrlKey){e.preventDefault();monitor.scrollLeft+=e.deltaY;}},{passive:false});monitor.addEventListener('keydown',e=>{if(e.target===monitor&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();monitor.scrollBy({left:(e.key==='ArrowRight'?1:-1)*monitor.clientWidth,behavior:'smooth'});}});}
  $('pick').textContent=(deck==='home'?'Home':panes[deck][pane])+' · '+(pane+1)+' / '+panes[deck].length;$('prev').disabled=pane===0;$('next').disabled=pane===panes[deck].length-1;
  updateSaveBar();fitController();bindTuning();
- content.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{group=0;go(b.dataset.go,['controller','tuning'].includes(b.dataset.go)?0:undefined);});
+ content.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{group=0;go(b.dataset.go,['controller','tuning','profiles','diagnostics'].includes(b.dataset.go)?0:undefined);});
  content.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{skin=b.dataset.skin;source=null;render();});
 
  content.querySelectorAll('[data-key]').forEach(b=>{b.onclick=()=>tap(+b.dataset.key);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap(+b.dataset.key);}};});
  content.querySelectorAll('[data-advanced]').forEach(b=>b.onclick=()=>showTargetPicker(+b.dataset.advanced));
  content.querySelectorAll('[data-vault-pane]').forEach(b=>b.onclick=()=>go('profiles',+b.dataset.vaultPane));
- content.querySelectorAll('[data-profile]').forEach(b=>b.onclick=()=>{editing=+b.dataset.profile;go('profiles',0);});
+ content.querySelectorAll('[data-profile]').forEach(b=>b.onclick=()=>{editing=+b.dataset.profile;go('profiles',1);});
  const bind=(id,fn)=>{const e=$(id);if(e)e.onclick=fn;};
  bind('toggleMap',()=>{if(editable()){p.custom=!p.custom;source=null;render();}});
  bind('toggleIgr',()=>{if(editable()){p.igr=!p.igr;render();}});bind('library',()=>{group=0;go('profiles',1);});bind('activeMonitor',()=>go('profiles',6));
@@ -1083,7 +1128,7 @@ function picker(workspaces){
  const values=workspaces?Object.keys(panes):panes[deck];
  const local=workspaces&&(deck==='controller'||deck==='tuning')?'<div class="list contextual"><small>'+ (deck==='controller'?'Controller tools':'Tuning')+'</small>'+(deck==='controller'?panes.controller.map((v,i)=>'<button data-local-pane="'+i+'">'+v+'</button>').join(''):'<button data-local-pane="0">All inputs</button><button data-local-pane="15">Game vibration</button><button data-local-pane="4">Left stick · Advanced</button><button data-local-pane="8">Right stick · Advanced</button>')+'</div><hr>':'';
  const extras=workspaces?'<hr><p class="menuProfile"><small>Active profile</small><strong>'+esc(JSON.parse(baseline).profiles.find(p=>p.id===JSON.parse(baseline).active)?.name||'Unavailable')+'</strong></p><button id="menuExport">Export '+(dirty()?'draft':'profile')+'</button>'+(deviceMode?'<button id="menuStatus">Connection details</button><button id="menuGaming">Return to gaming</button>':''):'';
- modal(workspaces?'Workspaces':'Select pane',local+'<div class="list">'+values.map((v,i)=>'<button data-pick="'+i+'">'+esc(v[0].toUpperCase()+v.slice(1))+'</button>').join('')+extras+'</div>',[{label:'Cancel'}]);
+ modal(workspaces?'Workspaces':'Select pane',local+'<div class="list">'+values.map((v,i)=>'<button data-pick="'+i+'">'+esc(workspaces&&v==='profiles'?'MeatVault':workspaces&&v==='diagnostics'?'SignalScope':v[0].toUpperCase()+v.slice(1))+'</button>').join('')+extras+'</div>',[{label:'Cancel'}]);
  dialog.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{closeModal();group=0;if(workspaces)go(values[+b.dataset.pick]);else go(deck,+b.dataset.pick);});
  dialog.querySelectorAll('[data-local-pane]').forEach(b=>b.onclick=()=>{closeModal();go(deck,+b.dataset.localPane);});
  if($('menuExport'))$('menuExport').onclick=()=>{closeModal();exportProfile();};
