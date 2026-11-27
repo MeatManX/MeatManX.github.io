@@ -3,6 +3,13 @@
   "product": "ogx-dvd-wireless",
   "releases": [
     {
+      "version": "v1.0.0-dev.13",
+      "channel": "experimental",
+      "size": 1376244,
+      "sha256": "285c82a1aac8bb45c0a6b473c4fe432d0450989b73f7e9f229aa60030e7e565e",
+      "notes": "EXPERIMENTAL Hambone Studio redesign: framed application, horizontal panes, three SVG controller skins, focused tuning, portable profiles, and existing network/OTA tools. Mock browser tests and signed build passed. Physical testing pending. No gameplay processing, RP2040, Bluetooth or profile storage changes. Dev.12 is the owner-tested recovery checkpoint."
+    },
+    {
       "version": "v1.0.0-dev.12",
       "channel": "experimental",
       "size": 1376244,
