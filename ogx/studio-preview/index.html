@@ -571,6 +571,11 @@ header .saveSlot .saveCompact{width:58px;min-width:58px;max-width:58px;height:36
 .aimbotEgg{display:grid;gap:4px;text-align:left;border-color:var(--warn);padding:8px;background:linear-gradient(110deg,#4c0e12,#1a2433);flex:none}
 .aimbotEgg small{font-size:10px}.aimbotEgg span{font-size:9px;color:var(--warn)}
 .advancedActions button{min-width:0;font-size:10px;padding:3px}
+
+.onlineVaultList{display:flex;flex-direction:column;gap:6px;min-height:0;flex:1;overflow:auto;overscroll-behavior:contain}
+.onlineVaultItem{display:grid;gap:5px;text-align:left;padding:10px;min-height:88px;flex:none}
+.onlineVaultItem strong{color:var(--bone);font-size:14px}.onlineVaultItem small{font-size:10px;color:var(--muted)}.onlineVaultItem span{font-size:12px;line-height:1.3}
+#onlineVault{min-height:40px}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
@@ -1173,6 +1178,7 @@ function bindProfiles(){
  bind('duplicate',()=>createProfile(true));bind('newProfile',()=>createProfile(false));
  bind('rename',()=>{if(editable())nameDialog('Rename profile',profile().name,name=>{profile().name=name;render();});});
  bind('deleteProfile',deleteProfile);
+ bind('onlineVault',browseVault);bind('vaultRefresh',browseVault);content.querySelectorAll('[data-online-profile]').forEach(b=>b.onclick=()=>downloadVault(+b.dataset.onlineProfile));
  bind('import',()=>{$('importFile').value='';$('importFile').click();});
  bind('importPrev',()=>{importPage=0;render();});bind('importNext',()=>{importPage=1;render();});
  bind('importCancel',()=>{importDraft=null;go('profiles',0);});bind('importApply',finishImport);
@@ -1182,6 +1188,55 @@ function bindProfiles(){
 }
 function setupImport(){
  $('importFile').onchange=async()=>{const f=$('importFile').files[0];if(!f)return;try{if(f.size>8192)throw Error('Profile file exceeds 8 KiB.');const p=StudioV3.fromFile(JSON.parse(await f.text()));if(legacyDevice()&&!StudioV3.legacyCompatible(p))throw Error('Independent adjustment groups and advanced stick options require a newer device firmware. This profile was not changed.');importProfile(p);}catch(e){modal('Import failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}};
+}
+
+// Curated read-only public catalog; browser downloads over HTTPS, local Save
+// uses the existing profile API. No ESP32 outbound requests or new radio work.
+const vaultBase='https://meatmanmods.com/ogx/meatvault/';
+let vaultEntries=[],vaultNotice='',vaultLoading=false;
+async function vaultFetch(path,limit){
+ const c=new AbortController(),timer=setTimeout(()=>c.abort(),15000);
+ try{
+  const r=await fetch(vaultBase+path,{signal:c.signal,cache:'no-store',redirect:'error',credentials:'omit',referrerPolicy:'no-referrer'});
+  if(!r.ok)throw Error('Website returned HTTP '+r.status);
+  if(Number(r.headers.get('Content-Length'))>limit)throw Error('File too large');
+  const reader=r.body.getReader(),parts=[];let n=0;
+  for(;;){const {done,value}=await reader.read();if(done)break;n+=value.length;if(n>limit){await reader.cancel();throw Error('File too large');}parts.push(value);}
+  const bytes=new Uint8Array(n);let i=0;for(const a of parts){bytes.set(a,i);i+=a.length;}return bytes.buffer;
+ }finally{clearTimeout(timer);}
+}
+function validateVault(bytes){
+ const d=JSON.parse(new TextDecoder().decode(bytes));
+ if(d.schema!==1||d.product!=='ogx-controller-profiles'||!Array.isArray(d.profiles)||d.profiles.length>50)throw Error('Invalid MeatVault catalog');
+ const ids=new Set();
+ return d.profiles.map(r=>{
+  if(!r||typeof r.id!=='string'||!/^[a-z0-9][a-z0-9-]{0,63}$/.test(r.id)||ids.has(r.id)||!Number.isInteger(r.size)||r.size<1||r.size>8192||typeof r.sha256!=='string'||!/^[a-f0-9]{64}$/.test(r.sha256)||typeof r.name!=='string'||!nameValid(r.name)||typeof r.game!=='string'||r.game.length>80||typeof r.author!=='string'||r.author.length>80||typeof r.description!=='string'||r.description.length>600)throw Error('Invalid catalog entry');
+  ids.add(r.id);return r;
+ });
+}
+async function browseVault(){
+ if(locked()||vaultLoading)return;
+ go('profiles',9);vaultLoading=true;vaultNotice='Checking MeatVault…';vaultEntries=[];render();
+ try{vaultEntries=validateVault(await vaultFetch('manifest.json',32768));vaultNotice=vaultEntries.length?'Choose a profile to review.':'No profiles available.';}
+ catch(e){vaultNotice='Could not reach MeatVault: '+e.message+'. Use Home Wi-Fi with internet or import a downloaded file.';}
+ finally{vaultLoading=false;if(deck==='profiles'&&pane===9)render();}
+}
+function onlineVaultView(){
+ return vaultHeading('MeatVault Online','Curated profiles · MeatMan Mods')+'<div class="vaultLibraryStatus"><small>'+esc(vaultNotice)+'</small><button id="vaultRefresh" '+(vaultLoading?'disabled':'')+'>Refresh</button></div><div class="onlineVaultList">'+vaultEntries.map((r,i)=>'<button class="onlineVaultItem" data-online-profile="'+i+'" '+(vaultLoading?'disabled':'')+'><strong>'+esc(r.name)+'</strong><small>'+esc(r.game+' · '+r.author)+'</small><span>'+esc(r.description)+'</span><small>Review &amp; import ›</small></button>').join('')+'</div><small class="quadFoot">Downloads are drafts until Save. No profile is activated or assigned automatically.</small>';
+}
+async function downloadVault(i){
+ if(locked()||vaultLoading||!vaultEntries[i])return;
+ if(nextId()===undefined){modal('Library full','<p>Delete an editable profile before importing.</p>',[{label:'Close'}]);return;}
+ const r=vaultEntries[i];vaultLoading=true;vaultNotice='Downloading '+r.name+'…';render();
+ try{
+  const b=await vaultFetch('profiles/'+r.id+'.json',8192);
+  if(b.byteLength!==r.size||await hashHex(b)!==r.sha256)throw Error('Profile integrity check failed');
+  const p=StudioV3.fromFile(JSON.parse(new TextDecoder().decode(b)));
+  if(p.name!==r.name)throw Error('Profile name does not match catalog');
+  if(legacyDevice()&&!StudioV3.legacyCompatible(p))throw Error('Profile requires newer firmware');
+  if(deck==='profiles'&&pane===9&&!locked())importProfile(p);
+ }catch(e){vaultNotice='Download failed: '+e.message;}
+ finally{vaultLoading=false;if(deck==='profiles'&&pane===9)render();}
 }
 
 'use strict';
@@ -1197,7 +1252,7 @@ let baseline=JSON.stringify(library),editing=library.active,deck='home',pane=0,s
 const last={};
 let vaultReturn=null,inspectTab=0,slotTarget=null,advancedScroll=0,advancedFocus=null;
 const profile=()=>library.profiles.find(p=>p.id===editing),editable=()=>editing>=2&&!locked(),dirty=()=>JSON.stringify(library)!==baseline;
-const panes={home:['Dashboard'],controller:['Visual remapper','Assignment summary','Advanced mapping','In-game reset','Transfer'],tuning:tuningPanes,profiles:['QuadSlot','Profile details','QuadSlot','Manage profile','Profile layers','Import review','Saved profile monitor','Local library','Unlocked library'],about:['About','Help','Desktop files']};
+const panes={home:['Dashboard'],controller:['Visual remapper','Assignment summary','Advanced mapping','In-game reset','Transfer'],tuning:tuningPanes,profiles:['QuadSlot','Profile details','QuadSlot','Manage profile','Profile layers','Import review','Saved profile monitor','Local library','Unlocked library','Online vault'],about:['About','Help','Desktop files']};
 const icons={controller:'<path d="M7 7h10q3 0 4 4l1 5q0 4-3 3l-4-4H9l-4 4q-3 1-3-3l1-5q1-4 4-4Z"/><path d="M7 10v5m-2.5-2.5h5m6-1h.1m3 2h.1"/>',tuning:'<path d="M3 5h18M3 12h18M3 19h18M8 2v6m8 1v6m-5 1v6"/>',profiles:'<rect x="5" y="3" width="16" height="14" rx="2"/><path d="M3 7v12q0 2 2 2h12M9 8h8m-8 4h5"/>',about:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.1"/>'};
 panes.settings=['Device','About'];panes.diagnostics=diagPanes;panes.network=networkPanes;panes.firmware=firmwarePanes;icons.network='<path d="M2 8q10-9 20 0M6 12q6-5 12 0M10 16q2-2 4 0M12 20h.1"/>';icons.firmware='<path d="M12 2v13m-5-5 5 5 5-5M4 16v5h16v-5"/>';icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';
 icons.profiles='<path d="M8 2h8v6h6v8h-6v6H8v-6H2V8h6Z"/>'+[[12,6,1],[18,12,2],[12,18,3],[6,12,4]].map(([x,y,n])=>'<text x="'+x+'" y="'+(y+1.4)+'" fill="currentColor" stroke="none" font-size="4" text-anchor="middle" font-weight="bold">'+n+'</text>').join('');
@@ -1283,12 +1338,13 @@ function renderProfiles(){
  const p=profile(),saved=JSON.parse(baseline),active=saved.profiles.find(x=>x.id===saved.active);
  if(pane===0){
   const slotNames=['↑','→','↓','←'],pending=library.active!==saved.active||JSON.stringify(library.slots)!==JSON.stringify(saved.slots);
-  return '<section class="quadDashboard"><div class="quadHeader"><h2>QuadSlot™</h2><button id="vaultLock" class="vaultLock" aria-pressed="false" title="Open local transfer tools; online sharing not connected">'+vaultLockIcon(false)+'<span>Locked</span></button></div><div class="quadGrid">'+library.slots.map((id,j)=>{const x=library.profiles.find(v=>v.id===id);return '<section class="quadCard quadDir'+j+' '+(id===saved.active?'activeQuad':'')+(id!==saved.active&&id===library.active?' pendingQuad':'')+'"><div class="quadCardTop"><strong>'+slotNames[j]+' '+(j+1)+'</strong><span class="quadStatus '+(id===saved.active?'isActive':id===library.active?'isPending':'')+'">'+(id===saved.active?'Active':id===library.active?'Pending':x?'Inactive':'Empty')+'</span><button data-slot="'+j+'" title="Assign or swap slot '+(j+1)+'" aria-label="Assign slot '+(j+1)+'">↔</button></div><button class="quadBody" '+(x?'data-profile="'+x.id+'"':'data-slot="'+j+'"')+'><strong class="quadName">'+esc(x?.name||'Unassigned')+'</strong>'+vaultMini(x)+'</button></section>';}).join('')+ '</div><div class="quadFooter"><button id="stockProfile" '+(library.active===0?'disabled':'')+'>Use stock</button><small class="quadFoot">'+(pending?'Pending selection / slots · Save to apply.':saved.active===0&&library.schema===4?'Stock mode · Hold LB + RB 0.6s, then D-pad.':!library.slots.includes(saved.active)?'Active outside slots: '+esc(active.name):(library.schema===4?'Hold LB + RB for 0.6s, then D-pad. Repeat to return to stock.':'Hold White + Black, then D-pad (firmware support pending).'))+'</small></div></section>';
+  return '<section class="quadDashboard"><div class="quadHeader"><h2>QuadSlot™</h2><button id="vaultLock" class="vaultLock" aria-pressed="false" title="Open local and online profile library">'+vaultLockIcon(false)+'<span>Locked</span></button></div><div class="quadGrid">'+library.slots.map((id,j)=>{const x=library.profiles.find(v=>v.id===id);return '<section class="quadCard quadDir'+j+' '+(id===saved.active?'activeQuad':'')+(id!==saved.active&&id===library.active?' pendingQuad':'')+'"><div class="quadCardTop"><strong>'+slotNames[j]+' '+(j+1)+'</strong><span class="quadStatus '+(id===saved.active?'isActive':id===library.active?'isPending':'')+'">'+(id===saved.active?'Active':id===library.active?'Pending':x?'Inactive':'Empty')+'</span><button data-slot="'+j+'" title="Assign or swap slot '+(j+1)+'" aria-label="Assign slot '+(j+1)+'">↔</button></div><button class="quadBody" '+(x?'data-profile="'+x.id+'"':'data-slot="'+j+'"')+'><strong class="quadName">'+esc(x?.name||'Unassigned')+'</strong>'+vaultMini(x)+'</button></section>';}).join('')+ '</div><div class="quadFooter"><button id="stockProfile" '+(library.active===0?'disabled':'')+'>Use stock</button><small class="quadFoot">'+(pending?'Pending selection / slots · Save to apply.':saved.active===0&&library.schema===4?'Stock mode · Hold LB + RB 0.6s, then D-pad.':!library.slots.includes(saved.active)?'Active outside slots: '+esc(active.name):(library.schema===4?'Hold LB + RB for 0.6s, then D-pad. Repeat to return to stock.':'Hold White + Black, then D-pad (firmware support pending).'))+'</small></div></section>';
  }
+ if(pane===9)return onlineVaultView();
  if(pane===7||pane===8){
   const assigning=slotTarget!==null;
   const rows=library.profiles.filter(x=>library.schema!==4||x.id!==0).map(x=>'<button class="vaultProfile" '+(assigning?'data-assign-profile':'data-profile')+'="'+x.id+'" aria-label="'+(assigning?'Assign ':'Open ')+esc(x.name)+'" aria-current="'+(x.id===editing?'true':'false')+'"><span class="vaultProfileName">'+esc(x.name)+'</span><small>'+(x.id===saved.active?'● Active':x.id===library.active?'Pending active':x.id<2?'Protected':'Custom')+'</small></button>').join('');
-  return '<div class="quadHeader"><h2>MeatVault™</h2><button id="vaultClose" class="vaultLock localOpen" aria-pressed="true" title="Lock local library">'+vaultLockIcon(true)+'<span>Unlocked</span></button></div><div class="vaultLibraryStatus"><strong>'+(assigning?'Assign '+['↑','→','↓','←'][slotTarget]+' slot':'Local profile library')+'</strong><small>Online vault is not connected</small></div><div class="vaultLibrary">'+rows+'</div><div class="vaultActionBar"><button id="newProfile" '+(assigning?'disabled':'')+'>+ New</button><button id="import" '+(assigning?'disabled':'')+'>Import</button><button id="export" '+(assigning?'disabled':'')+'>Export selected</button></div><small class="quadFoot">Community browse, upload and download pending online service.</small>';
+  return '<div class="quadHeader"><h2>MeatVault™</h2><button id="vaultClose" class="vaultLock localOpen" aria-pressed="true" title="Lock local library">'+vaultLockIcon(true)+'<span>Unlocked</span></button></div><div class="vaultLibraryStatus"><strong>'+(assigning?'Assign '+['↑','→','↓','←'][slotTarget]+' slot':'Local profile library')+'</strong><small>Local storage</small></div><div class="vaultLibrary">'+rows+'</div><div class="vaultActionBar"><button id="newProfile" '+(assigning?'disabled':'')+'>+ New</button><button id="import" '+(assigning?'disabled':'')+'>Import</button><button id="export" '+(assigning?'disabled':'')+'>Export selected</button><button id="onlineVault" '+(assigning?'disabled':'')+' title="Browse online MeatVault">Online vault ›</button></div>';
  }
  if(pane===1||pane===3){
   const t=StudioV3.decode(p.layers),count=[0,6,12,17].filter(i=>StudioV3.mask(t[i])).length;

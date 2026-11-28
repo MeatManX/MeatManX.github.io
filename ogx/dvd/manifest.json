@@ -3,6 +3,13 @@
   "product": "ogx-dvd-wireless",
   "releases": [
     {
+      "version": "v1.0.0-dev.18",
+      "channel": "experimental",
+      "size": 1507316,
+      "sha256": "c110eb9088d2e013d77f5671ab32f941f6a6feb087d57fba5d4375dccc10e479",
+      "notes": "Experimental MeatVault Online: download curated profiles, validate integrity, review and explicitly save. First profile Halo 2 Bumper Jumper. Dev17 radio, gameplay, profile storage and RP2040 unchanged. Signed build and browser/schema2/3/4 simulated tests passed. Physical import and gameplay testing pending. Dev17 retained."
+    },
+    {
       "version": "v1.0.0-dev.17",
       "channel": "experimental",
       "size": 1507316,

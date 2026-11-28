@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "product": "ogx-controller-profiles",
+  "profiles": [
+    {
+      "id": "halo2-bumper-jumper",
+      "name": "Halo 2 - Bumper Jumper",
+      "game": "Halo 2",
+      "author": "MeatMan Mods",
+      "description": "Halo 3-inspired Bumper Jumper for Halo 2 default controls. LB jumps, RB melees, B reloads, A cycles grenades, D-pad Up activates flashlight, X sends original D-pad Up. Stock tuning; hardware validation pending.",
+      "size": 1048,
+      "sha256": "84ee608cbb3894874a51187ec6be6763ae304503db409fd3f7b2f396d8a3e776"
+    }
+  ]
+}

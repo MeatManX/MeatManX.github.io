@@ -1,0 +1,68 @@
+{
+  "format": "ogx-controller-profile",
+  "version": 2,
+  "name": "Halo 2 - Bumper Jumper",
+  "custom": true,
+  "mapping": [
+    9,
+    2,
+    3,
+    4,
+    10,
+    7,
+    1,
+    8,
+    5,
+    6,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+  ],
+  "left_curve": 100,
+  "right_curve": 100,
+  "guide_igr": true,
+  "tuning": {
+    "left_stick": {
+      "enabled": false,
+      "inner": 0,
+      "outer": 0,
+      "maximum": 100,
+      "anti": 0,
+      "invert_x": false,
+      "invert_y": false
+    },
+    "right_stick": {
+      "enabled": false,
+      "inner": 0,
+      "outer": 0,
+      "maximum": 100,
+      "anti": 0,
+      "invert_x": false,
+      "invert_y": false
+    },
+    "left_trigger": {
+      "enabled": false,
+      "inner": 0,
+      "full": 100,
+      "curve": 100,
+      "hair": false
+    },
+    "right_trigger": {
+      "enabled": false,
+      "inner": 0,
+      "full": 100,
+      "curve": 100,
+      "hair": false
+    },
+    "vibration": {
+      "enabled": false,
+      "strong": 100,
+      "weak": 100
+    }
+  }
+}
