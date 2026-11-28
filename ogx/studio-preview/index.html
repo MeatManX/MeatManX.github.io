@@ -501,6 +501,48 @@ header .saveSlot .saveCompact{width:58px;min-width:58px;max-width:58px;height:36
 .quadFooter{display:flex;align-items:center;gap:5px;flex:none}
 .quadFooter button{min-height:32px;padding:2px 6px;font-size:10px;flex:none}
 .quadFooter .quadFoot{flex:1;min-width:0}
+
+/* Settings is a secondary, full-width home utility. */
+.homeScreen .homeTiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr)) 58px;grid-auto-rows:unset}
+.homeScreen .homeTiles .settingsTile{grid-column:1/-1;display:flex;flex-direction:row;justify-content:flex-start;align-items:center;text-align:left;gap:10px;padding:6px 12px}
+.homeScreen .homeTiles .settingsTile svg{width:28px;height:28px}
+.settingsTile>span:first-of-type{display:grid;gap:2px;flex:1;min-width:0}
+.settingsChevron{font-size:26px;color:var(--muted)}
+.settingsHead{display:flex;align-items:center;justify-content:space-between;flex:none;min-height:26px}
+.settingsHead h2{font-size:17px}.settingsHead small{font-size:10px}
+.settingsTabs,.utilityTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;flex:none}
+.utilityTabs{display:flex}
+.settingsTabs button,.utilityTabs button{min-width:0;min-height:38px;padding:3px;font-size:11px}
+.utilityTabs button{flex:1;font-size:10px;min-height:34px}
+.settingsTabs button[aria-pressed=true],.utilityTabs button[aria-pressed=true]{background:var(--burg);border-color:var(--accent)}
+.settingsBody{display:flex;flex-direction:column;flex:1;min-height:0;gap:6px;overflow:auto;overscroll-behavior:contain}
+.settingsBody>.tiles{flex:1}
+.settingsBody .settingsSubheading h2{font-size:14px}
+.settingsDevice,.settingsAbout{display:flex;flex-direction:column;gap:6px;flex:1;min-height:0}
+.settingsFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.settingsField{display:flex;flex-direction:column;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:7px;padding:5px;min-width:0;min-height:38px}
+.settingsField small{font-size:10px}.settingsField strong{font-size:12px;overflow-wrap:anywhere}
+.settingsActions{flex:none}.settingsActions button{font-size:12px;min-height:40px}
+.aboutMark{display:grid;justify-items:center;gap:3px;padding:8px;border:1px solid var(--line);background:var(--card);border-radius:10px}
+.aboutMark svg{width:36px;height:36px;color:var(--accent)}.aboutMark strong{font-size:22px;letter-spacing:.12em}.aboutMark small{font-size:10px}
+@media(orientation:landscape) and (max-height:450px){
+ .homeScreen .homeTiles{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:minmax(0,1fr) 48px}
+ .homeScreen .homeTiles .settingsTile{min-height:0}
+ .settingsFields{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .settingsBody .hero{min-height:54px;padding:4px 8px}
+}
+@media(min-width:850px) and (min-height:600px){.homeScreen .homeTiles{grid-template-rows:repeat(2,minmax(0,1fr)) 66px}}
+/* Mapping status has independent colors from Hambone's red body artwork. */
+.canvas .modified .hitmark{fill:#233b36;stroke:var(--success);stroke-width:4}
+.canvas .mapDisabled .hitmark{fill:#23242d;stroke:var(--stock);stroke-width:3;stroke-dasharray:4 3}
+.canvas .shared .hitmark{stroke:var(--info);stroke-width:4}
+.canvas .selected .hitmark{stroke:#f4f1ed;stroke-width:4.5}
+.canvas .modified .mapTarget,.canvas .modified .directionTarget{fill:var(--success)}
+.canvas .mapDisabled .directionTarget{fill:var(--stock)}
+.canvas .mapDisabled .directionGlyph{stroke:var(--stock)}
+
+.mapperCard .mapLegend span{font-size:9px;line-height:1.05}
+@media(max-width:350px){.mapperCard .mapLegend span{font-size:8px}.mapperTools{gap:2px}.mapperCard .mapLegend button{font-size:9px;padding:2px 3px}}
 </style></head><body>
 <div class="desktop" aria-hidden="true"><div class="deskname">MEATOS PROFESSIONAL · WORKSTATION 04</div><div class="files">▧ MeatVault<br><br>▧ Hamuel_Records.locked<br><br>▤ S.H.R.E.K._layers.txt</div></div>
 <main class="window" aria-label="OGX Controller Studio">
@@ -630,7 +672,8 @@ function controllerSvg(s,p,source,operation){
  let svg='<svg viewBox="'+m.view+'" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-label="'+m.label+' controller diagram">'+m.art;
  for(const [i,x,y,t,type] of m.keys){
  const reserved=isReserved(i,p.igr),changed=p.custom&&p.map[i-1]!==i&&!reserved,shared=p.custom&&a.owners[i].length>1,missing=p.custom&&a.missing.includes(i);
- const cls=[source===i?'selected':'',changed?'modified':'',shared?'shared':''].join(' '),dark=s==='classic'&&i===9,fill=dark?'#e9e3da':type==='face'&&i>=5&&i<=8?faceColors[i]:'#23242d';
+ const disabled=changed&&p.map[i-1]===0;
+ const cls=[source===i?'selected':'',changed&&!disabled?'modified':'',shared?'shared':'',disabled?'mapDisabled':''].join(' '),dark=s==='classic'&&i===9,fill=dark?'#e9e3da':type==='face'&&i>=5&&i<=8?faceColors[i]:'#23242d';
  const label=source!==null&&operation==='remap'?names[i]:physicalName(s,i);
  const ar=label+(reserved&&source===null?' (reserved for IGR)':source===null&&p.custom?' → '+names[p.map[i-1]]:'')+(missing?' · output unassigned':'')+(shared?' · shared output':'');
  svg+='<g class="'+cls+'" data-key="'+i+'" tabindex="0" role="button" aria-label="'+ar+'"><title>'+ar+'</title>';
@@ -726,7 +769,7 @@ async function refreshDevice({initial=false,profileCheck=false}={}){
  if(deck==='firmware'||initial||deviceLock){const o=await(await request('/api/v1/ota/status')).json();if(!busy&&!departed){otaStatus=o;deviceLock=uncertainUpload||!!(o.busy||o.reboot_pending);}}
  }catch(e){deviceError=e.message;if(!ready)loadError=e.message;}finally{refreshing=false;}
  if(busy||departed)return;
- syncDeviceChrome();if(!dialog.open&&['network','diagnostics','firmware','home'].includes(deck))render();else updateSaveBar();
+ syncDeviceChrome();if(!dialog.open&&['settings','network','diagnostics','firmware','home'].includes(deck))render();else updateSaveBar();
 }
 async function saveDevice(){
  if(!ready||conflict||busy||departed||deviceLock||!dirty())return false;
@@ -750,7 +793,7 @@ function transition(url,data,message,stay=false){
 }
 function leaveGaming(){afterDraft(()=>transition('/api/exit',undefined,'Return-to-gaming command accepted. Wi-Fi will switch off. Re-enter configuration mode to reconnect.'));}
 function networkView(){
- const d=deviceStatus||{},mode=d.ap===undefined?'Unknown':d.ap?'Direct AP':'Home Wi-Fi',head='<div class="heading"><h2>MeatLink™</h2><small>'+esc(networkPanes[pane])+'</small></div>';
+ const d=deviceStatus||{},mode=d.ap===undefined?'Unknown':d.ap?'Direct AP':'Home Wi-Fi',head='<div class="heading settingsSubheading"><h2>'+esc(networkPanes[pane])+'</h2></div>';
  if(pane===0)return head+'<div class="hero"><small>NETWORK MODE</small><strong>'+mode+'</strong><span>'+esc(d.ip||'Not available')+'</span></div><div class="tiles"><button class="tile" data-device-pane="1"><strong>Direct Wi-Fi</strong><small>Local access</small></button><button class="tile" data-device-pane="2"><strong>Home Wi-Fi</strong><small>'+(d.saved?'Network saved':'No saved network')+'</small></button></div><small>'+(d.prefer_home===undefined?'Preference unavailable':d.prefer_home?'Home Wi-Fi preferred':'Direct Wi-Fi preferred')+'</small>';
  if(pane===1)return head+'<div class="card"><h3>Direct configuration</h3><p>Join the OGX-DVD Wi-Fi network and open <b>192.168.4.1</b>. Internet access is not required for local settings.</p><small>Switching networks can disconnect this page.</small><button id="useDirect">'+(d.ap?'Prefer direct Wi-Fi':'Switch to direct Wi-Fi')+'</button></div>';
  if(pane===2){const items=networkCache.slice(networkPage*3,networkPage*3+3);return head+'<div class="row"><button id="scanCache">Load cached networks</button><button id="manualWifi">Enter manually</button></div><div class="list">'+items.map((n,i)=>'<button data-network="'+(networkPage*3+i)+'"><strong>'+esc(n.ssid)+'</strong><br><small>'+n.rssi+' dBm · '+(n.secure?'Secured':'Open')+'</small></button>').join('')+'</div>'+(netLoaded&&!items.length?'<small>No cached networks. Enter the name manually.</small>':'')+'<div class="row"><button id="netPrev" '+(!networkPage?'disabled':'')+'>‹</button><small>'+ (networkPage+1)+' / '+Math.max(1,Math.ceil(networkCache.length/3))+'</small><button id="netNext" '+((networkPage+1)*3>=networkCache.length?'disabled':'')+'>›</button></div><button id="connectSaved" '+(!d.saved?'disabled':'')+'>Connect saved network</button><small>Cached scan from configuration startup, not a live rescan.</small>';}
@@ -784,7 +827,7 @@ function diagView(){
  return head+tabs+connection+'<div class="scopeGrid">'+scopeCard('I²C write time','Unavailable','Instrumentation pending')+scopeCard('Queue delay','Unavailable','Instrumentation pending')+scopeCard('Write errors','Unavailable','Instrumentation pending')+scopeCard('Wi-Fi auto-off',m.idle,'Configuration timer')+'</div><small class="utilityNote">Xbox handoff timing is not end-to-end latency.</small>';
 }
 function firmwareView(){
- const o=otaStatus||{},d=deviceStatus||{},r=releaseList[releaseIndex],head='<div class="heading"><h2>MeatLink™ updates</h2><small>'+firmwarePanes[pane]+'</small></div>';
+ const o=otaStatus||{},d=deviceStatus||{},r=releaseList[releaseIndex],head='<div class="heading settingsSubheading"><h2>MeatLink™ · '+firmwarePanes[pane]+'</h2></div>';
  if(pane===0)return head+'<div class="hero"><small>INSTALLED FIRMWARE</small><strong>'+esc(d.version||'Unknown')+'</strong><span>OGX DVD · signed update target</span></div><div class="card"><small>Running partition</small><strong>'+esc(o.running_partition||'Unknown')+'</strong><small>OTA state: '+esc(o.last_result||'Unknown')+'</small><small>'+(o.pending_validation?'Validation pending':'')+'</small><button id="checkUpdates">Check for updates</button><small>Signed images verified by dongle. Local upload is HTTP.</small></div>';
  if(pane===1||pane===2){if(!r)return head+'<div class="card"><p>No catalog loaded.</p><button id="checkUpdates">Check for updates</button></div>';
  const cmp=versionParts(d.version)?compareVersion(r.version,d.version):0,label=cmp===0?'Installed':cmp>0?'Install':'Downgrade';
@@ -1118,10 +1161,11 @@ let vaultReturn=null,inspectTab=0,slotTarget=null,advancedScroll=0,advancedFocus
 const profile=()=>library.profiles.find(p=>p.id===editing),editable=()=>editing>=2&&!locked(),dirty=()=>JSON.stringify(library)!==baseline;
 const panes={home:['Dashboard'],controller:['Visual remapper','Assignment summary','Advanced mapping','In-game reset','Transfer'],tuning:tuningPanes,profiles:['QuadSlot','Profile details','QuadSlot','Manage profile','Profile layers','Import review','Saved profile monitor','Local library','Unlocked library'],about:['About','Help','Desktop files']};
 const icons={controller:'<path d="M7 7h10q3 0 4 4l1 5q0 4-3 3l-4-4H9l-4 4q-3 1-3-3l1-5q1-4 4-4Z"/><path d="M7 10v5m-2.5-2.5h5m6-1h.1m3 2h.1"/>',tuning:'<path d="M3 5h18M3 12h18M3 19h18M8 2v6m8 1v6m-5 1v6"/>',profiles:'<rect x="5" y="3" width="16" height="14" rx="2"/><path d="M3 7v12q0 2 2 2h12M9 8h8m-8 4h5"/>',about:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.1"/>'};
-panes.diagnostics=diagPanes;panes.network=networkPanes;panes.firmware=firmwarePanes;icons.network='<path d="M2 8q10-9 20 0M6 12q6-5 12 0M10 16q2-2 4 0M12 20h.1"/>';icons.firmware='<path d="M12 2v13m-5-5 5 5 5-5M4 16v5h16v-5"/>';icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';
+panes.settings=['Device','About'];panes.diagnostics=diagPanes;panes.network=networkPanes;panes.firmware=firmwarePanes;icons.network='<path d="M2 8q10-9 20 0M6 12q6-5 12 0M10 16q2-2 4 0M12 20h.1"/>';icons.firmware='<path d="M12 2v13m-5-5 5 5 5-5M4 16v5h16v-5"/>';icons.diagnostics='<path d="M2 12h5l3-8 4 16 3-8h5"/>';
+icons.settings='<circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2.2 2.2m9.6 9.6L19 19M5 19l2.2-2.2m9.6-9.6L19 5"/><circle cx="12" cy="12" r="8"/>';
 const icon=k=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[k]+'</svg>';
 function go(d,i){if(dialog.open||locked())return;if(d==='profiles'&&i===2)i=0;if(d!=='profiles'||i===0)slotTarget=null;if(d==='controller'&&i===2&&!(deck==='controller'&&pane===2)){advancedScroll=0;advancedFocus=null;}if(deck==='profiles'&&['controller','tuning'].includes(d))vaultReturn=pane;else if(!['controller','tuning'].includes(d))vaultReturn=null;source=null;group=0;deck=d;pane=i===undefined?(last[d]||0):i;last[d]=pane;render();}
-function step(n){if(['controller','tuning','profiles','diagnostics'].includes(deck))return;if(pane+n>=0&&pane+n<panes[deck].length)go(deck,pane+n);}
+function step(n){if(['controller','tuning','profiles','diagnostics'].includes(deck)||isSettings(deck))return;if(pane+n>=0&&pane+n<panes[deck].length)go(deck,pane+n);}
 function tile(d,title,desc){return '<button class="tile" data-go="'+d+'">'+icon(d)+'<strong>'+title+'</strong><small>'+desc+'</small></button>';}
 function modal(title,body,actions,after){
  restoreFocus=document.activeElement;
@@ -1132,18 +1176,34 @@ function modal(title,body,actions,after){
 function closeModal(){if(dialog.open)dialog.close();restoreFocus?.focus?.();restoreFocus=null;}
 function save(){if(deviceMode)return saveDevice();try{if(loadError)throw Error('Preview storage error: '+loadError);const current=JSON.parse(localStorage.getItem(key)||'null');if(current&&current.revision!==library.revision)throw Error('Preview changed in another tab. Reload or export draft.');if(!library.profiles.every(StudioV3.validProfile))throw Error('Invalid profile settings.');const next=copy(library);next.revision++;localStorage.setItem(key,JSON.stringify(next));library=next;baseline=JSON.stringify(next);render();}catch(e){modal('Save failed','<p class="error">'+esc(e.message)+'</p>',[{label:'Close'}]);}}
 function exportProfile(){const p=profile(),blob=new Blob([JSON.stringify(StudioV3.portable(p),null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=p.name.replace(/[^a-zA-Z0-9_-]/g,'_')+'.ogx-profile.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
-function offlineUtility(d){
- return '<div class="heading utilityHeading"><h2>'+(d==='firmware'?'MeatLink™ updates':'Network')+'</h2></div><div class="hero"><small>'+(d==='firmware'?'INSTALLED FIRMWARE':'CONNECTION')+'</small><strong>No device connected</strong><span>Standalone preview</span></div><div class="card"><strong>'+(d==='firmware'?'Signed firmware updates':'Direct / Home Wi-Fi')+'</strong><p>Open your dongle’s local configuration page to '+(d==='firmware'?'check the installed version, browse releases and install signed updates.':'configure Wi-Fi and view live connection details.')+'</p></div><button id="previewHome">‹ Home</button>';
+// Utility workspaces share one Settings shell. Network and firmware retain their
+// existing internal route IDs so the tested device operations remain unchanged.
+const isSettings=d=>['settings','network','firmware','about'].includes(d);
+function settingsHeader(){
+ const selected=deck==='network'?'network':deck==='firmware'?'firmware':deck==='about'||pane===1?'about':'device';
+ return '<div class="settingsHead"><h2>Settings</h2><small>Device utilities</small></div><div class="settingsTabs" aria-label="Settings sections">'+[['device','Device'],['network','Network'],['firmware','Firmware'],['about','About']].map(([id,label])=>'<button data-settings-tab="'+id+'" aria-pressed="'+(selected===id)+'">'+label+'</button>').join('')+'</div>';
+}
+function settingsView(){
+ const d=deviceStatus||{},live=deviceMode&&!deviceError&&!!deviceStatus;
+ const field=(label,value)=>'<div class="settingsField"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong></div>';
+ const about=deck==='about'||(deck==='settings'&&pane===1);
+ if(about)return '<div class="settingsAbout"><div class="aboutMark">'+icon('about')+'<strong>HAMBONE</strong><small>I N D U S T R I E S ™</small><small>A Meat Inc. subsidiary</small></div><div class="card"><h3>OGX Controller Studio™</h3><p>Powered by S.H.R.E.K.</p><small>Synthetic Hierarchical Response Enablement Kernel</small></div><div class="card"><p>The competition is running stock firmware. Adorable.</p><small>Controllers have layers.</small></div><small>Based on OGX-Mini, Bluepad32, BTstack and the Raspberry Pi Pico SDK. Hambone and Meat Inc. are fictional branding.</small></div>';
+ if(deck==='network'||deck==='firmware'){
+  if(!deviceMode)return '<div class="hero"><small>'+ (deck==='firmware'?'MEATLINK™ UPDATES':'NETWORK')+'</small><strong>No device connected</strong><span>Standalone preview</span></div><div class="card"><strong>'+(deck==='firmware'?'Signed firmware updates':'Direct / Home Wi-Fi')+'</strong><p>Open your dongle’s local configuration page to '+(deck==='firmware'?'check the installed version, browse releases and install signed updates.':'configure Wi-Fi and view live connection details.')+'</p></div>';
+  const routes=deck==='network'?[[0,'Overview'],[1,'Direct'],[2,'Home Wi-Fi'],[3,'Address'],[4,'Advanced']]:[[0,'Installed'],[1,'Releases'],[4,'Recovery']];
+  return '<div class="utilityTabs" aria-label="Utility pages">'+routes.map(([i,n])=>'<button data-device-pane="'+i+'" aria-pressed="'+(pane===i||(deck==='firmware'&&i===1&&pane===2))+'">'+n+'</button>').join('')+'</div>'+(deck==='network'?networkView():firmwareView());
+ }
+ return '<div class="settingsDevice"><div class="hero"><small>OGX-MINI</small><strong>DVD Wireless</strong><span>'+(live?'Device connected':'No live device readings')+'</span></div><div class="settingsFields">'+field('Processor','ESP32')+field('USB interface','RP2040')+field('Controller capacity','1')+field('Firmware',live?d.version:'Unavailable')+field('Hostname',live?d.short_name||d.hostname||'Unavailable':'Unavailable')+field('Configuration timeout','5 min · fixed')+field('Time remaining',live&&Number.isFinite(d.idle_seconds)?d.idle_seconds+' s':'Unavailable')+'</div><div class="row settingsActions"><button id="settingsRefresh" '+(!deviceMode?'disabled':'')+'>Refresh device</button><button id="settingsGaming" '+(!deviceMode?'disabled':'')+'>Return to gaming</button></div><small>Additional device preferences will appear here as firmware support is added.</small></div>';
 }
 function renderHome(){
- const cards=tile('controller','Controller','Remap buttons')+tile('tuning','Tuning','Adjust input response')+tile('profiles','MeatVault','Profiles & quick slots')+tile('diagnostics','SignalScope','Device instruments')+tile('network','Network','Wi-Fi settings')+tile('firmware','Firmware','Update your dongle');
+ const cards=tile('controller','Controller','ReFlex Mapping™')+tile('tuning','Tuning','Precision Response Matrix™')+tile('profiles','MeatVault','QuadSlot™ profiles')+tile('diagnostics','SignalScope','Device instruments')+'<button class="tile settingsTile" data-go="settings">'+icon('settings')+'<span><strong>Settings</strong><small>Device · Network · Firmware</small></span><span class="settingsChevron">›</span></button>';
  return '<div class="tiles homeTiles">'+cards+'</div>';
 }
 const skinRow=()=>'<div class="skinPicker" aria-label="Controller appearance">'+Object.entries(skins).map(([k,v])=>'<button data-skin="'+k+'" aria-pressed="'+(skin===k)+'" title="'+v.label+' appearance only">'+({classic:'Xbox S',modern:'Series X/S',dual:'PS5'})[k]+'</button>').join('')+'</div>';
 const mapToggle=p=>'<button id="toggleMap" class="mapPill" '+(!editable()?'disabled':'')+' aria-pressed="'+p.custom+'">Remap '+(p.custom?'ON':'OFF')+'</button>';
 function mapper(){
  const p=profile(),a=analyzeMap(p.map,p.igr);
- if(pane===0)return '<div class="mapperCard"><div class="mapperHeading"><h2>Controller mapping</h2><small title="'+esc(p.name)+'">'+esc(p.name)+'</small></div><div class="mapperIntro">Enable Remap, tap the input to change, then tap its new Xbox output. Confirm and Save.</div><div class="mapperTop">'+skinRow()+'</div><div class="canvas" id="canvas"><div class="controllerStage">'+controllerSvg(skin,p,source,'remap')+mapToggle(p)+'</div></div><div class="mapperHint"><span class="prompt" role="status">'+(!editable()?'Factory preset — duplicate to edit.':!p.custom?'Turn on Remap to customize buttons.':source===null?'Tap a button to change its output.':'<strong>'+esc(physicalName(skin,source))+'</strong> → choose Xbox output.')+'</span>'+'<button id="other" class="textAction" '+(!p.custom||!editable()?'disabled aria-hidden="true" tabindex="-1"':'')+'>'+ (source!==null?'Other / disable':'Choose input')+'</button></div><div class="mapLegend"><span '+(!p.custom?'aria-hidden="true"':'')+'>Gold: missing · blue: shared · × disabled · R: reset</span><div class="mapperTools"><button id="mappingSummary" title="View all assignments">Summary</button><button id="advancedMapping" title="All inputs and outputs">Advanced ›</button></div></div>'+'</div>';
+ if(pane===0)return '<div class="mapperCard"><div class="mapperHeading"><h2>Controller mapping</h2><small title="'+esc(p.name)+'">'+esc(p.name)+'</small></div><div class="mapperIntro">Enable Remap, tap the input to change, then tap its new Xbox output. Confirm and Save.</div><div class="mapperTop">'+skinRow()+'</div><div class="canvas" id="canvas"><div class="controllerStage">'+controllerSvg(skin,p,source,'remap')+mapToggle(p)+'</div></div><div class="mapperHint"><span class="prompt" role="status">'+(!editable()?'Factory preset — duplicate to edit.':!p.custom?'Turn on Remap to customize buttons.':source===null?'Tap a button to change its output.':'<strong>'+esc(physicalName(skin,source))+'</strong> → choose Xbox output.')+'</span>'+'<button id="other" class="textAction" '+(!p.custom||!editable()?'disabled aria-hidden="true" tabindex="-1"':'')+'>'+ (source!==null?'Other / disable':'Choose input')+'</button></div><div class="mapLegend"><span '+(!p.custom?'aria-hidden="true"':'')+'>Green: remapped · blue: shared · gold: missing · × disabled · R: reset</span><div class="mapperTools"><button id="mappingSummary" title="View all assignments">Summary</button><button id="advancedMapping" title="All inputs and outputs">Advanced ›</button></div></div>'+'</div>';
  if(pane===1){let rows=p.map.map((t,i)=>t!==i+1?'<div class="item">'+esc(physicalName(skin,i+1))+' → Xbox '+esc(names[t])+'</div>':'').filter(Boolean);rows.push(...a.missing.map(i=>'<div class="item warning">Xbox '+esc(names[i])+' has no assigned input.</div>'),...a.duplicates.map(i=>'<div class="item info">Xbox '+esc(names[i])+' shared by '+a.owners[i].length+' inputs.</div>'));return '<h2>Assignment summary</h2><div class="row"><div class="card"><small>Changed</small><span class="metric">'+p.map.filter((t,i)=>t!==i+1).length+'</span></div><div class="card"><small>Missing</small><span class="metric warning">'+a.missing.length+'</span></div><div class="card"><small>Shared</small><span class="metric info">'+a.duplicates.length+'</span></div></div><div class="card"><small>'+(p.custom?'Custom mapping':'Stored map; bypassed')+'</small><div class="list">'+(rows.length?rows.slice(group*4,group*4+4).join(''):'No modified assignments.')+'</div><div class="row"><button id="groupPrev" '+(!group?'disabled':'')+'>‹</button><small>'+Math.min(group+1,Math.max(1,Math.ceil(rows.length/4)))+' / '+Math.max(1,Math.ceil(rows.length/4))+'</small><button id="groupNext" '+((group+1)*4>=rows.length?'disabled':'')+'>›</button></div><button id="resetMap" '+(!editable()?'disabled':'')+'>Restore stock map</button></div>';}
  if(pane===2){
   const groups=[['Face buttons',[5,6,7,8]],['Directional pad',[1,4,2,3]],['Shoulders and triggers',[9,10,17,18]],['Sticks and system',[11,12,13,14,15,16]]];
@@ -1242,10 +1302,10 @@ function render(){
  if(oldAdvanced)advancedScroll=oldAdvanced.scrollTop;
  const focused=document.activeElement?.dataset?.key;
  document.querySelector('.window').classList.toggle('homeScreen',deck==='home');
- document.querySelector('.pager').hidden=['home','controller','tuning','profiles','diagnostics'].includes(deck)||!deviceMode&&['network','firmware'].includes(deck);
+ document.querySelector('.pager').hidden=['home','controller','tuning','profiles','diagnostics'].includes(deck)||isSettings(deck);
  const p=profile();
- content.innerHTML=deviceMode&&!ready?'<div class="card"><h2>Connect to dongle</h2><p>'+esc(loadError||'Loading saved profile library…')+'</p><button id="retryDevice">Retry</button></div>':deviceMode&&departed?'<div class="card"><h2>Reconnect required</h2><p>'+esc(operationStatus)+'</p><p>Re-enter configuration mode if necessary and reload this page.</p></div>':deck==='network'?(deviceMode?networkView():offlineUtility('network')):deck==='firmware'?(deviceMode?firmwareView():offlineUtility('firmware')):deck==='diagnostics'?diagView():deck==='home'?renderHome():deck==='controller'?mapper():deck==='profiles'?renderProfiles():deck==='tuning'?tuningEditor():'<div class="placeholder">'+icon('about')+'<h2>'+esc(panes[deck][pane])+'</h2><p>Hambone Industries<br><small>A Meat Inc. subsidiary</small></p><p class="muted">'+(pane===2?'S.H.R.E.K. — Synthetic Hierarchical Response Enablement Kernel. Controllers have layers.':pane===1?'Select Controller to try the three Hambone-style vector skins. Confirm changes in the popup, then save or export the draft.':'The competition is running stock firmware. Adorable.<br><small>The Hambone name and logo are trademarks of Hambone Industries, a subsidiary of Meat Inc. (fictional branding).</small>')+'</p><small>Local design preview · based on upstream OGX.</small></div>';
- if(deviceMode&&operationStatus&&!departed&&['network','diagnostics','firmware'].includes(deck)&&!(deck==='firmware'&&pane===3)){const note=document.createElement('small');note.className='deviceNote';note.textContent=operationStatus;content.append(note);}
+ content.innerHTML=deviceMode&&!ready?'<div class="card"><h2>Connect to dongle</h2><p>'+esc(loadError||'Loading saved profile library…')+'</p><button id="retryDevice">Retry</button></div>':deviceMode&&departed?'<div class="card"><h2>Reconnect required</h2><p>'+esc(operationStatus)+'</p><p>Re-enter configuration mode if necessary and reload this page.</p></div>':isSettings(deck)?settingsHeader()+'<div class="settingsBody">'+settingsView()+'</div>':deck==='diagnostics'?diagView():deck==='home'?renderHome():deck==='controller'?mapper():deck==='profiles'?renderProfiles():tuningEditor();
+ if(deviceMode&&operationStatus&&!departed&&['settings','network','diagnostics','firmware'].includes(deck)&&!(deck==='firmware'&&pane===3)){const note=document.createElement('small');note.className='deviceNote';note.textContent=operationStatus;content.append(note);}
  if(vaultReturn!==null&&['controller','tuning'].includes(deck)&&pane===0){
  const back=document.createElement('button');back.className='returnVault';back.textContent='‹ MeatVault';back.onclick=()=>go('profiles',vaultReturn);
  const row=deck==='controller'?content.querySelector('.mapperTop'):content.querySelector('.monitorHeading');row?.prepend(back);
@@ -1255,7 +1315,7 @@ function render(){
  const monitor=content.querySelector('.widgetDeck');if(monitor){monitor.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&!e.ctrlKey){e.preventDefault();monitor.scrollLeft+=e.deltaY;}},{passive:false});monitor.addEventListener('keydown',e=>{if(e.target===monitor&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();monitor.scrollBy({left:(e.key==='ArrowRight'?1:-1)*monitor.clientWidth,behavior:'smooth'});}});}
  $('pick').textContent=(deck==='home'?'Home':panes[deck][pane])+' · '+(pane+1)+' / '+panes[deck].length;$('prev').disabled=pane===0;$('next').disabled=pane===panes[deck].length-1;
  updateSaveBar();fitController();bindTuning();
- content.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{group=0;go(b.dataset.go,['controller','tuning','profiles','diagnostics'].includes(b.dataset.go)?0:undefined);});
+ content.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{group=0;go(b.dataset.go,['controller','tuning','profiles','diagnostics','settings'].includes(b.dataset.go)?0:undefined);});
  content.querySelectorAll('[data-skin]').forEach(b=>b.onclick=()=>{skin=b.dataset.skin;source=null;render();});
 
  content.querySelectorAll('[data-key]').forEach(b=>{b.onclick=()=>tap(+b.dataset.key);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap(+b.dataset.key);}};});
@@ -1264,7 +1324,7 @@ function render(){
  content.querySelectorAll('[data-vault-pane]').forEach(b=>b.onclick=()=>go('profiles',+b.dataset.vaultPane));
  content.querySelectorAll('[data-profile]').forEach(b=>b.onclick=()=>openVaultProfile(+b.dataset.profile));
  const bind=(id,fn)=>{const e=$(id);if(e)e.onclick=fn;};
- bind('previewHome',()=>go('home',0));bind('mappingSummary',()=>go('controller',1));bind('advancedMapping',()=>go('controller',2));bind('advancedToggle',()=>{if(editable()){p.custom=!p.custom;render();}});bind('toggleMap',()=>{if(editable()){p.custom=!p.custom;source=null;render();}});
+ content.querySelectorAll('[data-settings-tab]').forEach(b=>b.onclick=()=>{const k=b.dataset.settingsTab;go(k==='device'||k==='about'?'settings':k,k==='about'?1:0);});bind('settingsRefresh',()=>refreshDevice({profileCheck:true}));bind('settingsGaming',leaveGaming);bind('mappingSummary',()=>go('controller',1));bind('advancedMapping',()=>go('controller',2));bind('advancedToggle',()=>{if(editable()){p.custom=!p.custom;render();}});bind('toggleMap',()=>{if(editable()){p.custom=!p.custom;source=null;render();}});
  bind('toggleIgr',()=>{if(editable()){p.igr=!p.igr;render();}});bind('library',()=>{group=0;go('profiles',7);});bind('activeMonitor',()=>{inspectTab=0;go('profiles',6);});bind('vaultLock',()=>{slotTarget=null;go('profiles',8);});bind('vaultClose',()=>go('profiles',0));content.querySelectorAll('[data-assign-profile]').forEach(b=>b.onclick=()=>{if(slotTarget!==null){assignSlot(slotTarget,+b.dataset.assignProfile);go('profiles',0);}});bind('stockProfile',()=>{library.active=0;render();});content.querySelectorAll('[data-inspect-tab]').forEach(b=>b.onclick=()=>{inspectTab=+b.dataset.inspectTab;render();});
  bind('useProfile',()=>{library.active=editing;render();});bind('export',exportProfile);
  bind('groupPrev',()=>{group=pane===2&&deck==='controller'?(group+4)%5:Math.max(0,group-1);render();});bind('groupNext',()=>{group=pane===2&&deck==='controller'?(group+1)%5:group+1;render();});
@@ -1279,11 +1339,11 @@ function render(){
 $('home').onclick=()=>{group=0;go('home',0);};$('prev').onclick=()=>{group=0;step(-1);};$('next').onclick=()=>{group=0;step(1);};
 function picker(workspaces){
  if(locked())return;
- const values=workspaces?Object.keys(panes):panes[deck];
+ const values=workspaces?Object.keys(panes).filter(k=>!['network','firmware','about'].includes(k)):panes[deck];
  const local=workspaces&&(deck==='controller'||deck==='tuning')?'<div class="list contextual"><small>'+ (deck==='controller'?'Controller tools':'Tuning')+'</small>'+(deck==='controller'?panes.controller.map((v,i)=>'<button data-local-pane="'+i+'">'+v+'</button>').join(''):'<button data-local-pane="0">All inputs</button><button data-local-pane="15">Game vibration</button><button data-local-pane="4">Left stick · Advanced</button><button data-local-pane="8">Right stick · Advanced</button>')+'</div><hr>':'';
  const extras=workspaces?'<hr><p class="menuProfile"><small>Active profile</small><strong>'+esc(JSON.parse(baseline).profiles.find(p=>p.id===JSON.parse(baseline).active)?.name||'Unavailable')+'</strong></p><button id="menuExport">Export '+(dirty()?'draft':'profile')+'</button>'+(deviceMode?'<button id="menuStatus">Connection details</button><button id="menuGaming">Return to gaming</button>':''):'';
  modal(workspaces?'Workspaces':'Select pane',local+'<div class="list">'+values.map((v,i)=>'<button data-pick="'+i+'">'+esc(workspaces&&v==='profiles'?'MeatVault':workspaces&&v==='diagnostics'?'SignalScope':v[0].toUpperCase()+v.slice(1))+'</button>').join('')+extras+'</div>',[{label:'Cancel'}]);
- dialog.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{closeModal();group=0;if(workspaces){const d=values[+b.dataset.pick];go(d,d==='profiles'?0:undefined);}else go(deck,+b.dataset.pick);});
+ dialog.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{closeModal();group=0;if(workspaces){const d=values[+b.dataset.pick];go(d,['profiles','settings'].includes(d)?0:undefined);}else go(deck,+b.dataset.pick);});
  dialog.querySelectorAll('[data-local-pane]').forEach(b=>b.onclick=()=>{closeModal();go(deck,+b.dataset.localPane);});
  if($('menuExport'))$('menuExport').onclick=()=>{closeModal();exportProfile();};
  if($('menuStatus'))$('menuStatus').onclick=()=>{closeModal();connectionDetails();};
