@@ -3,6 +3,13 @@
   "product": "ogx-dvd-wireless",
   "releases": [
     {
+      "version": "v1.0.0-dev.19",
+      "channel": "experimental",
+      "size": 1572852,
+      "sha256": "0d864113849fd7404c89e0a0959c61ba1dd2891a657c4b14764bcc151d5b3daf",
+      "notes": "Profile-centered navigation: direct QuadSlot replacement, shared editing selector, assign from profile details, immediate confirmed activation and stock selection. Unsaved edits protected by explicit choices. No radio, gameplay, storage format or RP2040 changes. Signed build and browser/schema2/3/4 mock tests passed; physical testing pending. Dev18 retained."
+    },
+    {
       "version": "v1.0.0-dev.18",
       "channel": "experimental",
       "size": 1507316,

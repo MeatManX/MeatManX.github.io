@@ -1169,13 +1169,49 @@ function slotDialog(index){
  modal((old?'Replace':'Assign')+' slot '+(index+1)+' '+dirs[index],'<small>'+(old?'Currently: '+esc(old.name)+'. ':'')+'Choose any local profile. Assigned profiles swap directions; replaced profiles stay in MeatVault. Save to apply.</small><div class="list slotChoices">'+[...choices,{id:255,name:'Unassigned'}].map(p=>{const j=library.slots.indexOf(p.id);return '<button data-slot-profile="'+p.id+'" '+(p.id===library.slots[index]?'disabled':'')+'><strong>'+esc(p.name)+'</strong><small>'+(p.id===255?'Leave slot empty':j>=0?'Slot '+(j+1)+' '+dirs[j]+' · swap':'In MeatVault')+'</small></button>';}).join('')+'</div>',[{label:'Cancel'}]);
  dialog.querySelectorAll('[data-slot-profile]').forEach(b=>b.onclick=()=>{assignSlot(index,+b.dataset.slotProfile);closeModal();render();});
 }
+// Commit an explicit activation independently from unsaved editing/assignments.
+function activateProfile(id){
+ if(locked()||conflict||!library.profiles.some(p=>p.id===id))return;
+ const saved=JSON.parse(baseline),target=library.profiles.find(p=>p.id===id);
+ if(!dirty()){commitActivation(id,false);return;}
+ const exists=saved.profiles.some(p=>p.id===id);
+ modal('Activate '+target.name,'<p>You have unsaved profile changes.</p><small>'+(exists?'Activate the saved version now and keep your drafts, or explicitly save all changes and activate.':'This is a new profile. Save all pending changes to activate it.')+'</small>',[{label:'Cancel'},...(exists?[{label:'Saved version only',run:()=>commitActivation(id,false)}]:[]),{label:'Save all & activate',primary:true,run:()=>commitActivation(id,true)}]);
+}
+async function commitActivation(id,all){
+ if(locked()||conflict)return;
+ const saved=JSON.parse(baseline),candidate=copy(all?library:saved);
+ if(!candidate.profiles.some(p=>p.id===id))return;
+ candidate.active=id;
+ const expected=candidate.revision===0xffffffff?1:candidate.revision+1;
+ busy=true;render();
+ try{
+  if(deviceMode?!validLibrary(candidate):!candidate.profiles.every(StudioV3.validProfile))throw Error('Invalid profile library');
+  if(deviceMode){
+   const d=await(await post('/api/profile',candidate)).json();
+   if(d.revision!==expected)throw Error('Unexpected acknowledgement. Reconnect and verify active profile.');
+  }else{
+   if(loadError)throw Error(loadError);
+   const current=JSON.parse(localStorage.getItem(key)||'null');
+   if(current&&current.revision!==candidate.revision)throw Error('Preview changed in another tab. Reload or export draft.');
+   localStorage.setItem(key,JSON.stringify({...candidate,revision:expected}));
+  }
+  candidate.revision=expected;
+  baseline=JSON.stringify(candidate);
+  if(all)library=copy(candidate);else{library.active=id;library.revision=expected;}
+  if(id!==0)editing=id;
+  source=null;
+ }catch(e){
+  if(e.status===409)conflict=true;
+  modal('Activation failed','<p class="error">'+esc(e.message)+'</p><small>Your draft is retained. If the connection was lost, check the device status before retrying.</small>',[{label:'Close'}]);
+ }finally{busy=false;if(!dialog.open)render();else updateSaveBar();}
+}
 function quadActions(index){
  const p=library.profiles.find(p=>p.id===library.slots[index]);
  if(!p){slotDialog(index);return;}
- modal('Slot '+(index+1)+' · '+p.name,'<small>Choose an action. Changes remain drafts until Save.</small><div class="list slotChoices"><button id="quadReplace"><strong>Replace profile</strong><small>Choose from MeatVault</small></button><button id="quadEdit"><strong>Edit profile</strong><small>Mapping, tuning and settings</small></button><button id="quadActivate" '+(library.active===p.id?'disabled':'')+'><strong>'+(library.active===p.id?'Selected profile':'Activate profile')+'</strong><small>Use after Save</small></button><button id="quadUnassign"><strong>Unassign</strong><small>Keep profile in MeatVault</small></button></div>',[{label:'Cancel'}]);
+ modal('Slot '+(index+1)+' · '+p.name,'<small>Activation applies immediately. Editing and slot changes require Save.</small><div class="list slotChoices"><button id="quadReplace"><strong>Replace profile</strong><small>Choose from MeatVault</small></button><button id="quadEdit"><strong>Edit profile</strong><small>Mapping, tuning and settings</small></button><button id="quadActivate" '+(library.active===p.id?'disabled':'')+'><strong>'+(library.active===p.id?'Selected profile':'Activate profile')+'</strong><small>Activate now</small></button><button id="quadUnassign"><strong>Unassign</strong><small>Keep profile in MeatVault</small></button></div>',[{label:'Cancel'}]);
  $('quadReplace').onclick=()=>{closeModal();slotDialog(index);};
  $('quadEdit').onclick=()=>{closeModal();editing=p.id;go('profiles',1);};
- $('quadActivate').onclick=()=>{closeModal();library.active=p.id;editing=p.id;render();};
+ $('quadActivate').onclick=()=>{closeModal();activateProfile(p.id);};
  $('quadUnassign').onclick=()=>{closeModal();assignSlot(index,255);render();};
 }
 function assignEditing(){
@@ -1387,7 +1423,7 @@ function renderProfiles(){
  if(pane===1||pane===3){
   const t=StudioV3.decode(p.layers),count=[0,6,12,17].filter(i=>StudioV3.mask(t[i])).length;
   const status=p.id===saved.active?'Saved active':p.id===library.active?'Pending activation':'Not active';
-  return vaultHeading('Inspect profile',p.id<2?'Protected preset':'Editable profile')+'<div class="vaultActiveLine"><div><small>'+status+'</small><strong>'+esc(p.name)+'</strong></div><button id="useProfile" '+(library.active===editing?'disabled':'')+'>'+ (library.active===editing?(saved.active===editing?'Active':'Pending save'):'Use on save')+'</button></div><div class="vaultDetailGrid"><button class="vaultInstrument" data-go="controller"><strong>Controller</strong><small>'+(p.custom?'Custom mapping':'Stock mapping')+'</small>'+icon('controller')+'</button><button class="vaultInstrument" data-go="tuning"><strong>Tuning</strong><small>'+count+'/4 inputs tuned</small>'+icon('tuning')+'</button><button class="vaultInstrument" data-vault-pane="4"><strong>Profile layers</strong><small>Inspect adjustments</small>'+icon('profiles')+'</button><button class="vaultInstrument" id="assignEditing" '+(library.schema===4&&p.id===0?'disabled':'')+'><strong>Assign QuadSlot</strong><small>'+library.slots.filter(x=>x===p.id).length+' assigned</small><span class="slotGlyph">✚</span></button></div><div class="vaultActionBar"><button id="duplicate">Duplicate</button><button id="rename" '+(!editable()?'disabled':'')+'>Rename</button><button id="export">Export</button><button id="deleteProfile" '+(!editable()?'disabled':'')+'>Delete</button></div>'+(p.id===saved.active?'<button id="activeMonitor" class="savedSnapshot">View saved settings</button>':'');
+  return vaultHeading('Inspect profile',p.id<2?'Protected preset':'Editable profile')+'<div class="vaultActiveLine"><div><small>'+status+'</small><strong>'+esc(p.name)+'</strong></div><button id="useProfile" '+(library.active===editing?'disabled':'')+'>'+ (library.active===editing?(saved.active===editing?'Active':'Pending save'):'Make active')+'</button></div><div class="vaultDetailGrid"><button class="vaultInstrument" data-go="controller"><strong>Controller</strong><small>'+(p.custom?'Custom mapping':'Stock mapping')+'</small>'+icon('controller')+'</button><button class="vaultInstrument" data-go="tuning"><strong>Tuning</strong><small>'+count+'/4 inputs tuned</small>'+icon('tuning')+'</button><button class="vaultInstrument" data-vault-pane="4"><strong>Profile layers</strong><small>Inspect adjustments</small>'+icon('profiles')+'</button><button class="vaultInstrument" id="assignEditing" '+(library.schema===4&&p.id===0?'disabled':'')+'><strong>Assign QuadSlot</strong><small>'+library.slots.filter(x=>x===p.id).length+' assigned</small><span class="slotGlyph">✚</span></button></div><div class="vaultActionBar"><button id="duplicate">Duplicate</button><button id="rename" '+(!editable()?'disabled':'')+'>Rename</button><button id="export">Export</button><button id="deleteProfile" '+(!editable()?'disabled':'')+'>Delete</button></div>'+(p.id===saved.active?'<button id="activeMonitor" class="savedSnapshot">View saved settings</button>':'');
  }
  if(pane===5)return vaultHeading('Import profile','Review selected layers')+importView();
  if(pane===6){
@@ -1397,12 +1433,12 @@ function renderProfiles(){
  }
  return vaultHeading('Profile layers',esc(p.name))+layerDeck(p,true);
 }
-// Selection is a draft operation: the saved active marker only moves after Save.
+// Inspect is independent of explicit activation.
 function openVaultProfile(id){
  const p=library.profiles.find(x=>x.id===id);if(!p)return;
  const inspect=()=>{editing=id;go('profiles',1);};
  if(id===JSON.parse(baseline).active){inspect();return;}
- modal('Open '+p.name,'<p>Make this the active profile or inspect its settings?</p><small>Activation takes effect after Save. Inspect does not change the active profile.</small>',[{label:'Cancel'},{label:'Inspect',run:inspect},{label:'Make active',primary:true,run:()=>{library.active=id;editing=id;go('profiles',0);}}]);
+ modal('Open '+p.name,'<p>Make this the active profile or inspect its settings?</p><small>Make active saves the selection immediately. Inspect does not change the active profile.</small>',[{label:'Cancel'},{label:'Inspect',run:inspect},{label:'Make active',primary:true,run:()=>activateProfile(id)}]);
 }
 function updateSaveBar(){
  const primary=$('primary'),pending=dirty()||conflict;
@@ -1455,8 +1491,8 @@ function render(){
  content.querySelectorAll('[data-profile]').forEach(b=>b.onclick=()=>openVaultProfile(+b.dataset.profile));
  const bind=(id,fn)=>{const e=$(id);if(e)e.onclick=fn;};
  content.querySelectorAll('[data-settings-tab]').forEach(b=>b.onclick=()=>{const k=b.dataset.settingsTab;go(k==='device'||k==='about'?'settings':k,k==='about'?1:0);});bind('settingsRefresh',()=>refreshDevice({profileCheck:true}));bind('settingsGaming',leaveGaming);bind('mappingSummary',()=>go('controller',1));bind('advancedMapping',()=>go('controller',2));bind('aimbotEgg',()=>modal('Premium feature locked','<p>Hacker-grade AIMBOT™ is not available in the Free Edition.</p><p>Upgrade to Hambone Ultimate Competitive Elite™ to unlock proprietary Anti-Ban Technology™.</p><small>Unfortunately our payment department does not exist. Neither does the aimbot. This is an Easter egg; no inputs, purchases, or anti-cheat bypass occur.</small>',[{label:'Remain tragically legitimate',primary:true}]));bind('advancedToggle',()=>{if(editable()){p.custom=!p.custom;render();}});bind('toggleMap',()=>{if(editable()){p.custom=!p.custom;source=null;render();}});
- bind('toggleIgr',()=>{if(editable()){p.igr=!p.igr;render();}});bind('library',()=>{group=0;go('profiles',7);});bind('activeMonitor',()=>{inspectTab=0;go('profiles',6);});bind('vaultLock',()=>{slotTarget=null;go('profiles',8);});bind('vaultClose',()=>go('profiles',0));content.querySelectorAll('[data-assign-profile]').forEach(b=>b.onclick=()=>{if(slotTarget!==null){assignSlot(slotTarget,+b.dataset.assignProfile);go('profiles',0);}});bind('stockProfile',()=>{library.active=0;render();});content.querySelectorAll('[data-inspect-tab]').forEach(b=>b.onclick=()=>{inspectTab=+b.dataset.inspectTab;render();});
- bind('useProfile',()=>{library.active=editing;render();});bind('export',exportProfile);
+ bind('toggleIgr',()=>{if(editable()){p.igr=!p.igr;render();}});bind('library',()=>{group=0;go('profiles',7);});bind('activeMonitor',()=>{inspectTab=0;go('profiles',6);});bind('vaultLock',()=>{slotTarget=null;go('profiles',8);});bind('vaultClose',()=>go('profiles',0));content.querySelectorAll('[data-assign-profile]').forEach(b=>b.onclick=()=>{if(slotTarget!==null){assignSlot(slotTarget,+b.dataset.assignProfile);go('profiles',0);}});bind('stockProfile',()=>activateProfile(0));content.querySelectorAll('[data-inspect-tab]').forEach(b=>b.onclick=()=>{inspectTab=+b.dataset.inspectTab;render();});
+ bind('useProfile',()=>activateProfile(editing));bind('export',exportProfile);
  bind('groupPrev',()=>{group=pane===2&&deck==='controller'?(group+4)%5:Math.max(0,group-1);render();});bind('groupNext',()=>{group=pane===2&&deck==='controller'?(group+1)%5:group+1;render();});
  bindProfiles();bindDevice();syncDeviceChrome();
  if(deviceMode){if(locked()){for(const b of document.querySelectorAll('.window button,.window input,.window select'))b.disabled=true;}else{$('home').disabled=$('menu').disabled=$('pick').disabled=false;}
