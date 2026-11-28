@@ -3,6 +3,13 @@
   "product": "ogx-dvd-wireless",
   "releases": [
     {
+      "version": "v1.0.0-dev.16",
+      "channel": "experimental",
+      "size": 1507316,
+      "sha256": "893c16aab580b7b59466b56265ef02a5c26de56a413d5ae1694e673874197185",
+      "notes": "Experimental hardware test: QuadSlot LB+RB hold 600ms then D-pad, boot stock and repeat slot to return stock, numbered LED/haptic feedback and Wi-Fi cues, hidden stock with 12 assignable library positions, transport-specific SignalScope, compact tuning and fictional premium Easter egg. Preserves old profile storage and custom IDs, clears old stock slot assignment. Export profiles before upgrading. Host and mock tests passed; actual rumble, switching and NVS pending. RP2040 untouched; dev15 retained."
+    },
+    {
       "version": "v1.0.0-dev.15",
       "channel": "experimental",
       "size": 1507316,
