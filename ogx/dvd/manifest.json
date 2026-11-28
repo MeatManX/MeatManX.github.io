@@ -3,6 +3,13 @@
   "product": "ogx-dvd-wireless",
   "releases": [
     {
+      "version": "v1.0.0-dev.20",
+      "channel": "experimental",
+      "size": 1376244,
+      "sha256": "2cea0c46abe9d52aa94d99e5dbb80719e4f5f754b985372564053de64513e7bf",
+      "notes": "OTA size optimization: store the existing Studio only as gzip. Reclaims 192 KiB, 25% OTA space free, same UI and unchanged gameplay, radio, profile format and partition layout. Modern gzip-capable browser required for local Studio; APIs unchanged. Signature, compression and browser/mock tests passed; physical testing pending. Dev19 retained."
+    },
+    {
       "version": "v1.0.0-dev.19",
       "channel": "experimental",
       "size": 1572852,
