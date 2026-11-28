@@ -3,6 +3,13 @@
   "product": "ogx-dvd-wireless",
   "releases": [
     {
+      "version": "v1.0.0-dev.15",
+      "channel": "experimental",
+      "size": 1507316,
+      "sha256": "00e49c8e7000bb53db608d84a58ca13b2e737728f555a9ed6f4cf6fe01370def",
+      "notes": "Experimental UI and telemetry refinement: single SignalScope panel, real SSID, uptime, minimum free heap, session report count and last-report age; compact Settings, direct Update, network mode cards and About. Removed unsupported thermal/power placeholders. Profile schema and gameplay processing unchanged. RP2040 untouched. Signed build and browser/mock tests passed; hardware measurements pending. Dev14 retained for recovery."
+    },
+    {
       "version": "v1.0.0-dev.14",
       "channel": "experimental",
       "size": 1441780,
