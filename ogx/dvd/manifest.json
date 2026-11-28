@@ -3,6 +3,13 @@
   "product": "ogx-dvd-wireless",
   "releases": [
     {
+      "version": "v1.0.0-dev.14",
+      "channel": "experimental",
+      "size": 1441780,
+      "sha256": "00e1dde99ac61bc9959bf5c90b1ef4a9731e4b104a9330cd1fc31d1f4984e805",
+      "notes": "EXPERIMENTAL hardware-test build: final Controller Studio interface, Advanced Mapping, independent tuning groups, X/Y gain and radial geometry, directional MeatVault, SignalScope measured diagnostics, Settings/MeatLink. Migrates saved profiles into schema3 and retains dev13 storage for downgrade. Export important profiles before upgrading. Signed build and host/browser tests passed; real hardware testing pending. RP2040 unchanged. Dev13 remains recovery option."
+    },
+    {
       "version": "v1.0.0-dev.13",
       "channel": "experimental",
       "size": 1376244,
