@@ -3,6 +3,13 @@
   "product": "ogx-dvd-wireless",
   "releases": [
     {
+      "version": "v1.0.0-dev.17",
+      "channel": "experimental",
+      "size": 1507316,
+      "sha256": "16dd3c1354232374107f309868adfd628ccc7507cb15542ebf2cbb2cd5564810",
+      "notes": "Experimental network stability test: 15s home Wi-Fi reconnect grace before fallback, reduced recovery scanning and status traffic, compressed configuration page, Wi-Fi fallback/reason reporting, corrected Bluetooth transport identification and deferred Wi-Fi entry rumble. No RP2040, profile storage or gameplay processing changes. Signed build and browser/mock tests passed; physical network recovery pending. Dev16 retained."
+    },
+    {
       "version": "v1.0.0-dev.16",
       "channel": "experimental",
       "size": 1507316,
